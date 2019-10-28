@@ -11,8 +11,10 @@ import kotlinx.android.synthetic.main.item_content.view.*
 class ItemRvAdapter(val context: Context, val cb: (VH) -> Unit) :
     RecyclerView.Adapter<ItemRvAdapter.VH>() {
 
+    val EMPTY = ""
+
     private var items =
-        mutableListOf("111", "222", "333", "444", "555", "666", "777")
+        mutableListOf(/*EMPTY,*/ "111", "222", "333", "444", "555", "666", "777"/*, EMPTY, EMPTY*/)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(
@@ -44,6 +46,21 @@ class ItemRvAdapter(val context: Context, val cb: (VH) -> Unit) :
         }
 
         holder.tvContent.text = items[position]
+/*        holder.itemView.layoutParams =
+            (if (position == 0) LinearLayout.LayoutParams(R.dimen.rvLeftMargin.dimen(context), 0)
+            else LinearLayout.LayoutParams(
+                R.dimen.itemWidth.dimen(context),
+                R.dimen.itemHeight.dimen(context)
+            )).apply {
+                marginStart = R.dimen.itemMargin.dimen(context)
+                marginEnd = R.dimen.itemMargin.dimen(context)
+            }*/
+
+/*
+        if (items[position] == EMPTY) holder.itemView.visibility = View.INVISIBLE
+        else holder.itemView.visibility = View.VISIBLE
+*/
+
     }
 
     class VH(view: View, cb: (VH) -> Unit) : RecyclerView.ViewHolder(view) {
