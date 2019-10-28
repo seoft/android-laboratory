@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:toools="http://schemas.android.com/tools"
     android:layout_width="@dimen/itemWidth"
-    android:layout_height="70dp"
+    android:layout_height="@dimen/itemHeight"
     android:layout_marginStart="@dimen/itemMargin"
     android:layout_marginEnd="@dimen/itemMargin"
     android:gravity="center"
