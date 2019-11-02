@@ -7,14 +7,98 @@
     tools:context=".MainActivity">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvContent"
+    <LinearLayout
+        android:background="#F0F0F0"
+        android:id="@+id/llMover"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/llContents"
+    />
+
+    <LinearLayout
+        android:id="@+id/llContents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+
+        >
+
+        <LinearLayout
+            android:id="@+id/ll1"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="60dp"
+            android:background="#FF0000"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/ll2"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#FF5900"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/ll3"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#FFC800"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/ll4"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#D9FF00"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/ll5"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#6AFF00"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/ll6"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#00FF90"
+            android:orientation="vertical" />
+
+
+        <LinearLayout
+            android:id="@+id/ll7"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#00CCFF"
+            android:orientation="vertical" />
+
+
+        <LinearLayout
+            android:id="@+id/ll8"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="10dp"
+            android:background="#0037FF"
+            android:orientation="vertical" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,6 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="bt3" />
+
         <Button
             android:id="@+id/bt4"
             android:layout_width="wrap_content"
