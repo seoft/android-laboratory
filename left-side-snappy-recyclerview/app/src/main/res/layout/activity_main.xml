@@ -32,10 +32,18 @@
         >
 
         <LinearLayout
+            android:id="@+id/llforSpace"
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="50dp"
+            android:background="#FF0000"
+            android:orientation="vertical" />
+
+        <LinearLayout
             android:id="@+id/ll1"
             android:layout_width="130dp"
             android:layout_height="70dp"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="10dp"
             android:background="#FF0000"
             android:orientation="vertical" />
 
@@ -106,6 +114,12 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/bt0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bt0" />
 
         <Button
             android:id="@+id/bt1"
