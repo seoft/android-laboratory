@@ -8,7 +8,6 @@
 
     <LinearLayout
         android:id="@+id/spLeftMargin"
-        android:background="#111111"
         android:orientation="vertical"
         android:layout_width="1dp"
         android:layout_height="10dp"
