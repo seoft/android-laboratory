@@ -47,6 +47,37 @@ class MainActivity : AppCompatActivity() {
 
         "WIDTH $WIDTH    WIDTH_HALF $WIDTH_HALF    LEFT_MARGIN $LEFT_MARGIN    ITEM_MARGIN $ITEM_MARGIN".i()
 
+        val seconds = arrayListOf(
+            3,
+            4,
+            5,
+            8,
+            5
+        )
+
+        lsshlv.showLeftSideSnappyHorizontalListView(seconds)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //////////////////
 
         llContents.setOnTouchListener { v, event ->
 

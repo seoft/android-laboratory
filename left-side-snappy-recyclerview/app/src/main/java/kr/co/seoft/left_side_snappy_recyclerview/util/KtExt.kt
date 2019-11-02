@@ -30,3 +30,11 @@ fun Int.dpToPx(): Int {
 fun Int.dimen(context: Context): Int {
     return context.resources.getDimension(this).toInt()
 }
+
+fun Int.toFormattingString(): String {
+    var hour = this / 3600
+    var min = this / 60 % 60
+    var second_ = this % 60
+
+    return "${if(hour<10) "0$hour" else hour}:${if(min<10) "0$min" else min}:${if(second_<10) "0$second_" else second_}"
+}
