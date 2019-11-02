@@ -3,10 +3,9 @@
     xmlns:toools="http://schemas.android.com/tools"
     android:layout_width="@dimen/itemWidth"
     android:layout_height="@dimen/itemHeight"
-    android:layout_marginStart="@dimen/itemMargin"
-    android:layout_marginEnd="@dimen/itemMargin"
     android:gravity="center"
     android:orientation="horizontal">
+    <!--    android:layout_marginEnd="@dimen/itemMargin"-->
 
     <TextView
         android:id="@+id/tvContent"
