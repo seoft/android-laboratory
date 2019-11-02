@@ -36,6 +36,8 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
     var touchDown = Pair(0F, 0F)
     var touchUp = Pair(0F, 0F)
 
+    var curIndex = 0
+
     constructor(context: Context) : super(context) {
         initView(context)
     }
@@ -51,6 +53,27 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
     private fun initView(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.left_side_snappy_horizontal_list_view, this, true)
 
+    }
+
+    fun setFocusCurrentBadge() {
+        setFocus(curIndex)
+    }
+
+    fun setFocus(index:Int) {
+        for (i in 0 until itemCount) {
+
+            if (i == index) {
+                items[i].llRoot.background = context.getDrawable(R.drawable.bg_timeset_times_red_stroke)
+            } else {
+                items[i].llRoot.background = context.getDrawable(R.drawable.bg_timeset_times_gray_stroke)
+            }
+        }
+        moveWithAnim(
+            endPos,
+            if (index == 0) 0 + LEFT_MARGIN
+            else (index * -1) * BADGE_WIDTH + LEFT_MARGIN,
+            index
+        )
     }
 
     fun showLeftSideSnappyHorizontalListView(seconds: List<Int>) {
@@ -112,32 +135,37 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
                     moveWithAnim(
                         endPos,
                         if (it.index == 0) 0 + LEFT_MARGIN
-                        else (it.index * -1) * BADGE_WIDTH + LEFT_MARGIN
+                        else (it.index * -1) * BADGE_WIDTH + LEFT_MARGIN,
+                        it.index
                     )
                     return@OnTouchListener true
                 }
 
             }
 
+            var rstIndex = 0
+
             if (0 * BADGE_WIDTH - ITEM_MARGIN < endPos && endPos <= Int.MAX_VALUE) {
                 rstPos = 0 + LEFT_MARGIN
             } else {
+                rstIndex = itemCount - 1 // don't catch in while -> last index
                 var cnt = 0
                 var whileCnt = itemCount
                 while (whileCnt-- > 1) {
                     if ((cnt - 1) * BADGE_WIDTH - ITEM_MARGIN < endPos && endPos <= cnt * BADGE_WIDTH - ITEM_MARGIN) {
                         rstPos = (cnt - 1) * BADGE_WIDTH + LEFT_MARGIN
+                        rstIndex = cnt * -1 + 1
                         break
                     }
                     cnt--
                 }
             }
-            moveWithAnim(endPos, rstPos)
+            moveWithAnim(endPos, rstPos, rstIndex)
         }
         true
     }
 
-    private fun moveWithAnim(prevPos: Int, nextPos: Int) {
+    private fun moveWithAnim(prevPos: Int, nextPos: Int, rstIndex: Int) {
         endPos = nextPos
 
         val anim = object : Animation() {
@@ -156,6 +184,7 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
 
         Handler().postDelayed({
             endPos = nextPos
+            curIndex = rstIndex
             for (i in 0 until itemCount) {
                 items[i].boundary.apply {
                     left = items[i].llRoot.left

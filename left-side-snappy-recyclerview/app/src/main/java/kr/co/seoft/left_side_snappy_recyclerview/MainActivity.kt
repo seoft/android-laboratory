@@ -24,6 +24,24 @@ class MainActivity : AppCompatActivity() {
         )
 
         lsshlv.showLeftSideSnappyHorizontalListView(seconds)
+
+        bt0.setOnClickListener {
+            lsshlv.setFocusCurrentBadge()
+        }
+
+        bt1.setOnClickListener {
+            lsshlv.setFocus(0)
+        }
+        bt2.setOnClickListener {
+            lsshlv.setFocus(1)
+        }
+        bt3.setOnClickListener {
+            lsshlv.setFocus(3)
+        }
+        bt4.setOnClickListener {
+            lsshlv.setFocus(4)
+        }
+
     }
 }
 
