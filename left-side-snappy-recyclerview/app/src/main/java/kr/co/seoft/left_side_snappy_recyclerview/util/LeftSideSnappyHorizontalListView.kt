@@ -15,17 +15,14 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.left_side_snappy_horizontal_list_view.view.*
 import kr.co.seoft.left_side_snappy_recyclerview.R
 import java.lang.Math.pow
-import java.lang.Math.sqrt
+import kotlin.math.sqrt
 
 open class LeftSideSnappyHorizontalListView : LinearLayout {
 
     companion object {
-        //        private val ITEM_MARGIN = 10.dpToPx()
         private val BADGE_WIDTH = 140.dpToPx() // with margin
-        private val BADGE_WIDTH_HALF = 70.dpToPx() // with margin / 2
         private val LEFT_MARGIN = 60.dpToPx()
         private val ITEM_MARGIN = 10.dpToPx()
-
         private val SENSITIVITY = 16.dpToPx()
     }
 
@@ -88,12 +85,10 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
         }
 
         setOnTouchListener(touchListener)
-
     }
 
-    val touchListener = OnTouchListener { v, event ->
+    private val touchListener = OnTouchListener { v, event ->
         if (event.action == MotionEvent.ACTION_DOWN) {
-            "MotionEvent.ACTION_DOWN".i()
             sttPos = event.x.toInt() + endPos * -1
             touchDown = Pair(event.x, event.y)
         } else if (event.action == MotionEvent.ACTION_MOVE) {
@@ -101,7 +96,6 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
             endPos = mv
             setLeftMargin(spaceLayout, mv)
         } else if (event.action == MotionEvent.ACTION_UP) {
-            "MotionEvent.ACTION_UP ${endPos} ".i()
             touchUp = Pair(event.x, event.y)
 
             if ((sqrt(
@@ -137,19 +131,13 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
                     }
                     cnt--
                 }
-
             }
-
             moveWithAnim(endPos, rstPos)
         }
-
         true
-
     }
 
     private fun moveWithAnim(prevPos: Int, nextPos: Int) {
-        "prevPos $prevPos  nextPos $nextPos".i()
-
         endPos = nextPos
 
         val anim = object : Animation() {
@@ -165,10 +153,9 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
         }
 
         spaceLayout.startAnimation(anim)
+
         Handler().postDelayed({
             endPos = nextPos
-
-
             for (i in 0 until itemCount) {
                 items[i].boundary.apply {
                     left = items[i].llRoot.left
@@ -177,20 +164,19 @@ open class LeftSideSnappyHorizontalListView : LinearLayout {
                     bottom = items[i].llRoot.bottom
                 }
             }
-
-
         }, 200)
     }
 
     private fun setLeftMargin(view: View, size: Int) {
         if (view.layoutParams is MarginLayoutParams) {
-            val p = view.layoutParams as MarginLayoutParams
-            p.leftMargin = size
+            (view.layoutParams as MarginLayoutParams).apply {
+                leftMargin = size
+            }
             view.requestLayout()
         }
     }
 
-    data class Item(
+    private data class Item(
         val index: Int,
         val llRoot: LinearLayout,
         val tvCount: TextView,
