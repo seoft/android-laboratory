@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".home.MainActivity">
+
+    <kr.co.seoft.libfor2min.home.HorizontalHomeList
+            android:layout_alignParentTop="true"
+            android:id="@+id/horizontalHomeList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:threeDot="true"
+            app:bottomNumber="true"
+
+    />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="horizontal" android:layout_alignParentBottom="true">
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test1"
+                android:id="@+id/btTest1"  />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test2"
+                android:id="@+id/btTest2"  />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test3"
+                android:id="@+id/btTest3"  />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="test4"
+                android:id="@+id/btTest4"  />
+
+    </LinearLayout>
+
+</RelativeLayout>

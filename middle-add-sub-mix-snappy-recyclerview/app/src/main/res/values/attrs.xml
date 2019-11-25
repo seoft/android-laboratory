@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HSMLAttr">
+        <attr name="threeDot" format="boolean"/>
+        <attr name="bottomNumber" format="boolean"/>
+    </declare-styleable>
+</resources>

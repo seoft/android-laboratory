@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".timeset.TimesetActivity">
+
+    <kr.co.seoft.libfor2min.timeset.HorizontalTimesetList
+            android:layout_width="match_parent" android:id="@+id/horizontalTimesetList"
+            android:layout_height="wrap_content">
+
+    </kr.co.seoft.libfor2min.timeset.HorizontalTimesetList>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true"  android:orientation="horizontal" >
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="111" android:id="@+id/bt111" />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="222" android:id="@+id/bt222" />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="333" android:id="@+id/bt333" />
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="444" android:id="@+id/bt444" />
+
+    </LinearLayout>
+
+</RelativeLayout>
