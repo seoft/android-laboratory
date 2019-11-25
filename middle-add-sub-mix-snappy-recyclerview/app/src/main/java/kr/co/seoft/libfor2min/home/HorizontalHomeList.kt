@@ -12,14 +12,6 @@ class HorizontalHomeList : RecyclerView {
     lateinit var homeBadgeAdapter: HomeBadgeAdapter
     lateinit var itemTouchHelper: ItemTouchHelper
 
-    var WHOLE_COUNT = 4
-
-    var LEFT_REACH_CONDITION = 0
-    var LEFT_MID_POS = 3
-
-    var RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
-    var RIGHT_MID_POS = WHOLE_COUNT - 4
-
     var onBadgeSelectedListener: ((HomeBadgeCallbackType, Int) -> Unit)? = null
 
     constructor(context: Context) : this(context, null) {
@@ -58,9 +50,7 @@ class HorizontalHomeList : RecyclerView {
         this.layoutManager = linearLayoutManager
         homeBadgeAdapter =
             HomeBadgeAdapter(context, showBottomNumbers, showThreeDots) { type, vh ->
-                val curPos = getCurPos()
-
-                val pos = vh.adapterPosition
+                  val pos = vh.adapterPosition
 
                 // pushed Add button
                 if (type == HomeBadgeCallbackType.ADD_PUSH || type == HomeBadgeCallbackType.NORMAL_PUSH) {
@@ -69,10 +59,6 @@ class HorizontalHomeList : RecyclerView {
                         pos
                     )
                     homeBadgeAdapter.resetFocus(pos)
-
-                    // smoothScrollToPosition not accuracy depending on position, so add, subject value
-                    if (pos >= curPos) this.smoothScrollToPosition(pos + 1)
-                    else this.smoothScrollToPosition(pos - 1)
 
                     return@HomeBadgeAdapter
                 } else if (type == HomeBadgeCallbackType.LONG_PUSH) {
@@ -94,21 +80,6 @@ class HorizontalHomeList : RecyclerView {
             homeBadgeAdapter.notifyDataSetChanged()
         }))
         itemTouchHelper.attachToRecyclerView(this)
-
-        this.smoothScrollToPosition(LEFT_MID_POS)
-        this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                // adjust position when reach first or end, cant set middle position in onScrolled callback
-                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == LEFT_REACH_CONDITION)
-                    this@HorizontalHomeList.smoothScrollToPosition(LEFT_MID_POS)
-                else if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == RIGHT_REACH_CONDITION)
-                    this@HorizontalHomeList.smoothScrollToPosition(RIGHT_MID_POS)
-            }
-
-        })
     }
 
     fun showAddButton() {
@@ -136,19 +107,7 @@ class HorizontalHomeList : RecyclerView {
 
     fun refreshListAndRecalc() {
         homeBadgeAdapter.notifyDataSetChanged()
-        recalc()
     }
 
-    /**
-     * recalculate for set first, last badge when reach that
-     */
-    fun recalc() {
-        WHOLE_COUNT = homeBadgeAdapter.getBadges().size
-        RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
-        RIGHT_MID_POS = WHOLE_COUNT - 4
-    }
-
-    fun getCurPos() =
-        (linearLayoutManager.findLastCompletelyVisibleItemPosition() + linearLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
 
 }
