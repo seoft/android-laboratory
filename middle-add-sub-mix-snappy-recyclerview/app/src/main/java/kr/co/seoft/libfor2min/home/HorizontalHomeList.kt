@@ -3,18 +3,12 @@ package kr.co.seoft.libfor2min.home
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.*
-import kr.co.seoft.libfor2min.R
 
 class HorizontalHomeList : RecyclerView {
 
     companion object {
-        private const val LEFT_REACH_CONDITION = 0
         const private val LEFT_MID_POS = 3
     }
-
-    private var WHOLE_COUNT = 4
-    private var RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
-    private var RIGHT_MID_POS = WHOLE_COUNT - 4
 
     lateinit var snapHelper: SnapHelper
     lateinit var linearLayoutManager: LinearLayoutManager
@@ -28,21 +22,16 @@ class HorizontalHomeList : RecyclerView {
     }
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0) {
-        val curAttrs = context.obtainStyledAttributes(attrs, R.styleable.HSMLAttr)
         initHorizontalHomeList(context)
-        curAttrs.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        val curAttrs = context.obtainStyledAttributes(attrs, R.styleable.HSMLAttr)
         initHorizontalHomeList(context)
-        curAttrs.recycle()
     }
 
     private fun initHorizontalHomeList(
         context: Context
     ) {
-
         linearLayoutManager = LinearLayoutManager(context).apply {
             orientation = LinearLayoutManager.HORIZONTAL
         }
@@ -55,10 +44,7 @@ class HorizontalHomeList : RecyclerView {
 
                 // pushed Add button
                 if (type == HomeBadgeCallbackType.ADD_PUSH || type == HomeBadgeCallbackType.NORMAL_PUSH) {
-                    if (type == HomeBadgeCallbackType.ADD_PUSH) onBadgeSelectedListener?.invoke(
-                        type,
-                        pos
-                    )
+                    if (type == HomeBadgeCallbackType.ADD_PUSH) onBadgeSelectedListener?.invoke(type, pos)
                     homeBadgeAdapter.resetFocus(pos)
 
                     // smoothScrollToPosition not accuracy depending on position, so add, subject value
@@ -95,31 +81,7 @@ class HorizontalHomeList : RecyclerView {
         itemTouchHelper.attachToRecyclerView(this)
 
         this.smoothScrollToPosition(LEFT_MID_POS)
-
-        this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                // adjust position when reach first or end, cant set middle position in onScrolled callback
-//                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == LEFT_REACH_CONDITION)
-//                    this@HorizontalHomeList.smoothScrollToPosition(LEFT_MID_POS)
-//                else if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == RIGHT_REACH_CONDITION)
-//                    this@HorizontalHomeList.smoothScrollToPosition(RIGHT_MID_POS)
-            }
-
-        })
     }
-
-//    fun showAddButton() {
-//        homeBadgeAdapter.showAddButton()
-//        refreshListAndRecalc()
-//    }
-//
-//    fun hideAddButton() {
-//        homeBadgeAdapter.hideAddButton()
-//        refreshListAndRecalc()
-//    }
 
     fun addHomeBadge(homeBadge: HomeBadge) {
         if (homeBadge.type == HomeBadgeType.ADD) return
@@ -136,16 +98,6 @@ class HorizontalHomeList : RecyclerView {
 
     fun refreshListAndRecalc() {
         homeBadgeAdapter.notifyDataSetChanged()
-        recalc()
-    }
-
-    /**
-     * recalculate for set first, last badge when reach that
-     */
-    fun recalc() {
-        WHOLE_COUNT = homeBadgeAdapter.getBadges().size
-        RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
-        RIGHT_MID_POS = WHOLE_COUNT - 4
     }
 
     fun getCurPos() =

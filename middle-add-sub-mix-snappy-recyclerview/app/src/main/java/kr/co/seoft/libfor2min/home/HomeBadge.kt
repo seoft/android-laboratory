@@ -1,7 +1,6 @@
 package kr.co.seoft.libfor2min.home
 
 data class HomeBadge(
-    var number: Int = -1,
     var second: Int,
     var type: HomeBadgeType
 ) {

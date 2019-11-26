@@ -15,7 +15,6 @@ class ItemTouchHelperCallback(
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-//        val swipeFlags = ItemTouchHelper.DOWN or ItemTouchHelper.UP
 
         return makeMovementFlags(dragFlags,0)
     }

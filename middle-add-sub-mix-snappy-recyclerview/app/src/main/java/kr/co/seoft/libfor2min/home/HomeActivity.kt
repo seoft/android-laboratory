@@ -34,10 +34,6 @@ class HomeActivity : AppCompatActivity() {
         btTest4.setOnClickListener {
         }
 
-
-
-//        horizontalHomeList.showAddButton()
-        // horizontalSnapMiddleList.hideAddButton()
         horizontalHomeList.onBadgeSelectedListener = { type, pos ->
             if(type == HomeBadgeCallbackType.ADD_PUSH)
                 horizontalHomeList.addHomeBadge( HomeBadge( second = k++, type = HomeBadgeType.NORMAL ) )

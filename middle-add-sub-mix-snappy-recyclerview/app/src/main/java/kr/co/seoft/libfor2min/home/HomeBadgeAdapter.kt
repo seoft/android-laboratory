@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_home_badge.view.*
 import kr.co.seoft.libfor2min.R
@@ -14,21 +13,16 @@ class HomeBadgeAdapter(
     val cb: (HomeBadgeCallbackType, VH) -> Unit
 ) : RecyclerView.Adapter<HomeBadgeAdapter.VH>() {
 
-    private val EMPTY =
-        HomeBadge(second = 0, type = HomeBadgeType.EMPTY)
-    //    private var items = mutableListOf(EMPTY, EMPTY, EMPTY, EMPTY)
     private var items = mutableListOf(
-//        EMPTY,
-        HomeBadge(-1, 0, HomeBadgeType.REPEAT_OFF),
-        HomeBadge(-1, 0, HomeBadgeType.NORMAL),
-        HomeBadge(-1, 0, HomeBadgeType.ADD)
-//        ,EMPTY
+        HomeBadge(0, HomeBadgeType.REPEAT_OFF),
+        HomeBadge(0, HomeBadgeType.NORMAL),
+        HomeBadge(0, HomeBadgeType.ADD)
     )
 
     /**
      * for Dispose of between empty's badge
      * default : 2
-     * with add button : 3 
+     * with add button : 3
      * 이 숫자가 [size-positionController] 에 아이템이 들어간다는거
      */
     private var positionController = 2
@@ -47,20 +41,6 @@ class HomeBadgeAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(LayoutInflater.from(context).inflate(R.layout.item_home_badge, parent, false), cb)
     }
-
-//    fun hasAddButton() = items.any { it.type == HomeBadgeType.ADD }
-
-//    fun showAddButton() {
-//        if (hasAddButton()) return
-//        addBadge(HomeBadge(-1, 0, HomeBadgeType.ADD))
-//        positionController = 3
-//    }
-//
-//    fun hideAddButton() {
-//        if (!hasAddButton()) return
-//        items.removeAt(items.size - 3)
-//        positionController = 2
-//    }
 
     /**
      * set focus to position
@@ -122,16 +102,14 @@ class HomeBadgeAdapter(
                     HomeBadgeType.REPEAT_OFF -> cb.invoke(HomeBadgeCallbackType.REPEAT_OFF_PUSH, this)
                     HomeBadgeType.REPEAT_ON -> cb.invoke(HomeBadgeCallbackType.REPEAT_ON_PUSH, this)
                 }
+            }
 
-                itemView.setOnLongClickListener {
-
-                    Toast.makeText(itemView.context,"itemView.setOnLongClickListener",Toast.LENGTH_LONG).show()
-                    if (items[adapterPosition].type == HomeBadgeType.NORMAL) {
-                        cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
-                        removeFocus()
-                    }
-                    false
+            itemView.setOnLongClickListener {
+                if (items[adapterPosition].type == HomeBadgeType.NORMAL) {
+                    cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
+                    removeFocus()
                 }
+                false
             }
         }
 
@@ -175,20 +153,16 @@ class HomeBadgeAdapter(
                 HomeBadgeType.NORMAL -> {
                     visibleViews(true, true, false, false)
                     itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
-                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount-2}"
+                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount - 2}"
                     itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_gray_stroke)
                 }
                 HomeBadgeType.FOCUS -> {
                     visibleViews(true, true, false, false)
                     itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
-                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount-2}"
+                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount - 2}"
                     itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_red_stroke)
                 }
             }
-
         }
-
     }
-
-
 }
