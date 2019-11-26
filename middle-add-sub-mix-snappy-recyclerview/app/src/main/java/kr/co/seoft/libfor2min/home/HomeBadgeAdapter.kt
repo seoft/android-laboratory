@@ -1,7 +1,6 @@
 package kr.co.seoft.libfor2min.home
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +17,21 @@ class HomeBadgeAdapter(
 
     private val EMPTY =
         HomeBadge(second = 0, type = HomeBadgeType.EMPTY)
-    private var items = mutableListOf(EMPTY, EMPTY, EMPTY, EMPTY)
+    //    private var items = mutableListOf(EMPTY, EMPTY, EMPTY, EMPTY)
+    private var items = mutableListOf(
+//        EMPTY,
+        HomeBadge(-1, 0, HomeBadgeType.REPEAT_OFF),
+        HomeBadge(-1, 0, HomeBadgeType.NORMAL),
+        HomeBadge(-1, 0, HomeBadgeType.ADD)//,
+//        EMPTY
+    )
 
     /**
      * for Dispose of between empty's badge
      * default : 2
      * with add button : 3
      */
-    private var positionController = 2
+    private var positionController = 1
 
     /**
      * add badge
@@ -42,19 +48,19 @@ class HomeBadgeAdapter(
         return VH(LayoutInflater.from(context).inflate(R.layout.item_home_badge, parent, false), cb)
     }
 
-    fun hasAddButton() = items.any { it.type == HomeBadgeType.ADD }
+//    fun hasAddButton() = items.any { it.type == HomeBadgeType.ADD }
 
-    fun showAddButton() {
-        if (hasAddButton()) return
-        addBadge(HomeBadge(-1, 0, HomeBadgeType.ADD))
-        positionController = 3
-    }
-
-    fun hideAddButton() {
-        if (!hasAddButton()) return
-        items.removeAt(items.size - 3)
-        positionController = 2
-    }
+//    fun showAddButton() {
+//        if (hasAddButton()) return
+//        addBadge(HomeBadge(-1, 0, HomeBadgeType.ADD))
+//        positionController = 3
+//    }
+//
+//    fun hideAddButton() {
+//        if (!hasAddButton()) return
+//        items.removeAt(items.size - 3)
+//        positionController = 2
+//    }
 
     /**
      * set focus to position
@@ -78,43 +84,7 @@ class HomeBadgeAdapter(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-
-        /**
-         * set view's style from each HomeBadgeType
-         */
-        if (items[position].type == HomeBadgeType.EMPTY) {
-            holder.itemView.visibility = View.INVISIBLE
-        } else if (items[position].type == HomeBadgeType.ADD) {
-            holder.itemView.visibility = View.VISIBLE
-            holder.tvAdd.visibility = View.VISIBLE
-            holder.tvName.visibility = View.GONE
-            holder.tvThreeDot.visibility = View.INVISIBLE
-            holder.tvBottomNumber.visibility = View.INVISIBLE
-        } else if (items[position].type == HomeBadgeType.NORMAL) {
-            holder.itemView.visibility = View.VISIBLE
-            holder.tvName.text = items[position].getStringUsingFormat()
-            holder.tvName.setTextColor(Color.BLACK)
-            holder.tvName.setBackgroundResource(0)
-            holder.tvName.visibility = View.VISIBLE
-            holder.tvAdd.visibility = View.GONE
-            holder.tvThreeDot.visibility = View.INVISIBLE
-            if (showBottomNumbers) {
-                holder.tvBottomNumber.visibility = View.VISIBLE
-                holder.tvBottomNumber.text = "${position - 1}"
-            }
-        } else if (items[position].type == HomeBadgeType.FOCUS) {
-            holder.itemView.visibility = View.VISIBLE
-            holder.tvName.text = items[position].getStringUsingFormat()
-            holder.tvName.setTextColor(Color.WHITE)
-            holder.tvName.setBackgroundResource(R.drawable.bg_selected_badge)
-            holder.tvName.visibility = View.VISIBLE
-            holder.tvAdd.visibility = View.GONE
-            if (showThreeDots) holder.tvThreeDot.visibility = View.VISIBLE
-            if (showBottomNumbers) {
-                holder.tvBottomNumber.visibility = View.VISIBLE
-                holder.tvBottomNumber.text = "${position - 1}"
-            }
-        }
+        holder.setData(items[position], items.size)
     }
 
     /**
@@ -130,33 +100,92 @@ class HomeBadgeAdapter(
         }
     }
 
-    inner class VH(view: View, cb: (HomeBadgeCallbackType, VH) -> Unit) : RecyclerView.ViewHolder(view) {
+    inner class VH(view: View, cb: (HomeBadgeCallbackType, VH) -> Unit) :
+        RecyclerView.ViewHolder(view) {
 
         // ref :
         // http://dudmy.net/android/2017/06/23/consider-of-recyclerview/
         // > onBindViewHolder 에 listener 성능 저하, onCreateViewHolder 혹은 RecyclerView.ViewHolder내 callback 처리
 
+        val itemHomeBadgellContent = view.itemHomeBadgellContent
+        val itemHomeBadgeIvAdd = view.itemHomeBadgeIvAdd
+        val itemHomeBadgeIvRepeat = view.itemHomeBadgeIvRepeat
+        val itemHomeBadgeTvTime = view.itemHomeBadgeTvTime
+        val itemHomeBadgeTvCount = view.itemHomeBadgeTvCount
+
         init {
             itemView.setOnClickListener {
-                if (items[adapterPosition].type == HomeBadgeType.NORMAL)
-                    cb.invoke(HomeBadgeCallbackType.NORMAL_PUSH, this)
-                else if (items[adapterPosition].type == HomeBadgeType.ADD)
-                    cb.invoke(HomeBadgeCallbackType.ADD_PUSH, this)
-            }
 
-            itemView.setOnLongClickListener {
-                if (items[adapterPosition].type == HomeBadgeType.NORMAL){
-                    cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
-                    removeFocus()
+                when (items[adapterPosition].type) {
+                    HomeBadgeType.NORMAL -> cb.invoke(HomeBadgeCallbackType.NORMAL_PUSH, this)
+                    HomeBadgeType.ADD -> cb.invoke(HomeBadgeCallbackType.ADD_PUSH, this)
+                    HomeBadgeType.REPEAT_OFF -> cb.invoke(HomeBadgeCallbackType.REPEAT_OFF_PUSH, this)
+                    HomeBadgeType.REPEAT_ON -> cb.invoke(HomeBadgeCallbackType.REPEAT_ON_PUSH, this)
                 }
-                true
+
+                itemView.setOnLongClickListener {
+                    if (items[adapterPosition].type == HomeBadgeType.NORMAL) {
+                        cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
+                        removeFocus()
+                    }
+                    true
+                }
             }
         }
 
-        val tvThreeDot = view.tvThreeDot
-        val tvName = view.tvName
-        val tvAdd = view.tvAdd
-        val tvBottomNumber = view.tvBottomNumber
+        fun isVisible(b: Boolean): Int {
+            return if (b) View.VISIBLE
+            else View.INVISIBLE
+        }
+
+        fun visibleViews(all: Boolean, content: Boolean, add: Boolean, repeat: Boolean) {
+            itemView.visibility = isVisible(all)
+            itemHomeBadgeIvAdd.visibility = isVisible(add)
+            itemHomeBadgeIvRepeat.visibility = isVisible(repeat)
+            itemHomeBadgellContent.visibility = isVisible(content)
+        }
+
+        fun setData(homeBadge: HomeBadge, wholeCount: Int) {
+
+            /**
+             * set view's style from each HomeBadgeType
+             */
+            if (homeBadge.type == HomeBadgeType.EMPTY) {
+                itemView.visibility = View.INVISIBLE
+                return
+            } else {
+                itemView.visibility = View.VISIBLE
+            }
+
+            when (homeBadge.type) {
+                HomeBadgeType.REPEAT_ON -> {
+                    visibleViews(true, false, false, true)
+                }
+                HomeBadgeType.REPEAT_OFF -> {
+                    visibleViews(true, false, false, true)
+                }
+                HomeBadgeType.ADD -> {
+                    visibleViews(true, false, true, false)
+                }
+                HomeBadgeType.EMPTY -> {
+                    visibleViews(false, false, false, false)
+                }
+                HomeBadgeType.NORMAL -> {
+                    visibleViews(true, true, false, false)
+                    itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
+                    itemHomeBadgeTvCount.text = "${homeBadge.number}/${wholeCount}"
+                    itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_gray_stroke)
+                }
+                HomeBadgeType.FOCUS -> {
+                    visibleViews(true, true, false, false)
+                    itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
+                    itemHomeBadgeTvCount.text = "${homeBadge.number}/${wholeCount}"
+                    itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_red_stroke)
+                }
+            }
+
+        }
+
     }
 
 

@@ -3,4 +3,12 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="prime_black">#0a0a0a</color>
+    <color name="ux_pink">#f24150</color>
+    <color name="ux_gray">#fafafa</color>
+    <color name="ux_light_gray">#f0f0f0</color>
+    <color name="ux_dark_gray">#646464</color>
+    <color name="se_specific_gray">#c2c7cc</color>
+    <color name="se_white">#ffffff</color>
 </resources>

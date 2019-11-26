@@ -18,12 +18,16 @@ enum class HomeBadgeType {
     EMPTY,
     FOCUS,
     NORMAL,
-    ADD
+    ADD,
+    REPEAT_ON,
+    REPEAT_OFF
 }
 
 enum class HomeBadgeCallbackType {
     NORMAL_PUSH,
     LONG_PUSH,
     ADD_PUSH,
+    REPEAT_ON_PUSH,
+    REPEAT_OFF_PUSH,
 }
 

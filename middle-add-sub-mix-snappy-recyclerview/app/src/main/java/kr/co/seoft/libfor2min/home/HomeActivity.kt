@@ -36,7 +36,7 @@ class HomeActivity : AppCompatActivity() {
 
 
 
-        horizontalHomeList.showAddButton()
+//        horizontalHomeList.showAddButton()
         // horizontalSnapMiddleList.hideAddButton()
         horizontalHomeList.onBadgeSelectedListener = { type, pos ->
             if(type == HomeBadgeCallbackType.ADD_PUSH)

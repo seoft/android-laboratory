@@ -7,18 +7,18 @@ import kr.co.seoft.libfor2min.R
 
 class HorizontalHomeList : RecyclerView {
 
+    companion object {
+        private const val LEFT_REACH_CONDITION = 0
+        const private val LEFT_MID_POS = 3
+     }
+    private var WHOLE_COUNT = 4
+    private var RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
+    private var RIGHT_MID_POS = WHOLE_COUNT - 4
+
     lateinit var snapHelper: SnapHelper
     lateinit var linearLayoutManager: LinearLayoutManager
     lateinit var homeBadgeAdapter: HomeBadgeAdapter
     lateinit var itemTouchHelper: ItemTouchHelper
-
-    var WHOLE_COUNT = 4
-
-    var LEFT_REACH_CONDITION = 0
-    var LEFT_MID_POS = 3
-
-    var RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
-    var RIGHT_MID_POS = WHOLE_COUNT - 4
 
     var onBadgeSelectedListener: ((HomeBadgeCallbackType, Int) -> Unit)? = null
 
@@ -111,15 +111,15 @@ class HorizontalHomeList : RecyclerView {
         })
     }
 
-    fun showAddButton() {
-        homeBadgeAdapter.showAddButton()
-        refreshListAndRecalc()
-    }
-
-    fun hideAddButton() {
-        homeBadgeAdapter.hideAddButton()
-        refreshListAndRecalc()
-    }
+//    fun showAddButton() {
+//        homeBadgeAdapter.showAddButton()
+//        refreshListAndRecalc()
+//    }
+//
+//    fun hideAddButton() {
+//        homeBadgeAdapter.hideAddButton()
+//        refreshListAndRecalc()
+//    }
 
     fun addHomeBadge(homeBadge: HomeBadge) {
         if (homeBadge.type == HomeBadgeType.ADD) return
