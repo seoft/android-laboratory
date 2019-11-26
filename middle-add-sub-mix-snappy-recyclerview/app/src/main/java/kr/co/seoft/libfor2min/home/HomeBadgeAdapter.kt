@@ -16,17 +16,23 @@ class HomeBadgeAdapter(
     val cb: (HomeBadgeCallbackType, VH) -> Unit
 ) : RecyclerView.Adapter<HomeBadgeAdapter.VH>() {
 
-    private var items = mutableListOf<HomeBadge>()
+    private val EMPTY =
+        HomeBadge(second = 0, type = HomeBadgeType.EMPTY)
+    private var items = mutableListOf(EMPTY, EMPTY, EMPTY, EMPTY)
+
+    /**
+     * for Dispose of between empty's badge
+     * default : 2
+     * with add button : 3
+     */
+    private var positionController = 2
 
     /**
      * add badge
      *  - for insert between in dummy badge
      */
     fun addBadge(homeBadge: HomeBadge) {
-        if (items.size == 0)
-            items.add(0, homeBadge)
-        else
-            items.add(items.size - 1, homeBadge)
+        items.add(items.size - positionController, homeBadge)
     }
 
     fun getBadges() = items
@@ -41,11 +47,13 @@ class HomeBadgeAdapter(
     fun showAddButton() {
         if (hasAddButton()) return
         addBadge(HomeBadge(-1, 0, HomeBadgeType.ADD))
+        positionController = 3
     }
 
     fun hideAddButton() {
         if (!hasAddButton()) return
-        items.removeAt(items.size - 1)
+        items.removeAt(items.size - 3)
+        positionController = 2
     }
 
     /**
@@ -122,8 +130,7 @@ class HomeBadgeAdapter(
         }
     }
 
-    inner class VH(view: View, cb: (HomeBadgeCallbackType, VH) -> Unit) :
-        RecyclerView.ViewHolder(view) {
+    inner class VH(view: View, cb: (HomeBadgeCallbackType, VH) -> Unit) : RecyclerView.ViewHolder(view) {
 
         // ref :
         // http://dudmy.net/android/2017/06/23/consider-of-recyclerview/
@@ -138,7 +145,7 @@ class HomeBadgeAdapter(
             }
 
             itemView.setOnLongClickListener {
-                if (items[adapterPosition].type == HomeBadgeType.NORMAL) {
+                if (items[adapterPosition].type == HomeBadgeType.NORMAL){
                     cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
                     removeFocus()
                 }
