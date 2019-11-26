@@ -10,7 +10,8 @@ class HorizontalHomeList : RecyclerView {
     companion object {
         private const val LEFT_REACH_CONDITION = 0
         const private val LEFT_MID_POS = 3
-     }
+    }
+
     private var WHOLE_COUNT = 4
     private var RIGHT_REACH_CONDITION = WHOLE_COUNT - 1
     private var RIGHT_MID_POS = WHOLE_COUNT - 4
@@ -23,33 +24,23 @@ class HorizontalHomeList : RecyclerView {
     var onBadgeSelectedListener: ((HomeBadgeCallbackType, Int) -> Unit)? = null
 
     constructor(context: Context) : this(context, null) {
-        initHorizontalHomeList(context, true, true)
+        initHorizontalHomeList(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0) {
         val curAttrs = context.obtainStyledAttributes(attrs, R.styleable.HSMLAttr)
-        initHorizontalHomeList(
-            context,
-            curAttrs.getBoolean(R.styleable.HSMLAttr_bottomNumber, true),
-            curAttrs.getBoolean(R.styleable.HSMLAttr_threeDot, true)
-        )
+        initHorizontalHomeList(context)
         curAttrs.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         val curAttrs = context.obtainStyledAttributes(attrs, R.styleable.HSMLAttr)
-        initHorizontalHomeList(
-            context,
-            curAttrs.getBoolean(R.styleable.HSMLAttr_bottomNumber, true),
-            curAttrs.getBoolean(R.styleable.HSMLAttr_threeDot, true)
-        )
+        initHorizontalHomeList(context)
         curAttrs.recycle()
     }
 
     private fun initHorizontalHomeList(
-        context: Context,
-        showBottomNumbers: Boolean,
-        showThreeDots: Boolean
+        context: Context
     ) {
 
         linearLayoutManager = LinearLayoutManager(context).apply {
@@ -57,7 +48,7 @@ class HorizontalHomeList : RecyclerView {
         }
         this.layoutManager = linearLayoutManager
         homeBadgeAdapter =
-            HomeBadgeAdapter(context, showBottomNumbers, showThreeDots) { type, vh ->
+            HomeBadgeAdapter(context) { type, vh ->
                 val curPos = getCurPos()
 
                 val pos = vh.adapterPosition
@@ -88,6 +79,14 @@ class HorizontalHomeList : RecyclerView {
         snapHelper.attachToRecyclerView(this)
 
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback({ from, to ->
+
+            if (from.adapterPosition == 0 || to.adapterPosition == homeBadgeAdapter.itemCount
+                || to.adapterPosition == 0 || from.adapterPosition == homeBadgeAdapter.itemCount
+            ) {
+                // 첫번째 마지막번째 버튼들있는 count에서 예외처리
+                return@ItemTouchHelperCallback
+            }
+
             homeBadgeAdapter.onItemMoved(from.adapterPosition, to.adapterPosition)
         }, {
             // call when move end after long click, for refresh badge's bottom numbers
@@ -96,16 +95,17 @@ class HorizontalHomeList : RecyclerView {
         itemTouchHelper.attachToRecyclerView(this)
 
         this.smoothScrollToPosition(LEFT_MID_POS)
+
         this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 // adjust position when reach first or end, cant set middle position in onScrolled callback
-                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == LEFT_REACH_CONDITION)
-                    this@HorizontalHomeList.smoothScrollToPosition(LEFT_MID_POS)
-                else if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == RIGHT_REACH_CONDITION)
-                    this@HorizontalHomeList.smoothScrollToPosition(RIGHT_MID_POS)
+//                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == LEFT_REACH_CONDITION)
+//                    this@HorizontalHomeList.smoothScrollToPosition(LEFT_MID_POS)
+//                else if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == RIGHT_REACH_CONDITION)
+//                    this@HorizontalHomeList.smoothScrollToPosition(RIGHT_MID_POS)
             }
 
         })

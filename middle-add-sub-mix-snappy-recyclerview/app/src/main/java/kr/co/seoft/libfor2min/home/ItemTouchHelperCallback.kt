@@ -2,6 +2,7 @@ package kr.co.seoft.libfor2min.home
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kr.co.seoft.libfor2min.i
 
 
 // ref : http://dudmy.net/android/2018/05/02/drag-and-swipe-recyclerview , https://github.com/dudmy/blog-sample
@@ -24,6 +25,9 @@ class ItemTouchHelperCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
+
+        "target $target".i()
+
         moveCb.invoke(viewHolder, target)
         isMoved = true
         return true

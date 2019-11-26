@@ -4,14 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_home_badge.view.*
 import kr.co.seoft.libfor2min.R
 
 class HomeBadgeAdapter(
     val context: Context,
-    val showBottomNumbers: Boolean,
-    val showThreeDots: Boolean,
     val cb: (HomeBadgeCallbackType, VH) -> Unit
 ) : RecyclerView.Adapter<HomeBadgeAdapter.VH>() {
 
@@ -22,16 +21,17 @@ class HomeBadgeAdapter(
 //        EMPTY,
         HomeBadge(-1, 0, HomeBadgeType.REPEAT_OFF),
         HomeBadge(-1, 0, HomeBadgeType.NORMAL),
-        HomeBadge(-1, 0, HomeBadgeType.ADD)//,
-//        EMPTY
+        HomeBadge(-1, 0, HomeBadgeType.ADD)
+//        ,EMPTY
     )
 
     /**
      * for Dispose of between empty's badge
      * default : 2
-     * with add button : 3
+     * with add button : 3 
+     * 이 숫자가 [size-positionController] 에 아이템이 들어간다는거
      */
-    private var positionController = 1
+    private var positionController = 2
 
     /**
      * add badge
@@ -124,11 +124,13 @@ class HomeBadgeAdapter(
                 }
 
                 itemView.setOnLongClickListener {
+
+                    Toast.makeText(itemView.context,"itemView.setOnLongClickListener",Toast.LENGTH_LONG).show()
                     if (items[adapterPosition].type == HomeBadgeType.NORMAL) {
                         cb.invoke(HomeBadgeCallbackType.LONG_PUSH, this)
                         removeFocus()
                     }
-                    true
+                    false
                 }
             }
         }
@@ -173,13 +175,13 @@ class HomeBadgeAdapter(
                 HomeBadgeType.NORMAL -> {
                     visibleViews(true, true, false, false)
                     itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
-                    itemHomeBadgeTvCount.text = "${homeBadge.number}/${wholeCount}"
+                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount-2}"
                     itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_gray_stroke)
                 }
                 HomeBadgeType.FOCUS -> {
                     visibleViews(true, true, false, false)
                     itemHomeBadgeTvTime.text = homeBadge.getStringUsingFormat()
-                    itemHomeBadgeTvCount.text = "${homeBadge.number}/${wholeCount}"
+                    itemHomeBadgeTvCount.text = "${adapterPosition}/${wholeCount-2}"
                     itemHomeBadgellContent.setBackgroundResource(R.drawable.bg_timeset_times_red_stroke)
                 }
             }
