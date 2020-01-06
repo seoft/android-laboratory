@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DragAndDropInGridsActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/actDadigRvCenter"
+        android:layout_width="match_parent"
+        android:layout_height="99dp"
+        android:layout_margin="60dp"
+        android:background="#987987"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@id/actDadigLlBottomGridsLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/actDadigLlBottomGridsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actDadigRvBottom0"
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="#123123"
+            android:overScrollMode="never"
+            tools:layout_height="100dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actDadigRvBottom1"
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="#234234"
+            android:overScrollMode="never"
+            tools:layout_height="100dp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actDadigRvBottom2"
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="#345345"
+            android:overScrollMode="never"
+            tools:layout_height="100dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actDadigRvBottom3"
+            android:layout_width="match_parent"
+            android:layout_height="99dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:background="#456456"
+            android:overScrollMode="never"
+            tools:layout_height="100dp" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
