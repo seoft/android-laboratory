@@ -14,7 +14,7 @@ import kr.co.seoft.drag_and_drop_between_multiple_grid.model.EmptyApp
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.ParentApp
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
 
-class DragAndDropInGridsRvAdapter(private val itemSize: Int) :
+class DragAndDropInGridsRvAdapter(private val itemSize: Int, private val callback: ((ClickCallbackCommand) -> Unit)? = null) :
     ListAdapter<ParentApp, DragAndDropInGridsRvAdapter.ParentViewHolder>(
         object : DiffUtil.ItemCallback<ParentApp>() {
             override fun areItemsTheSame(oldItem: ParentApp, newItem: ParentApp): Boolean {
@@ -27,16 +27,13 @@ class DragAndDropInGridsRvAdapter(private val itemSize: Int) :
         }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentViewHolder {
+
+        val inflater = LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false)
+
         return when (viewType) {
-            AppType.BASIC.intId -> BasicAppViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false)
-            )
-            AppType.EMPTY.intId -> EmptyAppViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_empty, parent, false)
-            )
-            else -> EmptyAppViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_empty, parent, false)
-            )
+            AppType.BASIC.intId -> BasicAppViewHolder(inflater, callback)
+            AppType.EMPTY.intId -> EmptyAppViewHolder(inflater, callback)
+            else -> EmptyAppViewHolder(inflater, callback)
         }
     }
 
@@ -45,9 +42,11 @@ class DragAndDropInGridsRvAdapter(private val itemSize: Int) :
     }
 
     override fun onBindViewHolder(holder: ParentViewHolder, position: Int) {
-        holder.itemView.layoutParams.height = itemSize
-        holder.itemView.layoutParams.width = itemSize
-        holder.itemView.setPadding(itemSize/10) // padding ratio
+        holder.itemView.layoutParams.apply {
+            height = itemSize
+            width = itemSize
+        }
+        holder.itemView.setPadding((itemSize * DragAndDropInGridsActivity.ICON_PADDING_RATIO).toInt())
 
         when (getItem(position).appType) {
             AppType.BASIC -> (holder as BasicAppViewHolder).bind(getItem(position) as BasicApp)
@@ -56,23 +55,52 @@ class DragAndDropInGridsRvAdapter(private val itemSize: Int) :
         }
     }
 
-    abstract class ParentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    abstract class ParentViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) :
+        RecyclerView.ViewHolder(itemView) {
+        lateinit var app: ParentApp
 
-    class BasicAppViewHolder(itemView: View) : ParentViewHolder(itemView) {
+        init {
+            cb?.let {
+                itemView.setOnLongClickListener {
+                    cb.invoke(ClickCallbackCommand(itemView, adapterPosition, ClickType.LONG_CLICK))
+                    false
+                }
+
+                itemView.setOnClickListener {
+                    cb.invoke(ClickCallbackCommand(itemView, adapterPosition, ClickType.CLICK))
+                }
+            }
+        }
+    }
+
+    class BasicAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
 
         val ivIcon = itemView.itemApplicationIvIcon
 
         fun bind(basicApp: BasicApp) {
+            app = basicApp
             ivIcon.setImageDrawable(AppUtil.getIconDrawableFromPkgName(itemView.context, basicApp.pkgName))
         }
     }
 
-    class EmptyAppViewHolder(itemView: View) : ParentViewHolder(itemView) {
+    class EmptyAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
 
         val ivIcon = itemView.itemApplicationIvIcon
         fun bind(emptyApp: EmptyApp) {
+            app = emptyApp
 
         }
+    }
+
+    data class ClickCallbackCommand(
+        val itemView: View,
+        val position: Int,
+        val type: ClickType
+    )
+
+    enum class ClickType {
+        CLICK,
+        LONG_CLICK
     }
 
 }
