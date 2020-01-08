@@ -136,6 +136,17 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
         })
 
         initGesture()
+
+        bt.setOnClickListener {
+
+            "recentlyApps.forEach".e()
+            recentlyApps.map { if (it.label.isEmpty()) "empty" else it.label }.reduce { acc, s -> "$acc $s" }.e()
+
+            centerRvAdapter.notifyDataSetChanged()
+
+
+        }
+
     }
 
     private fun initData() {
@@ -146,6 +157,11 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 apps.drop(i * allGridCount).take(allGridCount).toMutableList()
             )
         }
+
+        itemSets[0][2] = EmptyApp(String.EMPTY)
+        itemSets[0][4] = EmptyApp(String.EMPTY)
+        itemSets[0][7] = EmptyApp(String.EMPTY)
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -281,7 +297,9 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                     floatingStatus.set(false)
                     actDadigIvFloatingIcon.visibility = View.GONE
                     centerRvAdapter.submitList(savingApps)
+
                     itemSets[bottomRectIndex] = savingApps
+                    recentlyApps = savingApps
                 }
                 return false
             }
@@ -332,38 +350,53 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 this[recentlyIndex] = EmptyApp(String.EMPTY)
             }
 
+            // 비어있는곳으로 현 손가락이 위치할 경우 아무것도 안함, 아이콘 배치 뷰 변경도 할 필요없음, 하지만 저장은 준비함
+            if (copyApps[movingInRectIndex].isEmpty()) {
 
-            val pushIndex: Int
+                centerRvAdapter.submitList(copyApps)
+
+                val tempCopyApps = mutableListOf<ParentApp>().apply {
+                    addAll(copyApps)
+                }
+
+                savingApps = tempCopyApps.apply {
+                    this[movingInRectIndex] = recentlyApp
+                }
+
+
+                return
+            }
+
+            val emptyIndex: Int
             var finding = 1
 
             // 현 손가락이 위치한 아이콘의 인덱스로 부터 좌,우로 탐색하며 가장 가까운 empty 아이콘 인덱스 파악
             while (true) {
                 if (movingInRectIndex + finding < recentlyApps.size && copyApps[movingInRectIndex + finding].isEmpty()) {
-                    pushIndex = finding
+                    emptyIndex = movingInRectIndex + finding
                     break
                 } else if (movingInRectIndex - finding >= 0 && copyApps[movingInRectIndex - finding].isEmpty()) {
-                    pushIndex = -finding
+                    emptyIndex = movingInRectIndex - finding
                     break
                 }
                 finding++
             }
 
-            // 최초로 비어있는 곳 으로 부터 현 손가락이 위치한 아이콘의 인덱스 까지 하나씩 당김
-            // = 현 손가락이 위치한곳에서 부터 빈곳까지 밀면서  채움
-            if (pushIndex > 0) {
-                for (i in 0 until pushIndex) {
-                    copyApps[recentlyIndex - i] = copyApps[recentlyIndex - 1 - i]
-                    copyApps[recentlyIndex - 1 - i] = EmptyApp(String.EMPTY)
+            // 위에서 파악한 가장 가까운 empty 아이콘 인덱스에서 방향에 맞춰 아이콘을 하나씩 당김
+            // 다 당기고 현 손가락이 위치한 뷰는 EMPTY로 하여 추후 뷰에 반영
+            // 하지만 savingApps에는 현 손가락이 위치한 EMPTY 뷰 대신 recentlyApp을 넣어 저장 준비
+            if (emptyIndex < movingInRectIndex) {
+                for (i in 0 until finding) {
+                    copyApps[emptyIndex + i] = copyApps[emptyIndex + i + 1]
                 }
+                copyApps[movingInRectIndex] = EmptyApp(String.EMPTY)
             } else {
-                for (i in 0 until pushIndex * -1) {
-                    copyApps[recentlyIndex + i] = copyApps[recentlyIndex + 1 + i]
-                    copyApps[recentlyIndex + 1 + i] = EmptyApp(String.EMPTY)
+                for (i in 0 until finding) {
+                    copyApps[emptyIndex - i] = copyApps[emptyIndex - i - 1]
                 }
+                copyApps[movingInRectIndex] = EmptyApp(String.EMPTY)
             }
-
             centerRvAdapter.submitList(copyApps)
-
             savingApps = mutableListOf<ParentApp>().apply {
                 addAll(copyApps)
             }.apply {
