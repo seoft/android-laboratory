@@ -17,6 +17,11 @@ enum class AppType(val intId: Int) {
 
 abstract class ParentApp(open val appType: AppType, open val label: String) {
     abstract fun getImage(context: Context): Drawable
+
+    fun isEmpty(): Boolean {
+        return this is EmptyApp
+    }
+
 }
 
 data class BasicApp(
