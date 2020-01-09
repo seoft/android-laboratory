@@ -14,17 +14,19 @@ import kr.co.seoft.drag_and_drop_between_multiple_grid.model.EmptyApp
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.ParentApp
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
 
-class DragAndDropInGridsRvAdapter(private val itemSize: Int, private val callback: ((ClickCallbackCommand) -> Unit)? = null) :
-    ListAdapter<ParentApp, DragAndDropInGridsRvAdapter.ParentViewHolder>(
-        object : DiffUtil.ItemCallback<ParentApp>() {
-            override fun areItemsTheSame(oldItem: ParentApp, newItem: ParentApp): Boolean {
-                return oldItem.label == newItem.label
-            }
+class DadigGridRvAdapter(
+    private val itemSize: Int,
+    private val callback: ((ClickCallbackCommand) -> Unit)? = null
+) : ListAdapter<ParentApp, DadigGridRvAdapter.ParentViewHolder>(
+    object : DiffUtil.ItemCallback<ParentApp>() {
+        override fun areItemsTheSame(oldItem: ParentApp, newItem: ParentApp): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
+        }
 
-            override fun areContentsTheSame(oldItem: ParentApp, newItem: ParentApp): Boolean {
-                return oldItem.label == newItem.label
-            }
-        }) {
+        override fun areContentsTheSame(oldItem: ParentApp, newItem: ParentApp): Boolean {
+            return oldItem.label == newItem.label && oldItem.appType == newItem.appType
+        }
+    }) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentViewHolder {
 
@@ -46,7 +48,7 @@ class DragAndDropInGridsRvAdapter(private val itemSize: Int, private val callbac
             height = itemSize
             width = itemSize
         }
-        holder.itemView.setPadding((itemSize * DragAndDropInGridsActivity.ICON_PADDING_RATIO).toInt())
+        holder.itemView.setPadding((itemSize * DadigActivity.ICON_PADDING_RATIO).toInt())
 
         when (getItem(position).appType) {
             AppType.BASIC -> (holder as BasicAppViewHolder).bind(getItem(position) as BasicApp)
@@ -76,6 +78,7 @@ class DragAndDropInGridsRvAdapter(private val itemSize: Int, private val callbac
     class BasicAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
 
         val ivIcon = itemView.itemApplicationIvIcon
+
 
         fun bind(basicApp: BasicApp) {
             app = basicApp

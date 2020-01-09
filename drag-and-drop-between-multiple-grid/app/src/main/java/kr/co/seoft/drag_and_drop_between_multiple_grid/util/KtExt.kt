@@ -3,6 +3,7 @@ package kr.co.seoft.drag_and_drop_between_multiple_grid.util
 import android.content.Context
 import android.content.res.Resources
 import android.util.Log
+import android.view.View
 
 // Any extentions
 fun Any.e(tag: String = "#$#") {
@@ -22,3 +23,7 @@ fun Int.dimen(context: Context): Int {
 }
 
 val String.Companion.EMPTY get() = ""
+
+fun Boolean.toVisible(): Int {
+    return if(this) View.VISIBLE else View.INVISIBLE
+}

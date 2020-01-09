@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import kr.co.seoft.drag_and_drop_between_multiple_grid.R
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.EMPTY
 
 enum class AppType(val intId: Int) {
     BASIC(0),
@@ -22,6 +23,15 @@ abstract class ParentApp(open val appType: AppType, open val label: String) {
         return this is EmptyApp
     }
 
+    fun copy(): ParentApp {
+        return when (this) {
+            is BasicApp -> BasicApp(label, pkgName, appType)
+            is EmptyApp -> EmptyApp(label, appType)
+            else -> EmptyApp()
+        }
+
+    }
+
 }
 
 data class BasicApp(
@@ -36,7 +46,7 @@ data class BasicApp(
 }
 
 data class EmptyApp(
-    override val label: String,
+    override val label: String = String.EMPTY,
     override val appType: AppType = AppType.EMPTY
 ) : ParentApp(appType, label) {
 

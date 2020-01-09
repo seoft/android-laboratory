@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        DragAndDropInGridsActivity.startActivity(this,3)
+        DadigActivity.startActivity(this,3)
         
     }
 

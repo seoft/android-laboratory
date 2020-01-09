@@ -20,23 +20,27 @@ import kotlinx.android.synthetic.main.activity_drag_and_drop_in_grids.*
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.AppType
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.EmptyApp
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.ParentApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.*
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.DimensionUtil
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.dpToPx
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.e
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-class DragAndDropInGridsActivity : AppCompatActivity() {
+class DadigActivity : AppCompatActivity() {
 
     companion object {
         fun startActivity(context: Context, gridCount: Int) {
 
-            context.startActivity(Intent(context, DragAndDropInGridsActivity::class.java).apply {
+            context.startActivity(Intent(context, DadigActivity::class.java).apply {
                 putExtra(EXTRA_GRID_COUNT, gridCount)
             })
         }
 
         private const val EXTRA_GRID_COUNT = "EXTRA_GRID_COUNT"
         private const val CENTER_RV_MARGIN = 60
+        private const val FOLDER_PREVIEW_COUNT = 3
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
         const val ICON_PADDING_RATIO = 0.1 // 그리드뷰 아이탬 패딩 주기 위함
     }
@@ -63,20 +67,24 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
 
     private val centerRvAdapter by lazy {
         initFlowIconWhenInitCenterRvAdapter()
-        DragAndDropInGridsRvAdapter(actDadigRvCenter.width / gridCount, clickCallback)
+        DadigGridRvAdapter(actDadigRvCenter.width / gridCount, clickCallback)
     }
 
-    private val clickCallback = object : (DragAndDropInGridsRvAdapter.ClickCallbackCommand) -> Unit {
-        override fun invoke(command: DragAndDropInGridsRvAdapter.ClickCallbackCommand) {
+    private val floatingFolderRvAdapters by lazy {
+        DadigGridRvAdapter(actDadigRvCenter.width / gridCount / 3)
+    }
+
+    private val clickCallback = object : (DadigGridRvAdapter.ClickCallbackCommand) -> Unit {
+        override fun invoke(command: DadigGridRvAdapter.ClickCallbackCommand) {
 
             recentlyApp = getItemFromPosition(command.position)
 
             when (command.type) {
-                DragAndDropInGridsRvAdapter.ClickType.CLICK -> {
+                DadigGridRvAdapter.ClickType.CLICK -> {
                     "DragAndDropInGridsRvAdapter.ClickType.CLICK".e()
 
                 }
-                DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK -> {
+                DadigGridRvAdapter.ClickType.LONG_CLICK -> {
 
                     "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".e()
                     if (recentlyApp.appType == AppType.EMPTY) return
@@ -100,16 +108,26 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
             width = floatingIconSize
             height = floatingIconSize
         }
+
+        actDadigRvFloatingFolder.layoutParams.apply {
+            width = floatingIconSize
+            height = floatingIconSize
+        }
+
+        actDadigViewFloatingFolderBg.layoutParams.apply {
+            width = floatingIconSize + 6.dpToPx()
+            height = floatingIconSize + 6.dpToPx()
+        }
     }
 
     private val bottomRvAdapters by lazy {
         val bottomRvSize = actDadigRvBottom0.width
 
         listOf(
-            DragAndDropInGridsRvAdapter(bottomRvSize / gridCount),
-            DragAndDropInGridsRvAdapter(bottomRvSize / gridCount),
-            DragAndDropInGridsRvAdapter(bottomRvSize / gridCount),
-            DragAndDropInGridsRvAdapter(bottomRvSize / gridCount)
+            DadigGridRvAdapter(bottomRvSize / gridCount),
+            DadigGridRvAdapter(bottomRvSize / gridCount),
+            DadigGridRvAdapter(bottomRvSize / gridCount),
+            DadigGridRvAdapter(bottomRvSize / gridCount)
         )
     }
 
@@ -146,7 +164,6 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
 
 
         }
-
     }
 
     private fun initData() {
@@ -158,9 +175,9 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
             )
         }
 
-        itemSets[0][2] = EmptyApp(String.EMPTY)
-        itemSets[0][4] = EmptyApp(String.EMPTY)
-        itemSets[0][7] = EmptyApp(String.EMPTY)
+        itemSets[0][2] = EmptyApp()
+        itemSets[0][4] = EmptyApp()
+        itemSets[0][7] = EmptyApp()
 
     }
 
@@ -181,8 +198,8 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
             it.layoutParams = (it.layoutParams as LinearLayout.LayoutParams).apply {
                 height = actDadigRvBottom0.width
             }
-
         }
+
 
         //////
         // init center recycler views
@@ -200,7 +217,7 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
 
         centerRvAdapter.submitList(itemSets[0])
         recentlyApps = itemSets[0]
-
+        savingApps = itemSets[0]
         //////
         // init bottom recycler views
 
@@ -220,6 +237,10 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 true
             }
         }
+
+
+        actDadigRvFloatingFolder.layoutManager = GridLayoutManager(baseContext, 3)
+        actDadigRvFloatingFolder.adapter = floatingFolderRvAdapters
 
         compositeDisposable.add(
             Single.timer(300, TimeUnit.MILLISECONDS)
@@ -276,9 +297,14 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                     (actDadigIvFloatingIcon.layoutParams as ConstraintLayout.LayoutParams).also {
                         it.leftMargin = pointX
                         it.topMargin = pointY
-
                     }
                     actDadigIvFloatingIcon.requestLayout()
+
+                    (actDadigRvFloatingFolder.layoutParams as ConstraintLayout.LayoutParams).also {
+                        it.leftMargin = pointX
+                        it.topMargin = pointY
+                    }
+                    actDadigRvFloatingFolder.requestLayout()
 
 //                    "$pointX $pointY".e()
 
@@ -296,6 +322,7 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
                     floatingStatus.set(false)
                     actDadigIvFloatingIcon.visibility = View.GONE
+                    initFloatingFolderRv()
                     centerRvAdapter.submitList(savingApps)
 
                     itemSets[bottomRectIndex] = savingApps
@@ -310,10 +337,17 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
 
     }
 
-    fun copyRecentlyApps(): MutableList<ParentApp> {
+    private fun copyRecentlyApps(): MutableList<ParentApp> {
         return mutableListOf<ParentApp>().apply {
             addAll(recentlyApps)
         }
+    }
+
+    fun initFloatingFolderRv() {
+        floatingFolderRvAdapters.submitList(emptyList())
+        floatingFolderRvAdapters.notifyDataSetChanged()
+        actDadigRvFloatingFolder.visibility = View.GONE
+        actDadigViewFloatingFolderBg.visibility = View.GONE
     }
 
     fun inRect(piecesIndex: Int) {
@@ -324,22 +358,50 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
         // >> 선택한자리 empty시키고 로직 진행끝
         if (piecesIndex == -1 || piecesIndex / 3 == recentlyIndex) {
             centerRvAdapter.submitList(copyRecentlyApps().apply {
-                this[recentlyIndex] = EmptyApp(String.EMPTY)
+                this[recentlyIndex] = EmptyApp()
             })
             savingApps = copyRecentlyApps()
+            initFloatingFolderRv()
             return
         }
 
         // 정중앙에 위치했을때 선택되어 폴더 생성 유무 선택할 수 있게 함
         if (piecesIndex % 3 == 1) {
             val pickRect = piecesIndex / 3
+            val copyApps = copyRecentlyApps()
+
+            // 정중앙인데 Empty일경우 평소처럼 처리
+            if (copyApps[pickRect].isEmpty()) {
+                copyApps[recentlyIndex] = EmptyApp()
+
+                centerRvAdapter.submitList(copyApps)
+
+                savingApps = copyRecentlyApps().apply {
+                    this[recentlyIndex] = EmptyApp()
+                    this[pickRect] = recentlyApp
+                }
+                initFloatingFolderRv()
+                return
+            }
+
             actDadigTvInfo.text = "$pickRect pick"
-            centerRvAdapter.submitList(copyRecentlyApps().apply {
-                this[recentlyIndex] = EmptyApp(String.EMPTY)
+
+            // 롱클릭할때 app과 현 rectIn app을 합쳐 folderRv를 갱신함
+            floatingFolderRvAdapters.submitList(
+                listOf(
+                    copyApps[recentlyIndex].copy(),
+                    copyApps[pickRect].copy()
+                )
+            )
+
+            centerRvAdapter.submitList(copyApps.apply {
+                this[recentlyIndex] = EmptyApp()
             })
 
-            //todo folder 생성
+            actDadigRvFloatingFolder.visibility = View.VISIBLE
+            actDadigViewFloatingFolderBg.visibility = View.VISIBLE
 
+            return
 
         } else { // 0 ~ 1/3 || 2/3 ~ 1 범위에 걸쳤을때 아이콘을 이동시킴
 
@@ -347,7 +409,7 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
             val movingInRectIndex = piecesIndex / 3
 
             val copyApps = copyRecentlyApps().apply {
-                this[recentlyIndex] = EmptyApp(String.EMPTY)
+                this[recentlyIndex] = EmptyApp()
             }
 
             // 비어있는곳으로 현 손가락이 위치할 경우 아무것도 안함, 아이콘 배치 뷰 변경도 할 필요없음, 하지만 저장은 준비함
@@ -362,7 +424,6 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 savingApps = tempCopyApps.apply {
                     this[movingInRectIndex] = recentlyApp
                 }
-
 
                 return
             }
@@ -389,12 +450,12 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
                 for (i in 0 until finding) {
                     copyApps[emptyIndex + i] = copyApps[emptyIndex + i + 1]
                 }
-                copyApps[movingInRectIndex] = EmptyApp(String.EMPTY)
+                copyApps[movingInRectIndex] = EmptyApp()
             } else {
                 for (i in 0 until finding) {
                     copyApps[emptyIndex - i] = copyApps[emptyIndex - i - 1]
                 }
-                copyApps[movingInRectIndex] = EmptyApp(String.EMPTY)
+                copyApps[movingInRectIndex] = EmptyApp()
             }
             centerRvAdapter.submitList(copyApps)
             savingApps = mutableListOf<ParentApp>().apply {
@@ -402,6 +463,8 @@ class DragAndDropInGridsActivity : AppCompatActivity() {
             }.apply {
                 this[movingInRectIndex] = recentlyApp
             }
+
+            initFloatingFolderRv()
         }
 
     }
