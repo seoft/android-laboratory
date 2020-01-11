@@ -7,7 +7,9 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,13 +19,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_drag_and_drop_in_grids.*
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.AppType
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.EmptyApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.ParentApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.DimensionUtil
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.dpToPx
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.e
+import kr.co.seoft.drag_and_drop_between_multiple_grid.model.*
+import kr.co.seoft.drag_and_drop_between_multiple_grid.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -58,20 +55,21 @@ class DadigActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    private val clRoot by lazy { actDadigClRoot as ConstraintLayout }
+    private val rvCenter by lazy { actDadigRvCenter as RecyclerView }
 
-    lateinit var recentlyApps: MutableList<ParentApp>
-    lateinit var recentlyApp: ParentApp
-    var recentlyIndex = 0
-    var bottomRectIndex = 0
-    lateinit var savingApps: MutableList<ParentApp>
+    private var floatingView: View? = null
+    private var floatingApp: ParentApp = EmptyApp()
+
+    private lateinit var recentlyApps: MutableList<ParentApp>
+    private lateinit var recentlyApp: ParentApp
+    private var recentlyIndex = 0
+    private var bottomRectIndex = 0
+    private lateinit var savingApps: MutableList<ParentApp>
 
     private val centerRvAdapter by lazy {
-        initFlowIconWhenInitCenterRvAdapter()
-        DadigGridRvAdapter(actDadigRvCenter.width / gridCount, clickCallback)
-    }
-
-    private val floatingFolderRvAdapters by lazy {
-        DadigGridRvAdapter(actDadigRvCenter.width / gridCount / 3)
+        floatingIconSize = ((rvCenter.width / gridCount) - (rvCenter.width / gridCount) * ICON_PADDING_RATIO * 2).toInt()
+        DadigGridRvAdapter(rvCenter.width / gridCount, clickCallback)
     }
 
     private val clickCallback = object : (DadigGridRvAdapter.ClickCallbackCommand) -> Unit {
@@ -81,15 +79,14 @@ class DadigActivity : AppCompatActivity() {
 
             when (command.type) {
                 DadigGridRvAdapter.ClickType.CLICK -> {
-                    "DragAndDropInGridsRvAdapter.ClickType.CLICK".e()
+                    "DragAndDropInGridsRvAdapter.ClickType.CLICK".i()
 
                 }
                 DadigGridRvAdapter.ClickType.LONG_CLICK -> {
-
-                    "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".e()
+                    "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".i()
                     if (recentlyApp.appType == AppType.EMPTY) return
                     recentlyIndex = command.position
-                    actDadigIvFloatingIcon.setImageDrawable(recentlyApp.getImage(baseContext))
+                    createFloatingView(recentlyApp)
                     floatingStatus.set(true)
                 }
             }
@@ -98,26 +95,6 @@ class DadigActivity : AppCompatActivity() {
 
     fun getItemFromPosition(position: Int): ParentApp {
         return centerRvAdapter.currentList[position]
-    }
-
-    private fun initFlowIconWhenInitCenterRvAdapter() {
-        val tmpFullIconSize = actDadigRvCenter.width / gridCount
-        floatingIconSize = (tmpFullIconSize - tmpFullIconSize * ICON_PADDING_RATIO * 2).toInt()
-
-        actDadigIvFloatingIcon.layoutParams.apply {
-            width = floatingIconSize
-            height = floatingIconSize
-        }
-
-        actDadigRvFloatingFolder.layoutParams.apply {
-            width = floatingIconSize
-            height = floatingIconSize
-        }
-
-        actDadigViewFloatingFolderBg.layoutParams.apply {
-            width = floatingIconSize + 6.dpToPx()
-            height = floatingIconSize + 6.dpToPx()
-        }
     }
 
     private val bottomRvAdapters by lazy {
@@ -146,10 +123,10 @@ class DadigActivity : AppCompatActivity() {
 
         initData()
 
-        actDadigClRoot.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        clRoot.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 initView()
-                actDadigClRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                clRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
 
@@ -189,7 +166,7 @@ class DadigActivity : AppCompatActivity() {
 
         val widthAndHeight = DimensionUtil.getDeviceWidthAndHeight(this)
 
-        actDadigRvCenter.layoutParams = (actDadigRvCenter.layoutParams as ConstraintLayout.LayoutParams).apply {
+        rvCenter.layoutParams = (rvCenter.layoutParams as ConstraintLayout.LayoutParams).apply {
             width = widthAndHeight.first - (CENTER_RV_MARGIN * 2).dpToPx()
             height = widthAndHeight.first - (CENTER_RV_MARGIN * 2).dpToPx()
         }
@@ -204,16 +181,16 @@ class DadigActivity : AppCompatActivity() {
         //////
         // init center recycler views
 
-        actDadigRvCenter.layoutManager = object : GridLayoutManager(baseContext, gridCount) {
+        rvCenter.layoutManager = object : GridLayoutManager(baseContext, gridCount) {
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
                 try {
                     super.onLayoutChildren(recycler, state)
                 } catch (e: Exception) {
-                    e.e()
+                    e.i()
                 }
             }
         }
-        actDadigRvCenter.adapter = centerRvAdapter
+        rvCenter.adapter = centerRvAdapter
 
         centerRvAdapter.submitList(itemSets[0])
         recentlyApps = itemSets[0]
@@ -238,29 +215,25 @@ class DadigActivity : AppCompatActivity() {
             }
         }
 
-
-        actDadigRvFloatingFolder.layoutManager = GridLayoutManager(baseContext, 3)
-        actDadigRvFloatingFolder.adapter = floatingFolderRvAdapters
-
         compositeDisposable.add(
             Single.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     initGridCoordinate()
                 }, {
-                    it.e()
+                    it.i()
                 })
         )
     }
 
     private fun initGridCoordinate() {
         val centerRvPosition = IntArray(2)
-        actDadigRvCenter.getLocationOnScreen(centerRvPosition)
+        rvCenter.getLocationOnScreen(centerRvPosition)
 
         val left = centerRvPosition[0]
         val top = centerRvPosition[1]
 
-        val rectSize = actDadigRvCenter.width / gridCount
+        val rectSize = rvCenter.width / gridCount
 
         for (i in 0 until gridCount) {
             for (j in 0 until gridCount) {
@@ -285,28 +258,20 @@ class DadigActivity : AppCompatActivity() {
     }
 
     private fun initGesture() {
-        actDadigRvCenter.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+        rvCenter.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, event: MotionEvent): Boolean {
                 if (floatingStatus.get()) {
-                    actDadigIvFloatingIcon.visibility = View.VISIBLE
+                    floatingView?.visibility = View.VISIBLE
 
                     val pointX = event.rawX.toInt() - floatingIconSize / 2
                     val pointY =
                         event.rawY.toInt() - floatingIconSize / 2 - DimensionUtil.getStatusbarHeight(baseContext) - MARGIN_TOP_ON_FINGER.dpToPx()
 
-                    (actDadigIvFloatingIcon.layoutParams as ConstraintLayout.LayoutParams).also {
+                    (floatingView?.layoutParams as ConstraintLayout.LayoutParams).also {
                         it.leftMargin = pointX
                         it.topMargin = pointY
                     }
-                    actDadigIvFloatingIcon.requestLayout()
-
-                    (actDadigRvFloatingFolder.layoutParams as ConstraintLayout.LayoutParams).also {
-                        it.leftMargin = pointX
-                        it.topMargin = pointY
-                    }
-                    actDadigRvFloatingFolder.requestLayout()
-
-//                    "$pointX $pointY".e()
+                    floatingView?.requestLayout()
 
                     var inIndex = -1
                     piecesRects.forEachIndexed { index, rect ->
@@ -321,8 +286,8 @@ class DadigActivity : AppCompatActivity() {
 
                 if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
                     floatingStatus.set(false)
-                    actDadigIvFloatingIcon.visibility = View.GONE
-                    initFloatingFolderRv()
+
+                    clearFloatingView()
                     centerRvAdapter.submitList(savingApps)
 
                     itemSets[bottomRectIndex] = savingApps
@@ -337,17 +302,69 @@ class DadigActivity : AppCompatActivity() {
 
     }
 
+    private fun updateFloatingView(app: ParentApp) {
+        if (floatingApp.hashCode() == app.hashCode()) return
+        clearFloatingView()
+        floatingApp = app
+        createFloatingView(app)
+    }
+
+    private fun createFloatingView(app: ParentApp) {
+        floatingApp = app
+
+        when (app.appType) {
+            AppType.BASIC -> {
+                floatingView = ImageView(baseContext).apply {
+                    layoutParams = ViewGroup.LayoutParams(floatingIconSize, floatingIconSize)
+                    visibility = View.GONE
+                    id = View.generateViewId()
+                }
+                app.setIcon(BasicInfo(floatingView as ImageView))
+                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+            }
+            AppType.FOLDER -> {
+                floatingView = RecyclerView(baseContext).apply {
+                    layoutParams = ViewGroup.LayoutParams(floatingIconSize, floatingIconSize)
+                    visibility = View.GONE
+                    id = View.generateViewId()
+                }
+                app.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / 3))
+                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+            }
+            else -> {
+                floatingView = ImageView(baseContext).apply {
+                    layoutParams = ViewGroup.LayoutParams(floatingIconSize, floatingIconSize)
+                    visibility = View.GONE
+                    id = View.generateViewId()
+                }
+                app.setIcon(EmptyInfo(floatingView as ImageView))
+                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+            }
+        }
+    }
+
+    private fun clearFloatingView() {
+        floatingApp = EmptyApp()
+        clRoot.removeView(floatingView)
+        floatingView = null
+    }
+
     private fun copyRecentlyApps(): MutableList<ParentApp> {
         return mutableListOf<ParentApp>().apply {
             addAll(recentlyApps)
         }
     }
 
-    fun initFloatingFolderRv() {
-        floatingFolderRvAdapters.submitList(emptyList())
-        floatingFolderRvAdapters.notifyDataSetChanged()
-        actDadigRvFloatingFolder.visibility = View.GONE
-        actDadigViewFloatingFolderBg.visibility = View.GONE
+    private fun updateSavingApps(apps: MutableList<ParentApp>) {
+        if (apps.mapIndexed { index, parentApp -> parentApp.hashCode() / (index + 1) }.reduce { acc, i -> acc + i } !=
+            savingApps.mapIndexed { index, parentApp -> parentApp.hashCode() / (index + 1) }.reduce { acc, i -> acc + i }) {
+            savingApps = apps
+        }
+
+//        if (apps.mapIndexed { index, parentApp -> parentApp.label.hashCode() / (index + 1) }.reduce { acc, i -> acc + i } !=
+//            savingApps.mapIndexed { index, parentApp -> parentApp.label.hashCode() / (index + 1) }.reduce { acc, i -> acc + i }) {
+//            savingApps = apps
+//        }
     }
 
     fun inRect(piecesIndex: Int) {
@@ -360,8 +377,9 @@ class DadigActivity : AppCompatActivity() {
             centerRvAdapter.submitList(copyRecentlyApps().apply {
                 this[recentlyIndex] = EmptyApp()
             })
-            savingApps = copyRecentlyApps()
-            initFloatingFolderRv()
+
+            updateSavingApps(copyRecentlyApps())
+            updateFloatingView(recentlyApp)
             return
         }
 
@@ -376,31 +394,37 @@ class DadigActivity : AppCompatActivity() {
 
                 centerRvAdapter.submitList(copyApps)
 
-                savingApps = copyRecentlyApps().apply {
+                updateFloatingView(recentlyApp)
+                updateSavingApps(copyRecentlyApps().apply {
                     this[recentlyIndex] = EmptyApp()
                     this[pickRect] = recentlyApp
-                }
-                initFloatingFolderRv()
+                })
                 return
             }
 
             actDadigTvInfo.text = "$pickRect pick"
 
             // 롱클릭할때 app과 현 rectIn app을 합쳐 folderRv를 갱신함
-            floatingFolderRvAdapters.submitList(
-                listOf(
-                    copyApps[recentlyIndex].copy(),
-                    copyApps[pickRect].copy()
-                )
+            val tmpFolderApp = FolderApp(
+                mutableListOf(copyApps[recentlyIndex].copy(), copyApps[pickRect].copy())
             )
+            updateFloatingView(tmpFolderApp)
+            tmpFolderApp.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / 3))
 
             centerRvAdapter.submitList(copyApps.apply {
                 this[recentlyIndex] = EmptyApp()
             })
 
-            actDadigRvFloatingFolder.visibility = View.VISIBLE
-            actDadigViewFloatingFolderBg.visibility = View.VISIBLE
-
+            // todo remain
+//            updateSavingApps(copyRecentlyApps().apply {
+//                this[recentlyIndex] = EmptyApp()
+//                this[pickRect] = FolderApp(
+//                    mutableListOf(
+//                        copyApps[recentlyIndex].copy(),
+//                        copyApps[pickRect].copy()
+//                    )
+//                )
+//            })
             return
 
         } else { // 0 ~ 1/3 || 2/3 ~ 1 범위에 걸쳤을때 아이콘을 이동시킴
@@ -421,9 +445,10 @@ class DadigActivity : AppCompatActivity() {
                     addAll(copyApps)
                 }
 
-                savingApps = tempCopyApps.apply {
+                updateFloatingView(recentlyApp)
+                updateSavingApps(tempCopyApps.apply {
                     this[movingInRectIndex] = recentlyApp
-                }
+                })
 
                 return
             }
@@ -458,13 +483,13 @@ class DadigActivity : AppCompatActivity() {
                 copyApps[movingInRectIndex] = EmptyApp()
             }
             centerRvAdapter.submitList(copyApps)
-            savingApps = mutableListOf<ParentApp>().apply {
+            updateFloatingView(recentlyApp)
+            updateSavingApps(mutableListOf<ParentApp>().apply {
                 addAll(copyApps)
             }.apply {
                 this[movingInRectIndex] = recentlyApp
-            }
+            })
 
-            initFloatingFolderRv()
         }
 
     }

@@ -8,11 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_application.view.*
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.AppType
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.BasicApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.EmptyApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.model.ParentApp
-import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
+import kotlinx.android.synthetic.main.item_folder.view.*
+import kr.co.seoft.drag_and_drop_between_multiple_grid.model.*
 
 class DadigGridRvAdapter(
     private val itemSize: Int,
@@ -30,12 +27,25 @@ class DadigGridRvAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentViewHolder {
 
-        val inflater = LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false)
-
         return when (viewType) {
-            AppType.BASIC.intId -> BasicAppViewHolder(inflater, callback)
-            AppType.EMPTY.intId -> EmptyAppViewHolder(inflater, callback)
-            else -> EmptyAppViewHolder(inflater, callback)
+            AppType.BASIC.intId -> {
+                BasicAppViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false),
+                    callback
+                )
+            }
+            AppType.FOLDER.intId -> {
+                FolderAppViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_folder, parent, false),
+                    callback
+                )
+            }
+            else -> {
+                EmptyAppViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_application, parent, false),
+                    callback
+                )
+            }
         }
     }
 
@@ -52,7 +62,7 @@ class DadigGridRvAdapter(
 
         when (getItem(position).appType) {
             AppType.BASIC -> (holder as BasicAppViewHolder).bind(getItem(position) as BasicApp)
-            AppType.EMPTY -> (holder as EmptyAppViewHolder).bind(getItem(position) as EmptyApp)
+            AppType.FOLDER -> (holder as FolderAppViewHolder).bind(getItem(position) as FolderApp, itemSize)
             else -> (holder as EmptyAppViewHolder).bind(getItem(position) as EmptyApp)
         }
     }
@@ -78,11 +88,9 @@ class DadigGridRvAdapter(
     class BasicAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
 
         val ivIcon = itemView.itemApplicationIvIcon
-
-
         fun bind(basicApp: BasicApp) {
             app = basicApp
-            ivIcon.setImageDrawable(AppUtil.getIconDrawableFromPkgName(itemView.context, basicApp.pkgName))
+            basicApp.setIcon(BasicInfo(ivIcon))
         }
     }
 
@@ -91,9 +99,21 @@ class DadigGridRvAdapter(
         val ivIcon = itemView.itemApplicationIvIcon
         fun bind(emptyApp: EmptyApp) {
             app = emptyApp
-
+            emptyApp.setIcon(EmptyInfo(ivIcon))
         }
     }
+
+    class FolderAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
+
+        val rvIcon = itemView.itemFolderRvIcon
+
+
+        fun bind(folderApp: FolderApp, itemSize: Int) {
+            app = folderApp
+            folderApp.setIcon(FolderInfo(rvIcon, itemSize))
+        }
+    }
+
 
     data class ClickCallbackCommand(
         val itemView: View,

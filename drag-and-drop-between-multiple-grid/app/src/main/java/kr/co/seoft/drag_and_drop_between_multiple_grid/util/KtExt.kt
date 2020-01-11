@@ -5,8 +5,11 @@ import android.content.res.Resources
 import android.util.Log
 import android.view.View
 
-// Any extentions
 fun Any.e(tag: String = "#$#") {
+    Log.e(tag, this.toString())
+}
+
+fun Any.i(tag: String = "#$#") {
     Log.e(tag, this.toString())
 }
 
