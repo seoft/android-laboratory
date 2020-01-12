@@ -213,9 +213,9 @@ class DadigActivity : AppCompatActivity() {
 
         rvBottoms.map { it.rv }.forEachIndexed { index, rv ->
             rv.layoutManager = object : GridLayoutManager(baseContext, gridCount) {
-//                override fun supportsPredictiveItemAnimations(): Boolean {
-//                    return false
-//                }
+                override fun supportsPredictiveItemAnimations(): Boolean {
+                    return false
+                }
             }
             rv.adapter = bottomRvAdapters[index]
 
@@ -353,6 +353,7 @@ class DadigActivity : AppCompatActivity() {
 
                     clearFloatingView()
 
+                    // 다른 하단 그리드에 옮겼을때 기존 그리드 touchUp index위치 Empty 처리
                     if (!isSameTouchUpAndShowingBottomRv()) {
                         itemSets[touchUpBottomRectIndex][touchUpIndex] = EmptyApp()
                     }
@@ -457,10 +458,6 @@ class DadigActivity : AppCompatActivity() {
                 this[touchUpIndex] = getShowingAppBySituation()
             })
 
-//            if(isSameTouchUpAndShowingBottomRv()) updateSavingApps(copyShowingApps())
-//            else
-//            updateSavingApps(copyShowingApps())
-
             floatingStatus.set(FloatingStatus.ING_OUT.id)
             updateFloatingView(touchUpApp)
             return
@@ -494,9 +491,7 @@ class DadigActivity : AppCompatActivity() {
         if (piecesIndex % 3 == 1) {
             val copyApps = copyShowingApps()
 
-            // nextIndex's parentApp is folder type  AND full folder (9)
             val isFolderAndFull = isFullFolderApp(copyApps[nextIndex])
-//                copyApps[nextIndex].appType == AppType.FOLDER && (copyApps[nextIndex] as FolderApp).apps.none { it.isEmpty() }
 
             // 폴더가 잡혔을 경우 , 새로 위치한게 폴더이지만 full일경우 => 플로팅 뷰만 기존 유지
             if (touchUpApp.appType == AppType.FOLDER || isFolderAndFull) {
@@ -506,7 +501,7 @@ class DadigActivity : AppCompatActivity() {
 
             actDadigTvInfo.text = "$nextIndex pick"
 
-            // 롱클릭할때 app과 현 rectIn app을 합쳐 folderRv를 갱신함
+            // 롱클릭할때 touchUp app과 nextApp 그리고 Empty들을 3x3 or 4x4로 폴더 list로만들어 folderRv를 갱신함
             val tmpFolderApp =
                 if (copyApps[nextIndex].appType != AppType.FOLDER) {
                     FolderApp(mutableListOf(touchUpApp, copyApps[nextIndex].copy()).apply {
