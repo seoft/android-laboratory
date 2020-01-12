@@ -52,12 +52,23 @@ class DadigActivity : AppCompatActivity() {
 
     private val bigRects = mutableListOf<Rect>()
     private val piecesRects = mutableListOf<Rect>()
-    private val bottomRects = mutableListOf<Rect>()
+    private val bottomRects by lazy {
+        val tempList = mutableListOf<Rect>()
+        rvBottoms.forEach {
+            tempList.add(DimensionUtil.getViewRect(it))
+        }
+        tempList
+    }
+
+
+    private val deleteRect by lazy { DimensionUtil.getViewRect(ivDelete) }
 
     private val compositeDisposable = CompositeDisposable()
 
     private val clRoot by lazy { actDadigClRoot as ConstraintLayout }
     private val rvCenter by lazy { actDadigRvCenter as RecyclerView }
+    private val ivDelete by lazy { actDadigIvDelete as ImageView }
+
 
     private var floatingView: View? = null
     private var floatingApp: ParentApp = EmptyApp()
@@ -89,6 +100,7 @@ class DadigActivity : AppCompatActivity() {
                 DadigGridRvAdapter.ClickType.LONG_CLICK -> {
                     "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".i()
                     if (touchUpApp.appType == AppType.EMPTY) return
+                    ivDelete.visibility = View.VISIBLE
                     touchUpBottomRectIndex = showingBottomRectIndex
                     touchUpIndex = command.position
                     createFloatingView(touchUpApp)
@@ -237,34 +249,29 @@ class DadigActivity : AppCompatActivity() {
             Single.timer(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    initGridCoordinate()
+                    calcViewCoordinate()
                 }, {
                     it.i()
                 })
         )
     }
 
-    private fun initGridCoordinate() {
+    private fun calcViewCoordinate() {
 
         //////
         // rvCenter
 
-        val centerRvPosition = IntArray(2)
-        rvCenter.getLocationOnScreen(centerRvPosition)
-
-        val rvCenterLeft = centerRvPosition[0]
-        val rvCenterTop = centerRvPosition[1]
-
+        val rvCenterPosition = DimensionUtil.getViewPosition(rvCenter)
         val rectSize = rvCenter.width / gridCount
 
         for (i in 0 until gridCount) {
             for (j in 0 until gridCount) {
                 bigRects.add(
                     Rect(
-                        rvCenterLeft + rectSize * j,
-                        rvCenterTop + rectSize * i,
-                        rvCenterLeft + rectSize * j + rectSize,
-                        rvCenterTop + rectSize * i + rectSize
+                        rvCenterPosition.left + rectSize * j,
+                        rvCenterPosition.top + rectSize * i,
+                        rvCenterPosition.left + rectSize * j + rectSize,
+                        rvCenterPosition.top + rectSize * i + rectSize
                     )
                 )
             }
@@ -278,20 +285,6 @@ class DadigActivity : AppCompatActivity() {
             }
         }
 
-        //////
-        // rvBottoms
-
-        rvBottoms.forEach {
-            val rvPosition = IntArray(2)
-            it.getLocationOnScreen(rvPosition)
-
-            val left = rvPosition[0]
-            val top = rvPosition[1]
-
-            "$left $top".e()
-
-            bottomRects.add(Rect(left, top, left + it.width, top + it.height))
-        }
 
     }
 
@@ -319,6 +312,9 @@ class DadigActivity : AppCompatActivity() {
                             return@forEachIndexed
                         }
                     }
+
+                    if (deleteRect.contains(event.rawX.toInt(), event.rawY.toInt())) inIndex = -2
+
                     inRect(inIndex)
 
                     bottomRects.forEachIndexed { index, rect ->
@@ -342,6 +338,22 @@ class DadigActivity : AppCompatActivity() {
 
                 if (FloatingStatus.isIng(floatingStatus.get()) && (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL)) {
 
+                    ivDelete.visibility = View.GONE
+
+                    if (floatingStatus.get() == FloatingStatus.ING_REMOVE.id) {
+                        floatingStatus.set(FloatingStatus.NONE.id)
+                        clearFloatingView()
+
+                        itemSets[touchUpBottomRectIndex].apply {
+                            this[touchUpIndex] = EmptyApp()
+                        }
+
+                        centerRvAdapter.submitList(itemSets[touchUpBottomRectIndex])
+                        showingApps = itemSets[showingBottomRectIndex]
+                        refreshBottomRvs()
+                        return false
+                    }
+
                     if (floatingStatus.get() == FloatingStatus.ING_OUT.id) {
                         floatingStatus.set(FloatingStatus.NONE.id)
                         clearFloatingView()
@@ -361,7 +373,6 @@ class DadigActivity : AppCompatActivity() {
                     itemSets[showingBottomRectIndex] = savingApps
                     centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
                     showingApps = itemSets[showingBottomRectIndex]
-
                     refreshBottomRvs()
 
                 }
@@ -447,6 +458,14 @@ class DadigActivity : AppCompatActivity() {
     }
 
     fun inRect(piecesIndex: Int) {
+
+        // delete
+        if (piecesIndex == -2) {
+            actDadigTvInfo.text = "delete app : ${touchUpApp.label}"
+            floatingStatus.set(FloatingStatus.ING_REMOVE.id)
+            return
+        }
+
         actDadigTvInfo.text = ""
 
         // 원래 그리드 아이콘의 1/3크기로 나눠 터치범위 계산을했는데, 그 1/3나눈게 실제 그리드에서 어디속하는지 알기 위함
@@ -579,11 +598,12 @@ class DadigActivity : AppCompatActivity() {
     enum class FloatingStatus(val id: Int) {
         NONE(0),
         ING_IN(1),
-        ING_OUT(2);
+        ING_OUT(2),
+        ING_REMOVE(3);
 
         companion object {
             fun isIng(status_: Int): Boolean {
-                return status_ == ING_IN.id || status_ == ING_OUT.id
+                return status_ == ING_IN.id || status_ == ING_OUT.id|| status_ == ING_REMOVE.id
             }
         }
     }

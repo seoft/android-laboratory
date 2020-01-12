@@ -2,7 +2,9 @@ package kr.co.seoft.drag_and_drop_between_multiple_grid.util
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.util.DisplayMetrics
+import android.view.View
 
 object DimensionUtil {
 
@@ -17,4 +19,18 @@ object DimensionUtil {
         if (resourceId > 0) return context.resources.getDimensionPixelSize(resourceId)
         return 0
     }
+
+    fun getViewPosition(view: View): LeftAndTop {
+        val viewPos = IntArray(2)
+        view.getLocationOnScreen(viewPos)
+        return LeftAndTop(viewPos[0], viewPos[1])
+    }
+
+    fun getViewRect(view: View): Rect {
+        val tmpPos = getViewPosition(view)
+        return Rect(tmpPos.left, tmpPos.top, tmpPos.left + view.width, tmpPos.top + view.height)
+    }
+
+    data class LeftAndTop(val left: Int, val top: Int)
+
 }
