@@ -8,7 +8,7 @@ object DynamicViewUtil {
 
 
     // 자식 뷰 생성 후 id = View.generateViewId() 해줘야함
-    fun addViewInCl(parentCl: ConstraintLayout, childView: View) {
+    fun addViewToConstraintLayout(parentCl: ConstraintLayout, childView: View) {
         parentCl.addView(childView)
         ConstraintSet().apply {
             clone(parentCl)

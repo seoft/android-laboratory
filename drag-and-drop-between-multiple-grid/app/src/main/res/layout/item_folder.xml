@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/itemFolderRvIcon"
+    <kr.co.seoft.drag_and_drop_between_multiple_grid.ClickableRecyclerViewInCl
+        android:id="@+id/itemFolderClIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"

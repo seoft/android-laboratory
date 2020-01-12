@@ -37,8 +37,8 @@ class DadigActivity : AppCompatActivity() {
 
         private const val EXTRA_GRID_COUNT = "EXTRA_GRID_COUNT"
         private const val CENTER_RV_MARGIN = 60
-        private const val FOLDER_PREVIEW_COUNT = 3
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
+        const val FOLDER_PREVIEW_COUNT = 3
         const val ICON_PADDING_RATIO = 0.1 // 그리드뷰 아이탬 패딩 주기 위함
     }
 
@@ -98,7 +98,7 @@ class DadigActivity : AppCompatActivity() {
     }
 
     private val bottomRvAdapters by lazy {
-        val bottomRvSize = actDadigRvBottom0.width
+        val bottomRvSize = actDadigClBottom0.width
 
         listOf(
             DadigGridRvAdapter(bottomRvSize / gridCount),
@@ -110,10 +110,10 @@ class DadigActivity : AppCompatActivity() {
 
     private val rvBottoms by lazy {
         listOf(
-            actDadigRvBottom0,
-            actDadigRvBottom1,
-            actDadigRvBottom2,
-            actDadigRvBottom3
+            actDadigClBottom0,
+            actDadigClBottom1,
+            actDadigClBottom2,
+            actDadigClBottom3
         )
     }
 
@@ -173,7 +173,7 @@ class DadigActivity : AppCompatActivity() {
 
         rvBottoms.forEach {
             it.layoutParams = (it.layoutParams as LinearLayout.LayoutParams).apply {
-                height = actDadigRvBottom0.width
+                height = actDadigClBottom0.width
             }
         }
 
@@ -198,7 +198,7 @@ class DadigActivity : AppCompatActivity() {
         //////
         // init bottom recycler views
 
-        rvBottoms.forEachIndexed { index, rv ->
+        rvBottoms.map { it.rv }.forEachIndexed { index, rv ->
             rv.layoutManager = GridLayoutManager(baseContext, gridCount)
             rv.adapter = bottomRvAdapters[index]
 
@@ -304,6 +304,9 @@ class DadigActivity : AppCompatActivity() {
 
     private fun updateFloatingView(app: ParentApp) {
         if (floatingApp.hashCode() == app.hashCode()) return
+
+        "updateFloatingView".e()
+
         clearFloatingView()
         floatingApp = app
         createFloatingView(app)
@@ -320,7 +323,7 @@ class DadigActivity : AppCompatActivity() {
                     id = View.generateViewId()
                 }
                 app.setIcon(BasicInfo(floatingView as ImageView))
-                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+                DynamicViewUtil.addViewToConstraintLayout(clRoot, floatingView as View)
             }
             AppType.FOLDER -> {
                 floatingView = RecyclerView(baseContext).apply {
@@ -328,8 +331,8 @@ class DadigActivity : AppCompatActivity() {
                     visibility = View.GONE
                     id = View.generateViewId()
                 }
-                app.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / 3))
-                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+                app.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / FOLDER_PREVIEW_COUNT))
+                DynamicViewUtil.addViewToConstraintLayout(clRoot, floatingView as View)
             }
             else -> {
                 floatingView = ImageView(baseContext).apply {
@@ -338,7 +341,7 @@ class DadigActivity : AppCompatActivity() {
                     id = View.generateViewId()
                 }
                 app.setIcon(EmptyInfo(floatingView as ImageView))
-                DynamicViewUtil.addViewInCl(clRoot, floatingView as View)
+                DynamicViewUtil.addViewToConstraintLayout(clRoot, floatingView as View)
             }
         }
     }
@@ -349,31 +352,24 @@ class DadigActivity : AppCompatActivity() {
         floatingView = null
     }
 
-    private fun copyRecentlyApps(): MutableList<ParentApp> {
-        return mutableListOf<ParentApp>().apply {
-            addAll(recentlyApps)
-        }
-    }
+    private fun copyRecentlyApps() = recentlyApps.map { it.copy() }.toMutableList()
 
     private fun updateSavingApps(apps: MutableList<ParentApp>) {
         if (apps.mapIndexed { index, parentApp -> parentApp.hashCode() / (index + 1) }.reduce { acc, i -> acc + i } !=
             savingApps.mapIndexed { index, parentApp -> parentApp.hashCode() / (index + 1) }.reduce { acc, i -> acc + i }) {
             savingApps = apps
+            "updateSavingApps".e()
         }
-
-//        if (apps.mapIndexed { index, parentApp -> parentApp.label.hashCode() / (index + 1) }.reduce { acc, i -> acc + i } !=
-//            savingApps.mapIndexed { index, parentApp -> parentApp.label.hashCode() / (index + 1) }.reduce { acc, i -> acc + i }) {
-//            savingApps = apps
-//        }
     }
 
     fun inRect(piecesIndex: Int) {
         actDadigTvInfo.text = ""
+        val nextIndex = piecesIndex / 3
 
         // -1 : 리사이클러뷰 범위 밖 이거나
         // piecesIndex / 3 : 자기 제자리일때
         // >> 선택한자리 empty시키고 로직 진행끝
-        if (piecesIndex == -1 || piecesIndex / 3 == recentlyIndex) {
+        if (piecesIndex == -1 || nextIndex == recentlyIndex) {
             centerRvAdapter.submitList(copyRecentlyApps().apply {
                 this[recentlyIndex] = EmptyApp()
             })
@@ -383,74 +379,71 @@ class DadigActivity : AppCompatActivity() {
             return
         }
 
+        // 비어있는곳으로 현 손가락이 위치할 경우 아무것도 안함, 아이콘 배치 뷰 변경도 할 필요없음, 하지만 저장은 준비함
+        if (recentlyApps[nextIndex].isEmpty()) {
+            centerRvAdapter.submitList(copyRecentlyApps().apply { this[recentlyIndex] = EmptyApp() })
+            updateFloatingView(recentlyApp)
+            updateSavingApps(copyRecentlyApps().apply {
+                this[recentlyIndex] = EmptyApp()
+                this[nextIndex] = recentlyApp
+            })
+            return
+        }
+
+
         // 정중앙에 위치했을때 선택되어 폴더 생성 유무 선택할 수 있게 함
         if (piecesIndex % 3 == 1) {
-            val pickRect = piecesIndex / 3
+//            val pickRect = piecesIndex / 3
             val copyApps = copyRecentlyApps()
 
-            // 정중앙인데 Empty일경우 평소처럼 처리
-            if (copyApps[pickRect].isEmpty()) {
-                copyApps[recentlyIndex] = EmptyApp()
+            // pickRect is folder type  AND full folder (9)
+            val isFolderAndFull =
+                copyApps[nextIndex].appType == AppType.FOLDER && (copyApps[nextIndex] as FolderApp).apps.none { it.isEmpty() }
 
-                centerRvAdapter.submitList(copyApps)
-
+            // 폴더가 잡혔을 경우 , 새로 위치한게 폴더이지만 full일경우 => 플로팅 뷰만 기존 유지
+            if (copyApps[recentlyIndex].appType == AppType.FOLDER || isFolderAndFull) {
                 updateFloatingView(recentlyApp)
-                updateSavingApps(copyRecentlyApps().apply {
-                    this[recentlyIndex] = EmptyApp()
-                    this[pickRect] = recentlyApp
-                })
                 return
             }
 
-            actDadigTvInfo.text = "$pickRect pick"
+            actDadigTvInfo.text = "$nextIndex pick"
 
             // 롱클릭할때 app과 현 rectIn app을 합쳐 folderRv를 갱신함
-            val tmpFolderApp = FolderApp(
-                mutableListOf(copyApps[recentlyIndex].copy(), copyApps[pickRect].copy())
-            )
+            val tmpFolderApp =
+                if (copyApps[nextIndex].appType != AppType.FOLDER) {
+                    FolderApp(mutableListOf(copyApps[recentlyIndex].copy(), copyApps[nextIndex].copy()).apply {
+                        repeat(FOLDER_PREVIEW_COUNT * FOLDER_PREVIEW_COUNT - 2) {
+                            add(EmptyApp())
+                        }
+                    })
+                } else { // copyApps[pickRect].appType == AppType.FOLDER
+                    (copyApps[nextIndex].copy() as FolderApp).apply {
+                        this.apps[apps.indexOfFirst { it.isEmpty() }] = copyApps[recentlyIndex]
+                    }
+
+                }
+
             updateFloatingView(tmpFolderApp)
-            tmpFolderApp.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / 3))
+            tmpFolderApp.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / FOLDER_PREVIEW_COUNT))
+
+            updateSavingApps(copyRecentlyApps().apply {
+                this[nextIndex] = tmpFolderApp
+                this[recentlyIndex] = EmptyApp()
+            })
 
             centerRvAdapter.submitList(copyApps.apply {
                 this[recentlyIndex] = EmptyApp()
             })
 
-            // todo remain
-//            updateSavingApps(copyRecentlyApps().apply {
-//                this[recentlyIndex] = EmptyApp()
-//                this[pickRect] = FolderApp(
-//                    mutableListOf(
-//                        copyApps[recentlyIndex].copy(),
-//                        copyApps[pickRect].copy()
-//                    )
-//                )
-//            })
             return
 
         } else { // 0 ~ 1/3 || 2/3 ~ 1 범위에 걸쳤을때 아이콘을 이동시킴
 
             // 원래 그리드 아이콘의 1/3크기로 나눠 터치범위 계산을했는데, 그 1/3나눈게 실제 그리드에서 어디속하는지 알기 위함
-            val movingInRectIndex = piecesIndex / 3
+//            val movingInRectIndex = piecesIndex / 3
 
             val copyApps = copyRecentlyApps().apply {
                 this[recentlyIndex] = EmptyApp()
-            }
-
-            // 비어있는곳으로 현 손가락이 위치할 경우 아무것도 안함, 아이콘 배치 뷰 변경도 할 필요없음, 하지만 저장은 준비함
-            if (copyApps[movingInRectIndex].isEmpty()) {
-
-                centerRvAdapter.submitList(copyApps)
-
-                val tempCopyApps = mutableListOf<ParentApp>().apply {
-                    addAll(copyApps)
-                }
-
-                updateFloatingView(recentlyApp)
-                updateSavingApps(tempCopyApps.apply {
-                    this[movingInRectIndex] = recentlyApp
-                })
-
-                return
             }
 
             val emptyIndex: Int
@@ -458,11 +451,11 @@ class DadigActivity : AppCompatActivity() {
 
             // 현 손가락이 위치한 아이콘의 인덱스로 부터 좌,우로 탐색하며 가장 가까운 empty 아이콘 인덱스 파악
             while (true) {
-                if (movingInRectIndex + finding < recentlyApps.size && copyApps[movingInRectIndex + finding].isEmpty()) {
-                    emptyIndex = movingInRectIndex + finding
+                if (nextIndex + finding < recentlyApps.size && copyApps[nextIndex + finding].isEmpty()) {
+                    emptyIndex = nextIndex + finding
                     break
-                } else if (movingInRectIndex - finding >= 0 && copyApps[movingInRectIndex - finding].isEmpty()) {
-                    emptyIndex = movingInRectIndex - finding
+                } else if (nextIndex - finding >= 0 && copyApps[nextIndex - finding].isEmpty()) {
+                    emptyIndex = nextIndex - finding
                     break
                 }
                 finding++
@@ -471,23 +464,23 @@ class DadigActivity : AppCompatActivity() {
             // 위에서 파악한 가장 가까운 empty 아이콘 인덱스에서 방향에 맞춰 아이콘을 하나씩 당김
             // 다 당기고 현 손가락이 위치한 뷰는 EMPTY로 하여 추후 뷰에 반영
             // 하지만 savingApps에는 현 손가락이 위치한 EMPTY 뷰 대신 recentlyApp을 넣어 저장 준비
-            if (emptyIndex < movingInRectIndex) {
+            if (emptyIndex < nextIndex) {
                 for (i in 0 until finding) {
                     copyApps[emptyIndex + i] = copyApps[emptyIndex + i + 1]
                 }
-                copyApps[movingInRectIndex] = EmptyApp()
+                copyApps[nextIndex] = EmptyApp()
             } else {
                 for (i in 0 until finding) {
                     copyApps[emptyIndex - i] = copyApps[emptyIndex - i - 1]
                 }
-                copyApps[movingInRectIndex] = EmptyApp()
+                copyApps[nextIndex] = EmptyApp()
             }
             centerRvAdapter.submitList(copyApps)
             updateFloatingView(recentlyApp)
             updateSavingApps(mutableListOf<ParentApp>().apply {
                 addAll(copyApps)
             }.apply {
-                this[movingInRectIndex] = recentlyApp
+                this[nextIndex] = recentlyApp
             })
 
         }

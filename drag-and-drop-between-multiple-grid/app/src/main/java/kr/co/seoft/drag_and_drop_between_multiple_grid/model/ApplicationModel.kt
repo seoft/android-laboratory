@@ -1,8 +1,10 @@
 package kr.co.seoft.drag_and_drop_between_multiple_grid.model
 
+import android.graphics.Color
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.FOLDER_PREVIEW_COUNT
 import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigGridRvAdapter
 import kr.co.seoft.drag_and_drop_between_multiple_grid.R
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
@@ -35,12 +37,11 @@ abstract class ParentApp(open val appType: AppType, open val label: String) {
     fun copy(): ParentApp {
         return when (this) {
             is BasicApp -> BasicApp(label, pkgName, appType)
+            is FolderApp -> FolderApp(apps.map { it.copy() }.toMutableList(), label, appType)
             is EmptyApp -> EmptyApp(label, appType)
             else -> EmptyApp()
         }
-
     }
-
 }
 
 data class BasicApp(
@@ -64,6 +65,7 @@ data class EmptyApp(
     override fun setIcon(info: IconInfo) {
         if (info is EmptyInfo) {
             info.iv.setImageResource(R.drawable.ic_add_black_24dp)
+//            info.iv.setImageDrawable(null) // todo open
         }
     }
 }
@@ -77,9 +79,9 @@ data class FolderApp(
     override fun setIcon(info: IconInfo) {
         if (info is FolderInfo) {
             info.rv.apply {
-                setBackgroundResource(R.drawable.bg_folder_square)
+                setBackgroundColor(Color.parseColor("#123123"))
             }
-            info.rv.layoutManager = object : GridLayoutManager(info.rv.context, 3) {
+            info.rv.layoutManager = object : GridLayoutManager(info.rv.context, FOLDER_PREVIEW_COUNT) {
                 override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
                     try {
                         super.onLayoutChildren(recycler, state)

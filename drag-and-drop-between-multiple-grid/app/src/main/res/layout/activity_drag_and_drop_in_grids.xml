@@ -27,8 +27,8 @@
         android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actDadigRvBottom0"
+        <kr.co.seoft.drag_and_drop_between_multiple_grid.ClickableRecyclerViewInCl
+            android:id="@+id/actDadigClBottom0"
             android:layout_width="match_parent"
             android:layout_height="99dp"
             android:layout_marginStart="2dp"
@@ -38,8 +38,8 @@
             android:overScrollMode="never"
             tools:layout_height="100dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actDadigRvBottom1"
+        <kr.co.seoft.drag_and_drop_between_multiple_grid.ClickableRecyclerViewInCl
+            android:id="@+id/actDadigClBottom1"
             android:layout_width="match_parent"
             android:layout_height="99dp"
             android:layout_marginStart="2dp"
@@ -50,8 +50,8 @@
             tools:layout_height="100dp" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actDadigRvBottom2"
+        <kr.co.seoft.drag_and_drop_between_multiple_grid.ClickableRecyclerViewInCl
+            android:id="@+id/actDadigClBottom2"
             android:layout_width="match_parent"
             android:layout_height="99dp"
             android:layout_marginStart="2dp"
@@ -61,8 +61,8 @@
             android:overScrollMode="never"
             tools:layout_height="100dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actDadigRvBottom3"
+        <kr.co.seoft.drag_and_drop_between_multiple_grid.ClickableRecyclerViewInCl
+            android:id="@+id/actDadigClBottom3"
             android:layout_width="match_parent"
             android:layout_height="99dp"
             android:layout_marginStart="2dp"

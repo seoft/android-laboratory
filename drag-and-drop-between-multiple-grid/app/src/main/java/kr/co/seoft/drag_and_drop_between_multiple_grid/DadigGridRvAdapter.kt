@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_application.view.*
 import kotlinx.android.synthetic.main.item_folder.view.*
+import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.FOLDER_PREVIEW_COUNT
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.*
 
 class DadigGridRvAdapter(
@@ -75,7 +76,7 @@ class DadigGridRvAdapter(
             cb?.let {
                 itemView.setOnLongClickListener {
                     cb.invoke(ClickCallbackCommand(itemView, adapterPosition, ClickType.LONG_CLICK))
-                    false
+                    true
                 }
 
                 itemView.setOnClickListener {
@@ -105,12 +106,12 @@ class DadigGridRvAdapter(
 
     class FolderAppViewHolder(itemView: View, cb: ((ClickCallbackCommand) -> Unit)? = null) : ParentViewHolder(itemView, cb) {
 
-        val rvIcon = itemView.itemFolderRvIcon
-
+        val rvIcon = itemView.itemFolderClIcon
 
         fun bind(folderApp: FolderApp, itemSize: Int) {
             app = folderApp
-            folderApp.setIcon(FolderInfo(rvIcon, itemSize))
+
+            folderApp.setIcon(FolderInfo(rvIcon.rv, itemSize / FOLDER_PREVIEW_COUNT))
         }
     }
 
