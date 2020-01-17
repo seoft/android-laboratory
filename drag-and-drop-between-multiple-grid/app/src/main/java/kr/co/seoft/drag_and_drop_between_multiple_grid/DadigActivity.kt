@@ -28,14 +28,27 @@ import java.util.concurrent.atomic.AtomicInteger
 class DadigActivity : AppCompatActivity() {
 
     companion object {
-        fun startActivity(context: Context, gridCount: Int) {
+        fun startBasicActivity(context: Context, gridCount: Int) {
 
             context.startActivity(Intent(context, DadigActivity::class.java).apply {
                 putExtra(EXTRA_GRID_COUNT, gridCount)
+                putExtra(EXTRA_IS_BASIC, true)
+
+            })
+        }
+
+        fun startFolderActivity(context: Context, listJson: String) {
+
+            context.startActivity(Intent(context, DadigActivity::class.java).apply {
+                putExtra(EXTRA_FOLDER_APPS, listJson)
+                putExtra(EXTRA_GRID_COUNT, 3)
+                putExtra(EXTRA_IS_BASIC, false)
             })
         }
 
         private const val EXTRA_GRID_COUNT = "EXTRA_GRID_COUNT"
+        private const val EXTRA_FOLDER_APPS = "EXTRA_FOLDER_APPS"
+        private const val EXTRA_IS_BASIC = "EXTRA_IS_BASIC"
         private const val CENTER_RV_MARGIN = 60
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
         const val FOLDER_PREVIEW_COUNT = 3
@@ -43,6 +56,8 @@ class DadigActivity : AppCompatActivity() {
     }
 
     private val gridCount by lazy { intent.getIntExtra(EXTRA_GRID_COUNT, 0) }
+    private val isBasic by lazy { intent.getBooleanExtra(EXTRA_IS_BASIC, true) }
+    private val appsInFolder by lazy { intent.getStringExtra(EXTRA_FOLDER_APPS) }
 
     private var itemSets = mutableListOf<MutableList<ParentApp>>()
 
@@ -169,22 +184,44 @@ class DadigActivity : AppCompatActivity() {
             )
         }
 
-        itemSets[0][2] = EmptyApp()
-        itemSets[0][4] = EmptyApp()
-        itemSets[0][7] = EmptyApp()
+        if (gridCount == 3) {
+            itemSets[0][2] = EmptyApp()
+            itemSets[0][4] = EmptyApp()
+            itemSets[0][7] = EmptyApp()
 
-        itemSets[2].add(EmptyApp())
-        itemSets[2].add(EmptyApp())
+            itemSets[2].add(EmptyApp())
+            itemSets[2].add(EmptyApp())
 
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
-        itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+            itemSets[3].add(EmptyApp())
+
+        } else {
+            itemSets[0][2] = EmptyApp()
+            itemSets[0][4] = EmptyApp()
+            itemSets[0][7] = EmptyApp()
+
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+            itemSets[1].add(EmptyApp())
+
+            repeat(16) {
+                itemSets[2].add(EmptyApp())
+                itemSets[3].add(EmptyApp())
+
+            }
+        }
+
 
     }
 
@@ -214,11 +251,17 @@ class DadigActivity : AppCompatActivity() {
         rvCenter.layoutManager = GridLayoutManager(baseContext, gridCount)
         rvCenter.adapter = centerRvAdapter
 
-        centerRvAdapter.submitList(itemSets[0])
-        showingApps = itemSets[0]
-        savingApps = itemSets[0]
-        showingBottomRectIndex = 0
-        touchUpBottomRectIndex = 0
+        //
+        if (isBasic) {
+            centerRvAdapter.submitList(itemSets[0])
+            showingApps = itemSets[0]
+            savingApps = itemSets[0]
+
+            showingBottomRectIndex = 0
+            touchUpBottomRectIndex = 0
+        } else {
+
+        }
 
         //////
         // init bottom recycler views
@@ -603,7 +646,7 @@ class DadigActivity : AppCompatActivity() {
 
         companion object {
             fun isIng(status_: Int): Boolean {
-                return status_ == ING_IN.id || status_ == ING_OUT.id|| status_ == ING_REMOVE.id
+                return status_ == ING_IN.id || status_ == ING_OUT.id || status_ == ING_REMOVE.id
             }
         }
     }

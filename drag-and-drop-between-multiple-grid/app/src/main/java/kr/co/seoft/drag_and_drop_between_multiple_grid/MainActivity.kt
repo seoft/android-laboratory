@@ -10,8 +10,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        DadigActivity.startActivity(this,3)
-        
+        DadigActivity.startBasicActivity(this, 3)
+
     }
 
 
