@@ -160,7 +160,7 @@ data class EmptyApp(
 
 @JsonAdapter(ParentAppAdapter::class)
 data class FolderApp(
-    val apps: MutableList<ParentApp>,
+    var apps: MutableList<ParentApp>,
     override val label: String = "folder",
     override val appType: AppType = AppType.FOLDER
 ) : ParentApp(appType, label) {

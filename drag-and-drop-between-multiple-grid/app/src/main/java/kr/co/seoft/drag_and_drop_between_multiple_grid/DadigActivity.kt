@@ -1,10 +1,12 @@
 package kr.co.seoft.drag_and_drop_between_multiple_grid
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class DadigActivity : AppCompatActivity() {
 
+
     companion object {
         fun startBasicActivity(context: Context, gridCount: Int) {
 
@@ -37,27 +40,36 @@ class DadigActivity : AppCompatActivity() {
             })
         }
 
-        fun startFolderActivity(context: Context, listJson: String) {
-
-            context.startActivity(Intent(context, DadigActivity::class.java).apply {
-                putExtra(EXTRA_FOLDER_APPS, listJson)
+        fun startFolderActivity(activity: Activity, bottomIndex: Int, gridIndex: Int) {
+            activity.startActivity(Intent(activity, DadigActivity::class.java).apply {
+                putExtra(EXTRA_BOTTOM_INDEX, bottomIndex)
+                putExtra(EXTRA_GRID_INDEX, gridIndex)
                 putExtra(EXTRA_GRID_COUNT, 3)
                 putExtra(EXTRA_IS_BASIC, false)
             })
         }
 
+        var comeFromFolder = false
+
+        private const val EXTRA_BOTTOM_INDEX = "EXTRA_BOTTOM_INDEX"
+        private const val EXTRA_GRID_INDEX = "EXTRA_GRID_INDEX"
         private const val EXTRA_GRID_COUNT = "EXTRA_GRID_COUNT"
-        private const val EXTRA_FOLDER_APPS = "EXTRA_FOLDER_APPS"
         private const val EXTRA_IS_BASIC = "EXTRA_IS_BASIC"
         private const val CENTER_RV_MARGIN = 60
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
         const val FOLDER_PREVIEW_COUNT = 3
         const val ICON_PADDING_RATIO = 0.1 // 그리드뷰 아이탬 패딩 주기 위함
+
+        private const val IN_FOLDER_GRID = 4 // 하단 0,1,2,3 이아닌 IN_FOLDER_GRID뷰
     }
 
     private val gridCount by lazy { intent.getIntExtra(EXTRA_GRID_COUNT, 0) }
     private val isBasic by lazy { intent.getBooleanExtra(EXTRA_IS_BASIC, true) }
-    private val appsInFolder by lazy { intent.getStringExtra(EXTRA_FOLDER_APPS) }
+
+    private val folderBottomIndex by lazy { intent.getIntExtra(EXTRA_BOTTOM_INDEX, 0) }
+    private val folderGridIndex by lazy { intent.getIntExtra(EXTRA_GRID_INDEX, 0) }
+
+    private val activity = this
 
     private var itemSets = mutableListOf<MutableList<ParentApp>>()
 
@@ -109,14 +121,20 @@ class DadigActivity : AppCompatActivity() {
 
             when (command.type) {
                 DadigGridRvAdapter.ClickType.CLICK -> {
+                    if (touchUpApp.appType == AppType.EMPTY) return
                     "DragAndDropInGridsRvAdapter.ClickType.CLICK".i()
 
+                    if (touchUpApp.appType == AppType.FOLDER) {
+                        startFolderActivity(activity, showingBottomRectIndex, command.position)
+                    }
                 }
                 DadigGridRvAdapter.ClickType.LONG_CLICK -> {
-                    "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".i()
                     if (touchUpApp.appType == AppType.EMPTY) return
+                    "DragAndDropInGridsRvAdapter.ClickType.LONG_CLICK".i()
                     ivDelete.visibility = View.VISIBLE
+
                     touchUpBottomRectIndex = showingBottomRectIndex
+
                     touchUpIndex = command.position
                     createFloatingView(touchUpApp)
                     floatingStatus.set(FloatingStatus.ING_IN.id)
@@ -153,7 +171,9 @@ class DadigActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drag_and_drop_in_grids)
 
-        initData()
+        itemSets = Preferencer.getAllApps(this).map {
+            it.take(gridCount * gridCount).toMutableList()
+        }.toMutableList()
 
         clRoot.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -173,56 +193,6 @@ class DadigActivity : AppCompatActivity() {
 
 
         }
-    }
-
-    private fun initData() {
-        val apps = AppUtil.getInstalledApps(baseContext).toMutableList()
-        val allGridCount = gridCount * gridCount
-        for (i in 0 until 4) {
-            itemSets.add(
-                apps.drop(i * allGridCount).take(allGridCount).toMutableList()
-            )
-        }
-
-        if (gridCount == 3) {
-            itemSets[0][2] = EmptyApp()
-            itemSets[0][4] = EmptyApp()
-            itemSets[0][7] = EmptyApp()
-
-            itemSets[2].add(EmptyApp())
-            itemSets[2].add(EmptyApp())
-
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-            itemSets[3].add(EmptyApp())
-
-        } else {
-            itemSets[0][2] = EmptyApp()
-            itemSets[0][4] = EmptyApp()
-            itemSets[0][7] = EmptyApp()
-
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-            itemSets[1].add(EmptyApp())
-
-            repeat(16) {
-                itemSets[2].add(EmptyApp())
-                itemSets[3].add(EmptyApp())
-
-            }
-        }
-
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -253,14 +223,22 @@ class DadigActivity : AppCompatActivity() {
 
         //
         if (isBasic) {
-            centerRvAdapter.submitList(itemSets[0])
-            showingApps = itemSets[0]
-            savingApps = itemSets[0]
-
             showingBottomRectIndex = 0
             touchUpBottomRectIndex = 0
-        } else {
 
+            centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+            showingApps = itemSets[showingBottomRectIndex]
+            savingApps = itemSets[showingBottomRectIndex]
+
+        } else {
+            showingBottomRectIndex = IN_FOLDER_GRID
+            touchUpBottomRectIndex = 0 // 추후 롱터치때 IN_FOLDER_GRID 으로 갱신됨
+
+            getFolderApp(folderBottomIndex, folderGridIndex).apps.let {
+                centerRvAdapter.submitList(it)
+                showingApps = it
+                savingApps = it
+            }
         }
 
         //////
@@ -275,6 +253,12 @@ class DadigActivity : AppCompatActivity() {
             rv.adapter = bottomRvAdapters[index]
 
             rvBottoms[index].setOnTouchListener { v, event ->
+
+                if (!isBasic) {
+                    procFolderFinish()
+                    finish()
+                    true
+                }
 
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     centerRvAdapter.submitList(itemSets[index])
@@ -384,15 +368,22 @@ class DadigActivity : AppCompatActivity() {
                     ivDelete.visibility = View.GONE
 
                     if (floatingStatus.get() == FloatingStatus.ING_REMOVE.id) {
+
                         floatingStatus.set(FloatingStatus.NONE.id)
                         clearFloatingView()
+                        if (isBasic) {
+                            itemSets[touchUpBottomRectIndex].apply {
+                                this[touchUpIndex] = EmptyApp()
+                            }
 
-                        itemSets[touchUpBottomRectIndex].apply {
-                            this[touchUpIndex] = EmptyApp()
+                            centerRvAdapter.submitList(itemSets[touchUpBottomRectIndex])
+                            showingApps = itemSets[showingBottomRectIndex]
+                        } else {
+                            getFolderApp(folderBottomIndex, folderGridIndex).apps[touchUpIndex] = EmptyApp()
+                            centerRvAdapter.submitList(getFolderApp(folderBottomIndex, folderGridIndex).apps)
+                            showingApps = getFolderApp(folderBottomIndex, folderGridIndex).apps
+
                         }
-
-                        centerRvAdapter.submitList(itemSets[touchUpBottomRectIndex])
-                        showingApps = itemSets[showingBottomRectIndex]
                         refreshBottomRvs()
                         return false
                     }
@@ -400,7 +391,18 @@ class DadigActivity : AppCompatActivity() {
                     if (floatingStatus.get() == FloatingStatus.ING_OUT.id) {
                         floatingStatus.set(FloatingStatus.NONE.id)
                         clearFloatingView()
-                        centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+                        if (isBasic) {
+                            centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+                        } else {
+                            // 폴더수정 시점에서 하단 뷰진입 후 다시 올라갔지만 센터 그리드에서 out되어 켄슬됬을때
+                            // 밖으로나갔을때 폴더들어온 시점의 초기화 진행
+                            showingBottomRectIndex = IN_FOLDER_GRID
+                            getFolderApp(folderBottomIndex, folderGridIndex).apps.let {
+                                centerRvAdapter.submitList(it)
+                                showingApps = it
+                                savingApps = it
+                            }
+                        }
                         return false
                     }
 
@@ -408,14 +410,57 @@ class DadigActivity : AppCompatActivity() {
 
                     clearFloatingView()
 
-                    // 다른 하단 그리드에 옮겼을때 기존 그리드 touchUp index위치 Empty 처리
-                    if (!isSameTouchUpAndShowingBottomRv()) {
-                        itemSets[touchUpBottomRectIndex][touchUpIndex] = EmptyApp()
+                    if (isBasic) {
+
+                        // 다른 하단 그리드에 옮겼을때 기존 그리드 touchUp index위치 Empty 처리
+                        if (!isSameTouchUpAndShowingBottomRv()) {
+                            itemSets[touchUpBottomRectIndex][touchUpIndex] = EmptyApp()
+                        }
+
+                        itemSets[showingBottomRectIndex] = savingApps
+                        centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+                        showingApps = itemSets[showingBottomRectIndex]
+
+                    } else {
+
+                        // 폴더 속성으로 엑티비티 진입시 showingBottomRectIndex = IN_FOLDER_GRID 로 init
+                        // 중앙 그리드에서만 바뀔경우 if분기, 하단 다른그리드에서 때면 else분기
+                        if (showingBottomRectIndex == IN_FOLDER_GRID) {
+                            getFolderApp(folderBottomIndex, folderGridIndex).apps = savingApps
+                            centerRvAdapter.submitList(getFolderApp(folderBottomIndex, folderGridIndex).apps)
+                            showingApps = getFolderApp(folderBottomIndex, folderGridIndex).apps
+                        } else {
+
+                            // 하단 그리드에서 땟는데 그게 folder 진입시점의 bottomIndex와 같을경우
+                            // savingApp 내에 포함되기때문에 덮어쒸어지는 savingApp 자체를 바꿔야함
+                            // 하지만 folder 진입시점의 bottomIndex와 다를경우 그냥 현폴더값의 index만 비워두면됨
+                            if (folderBottomIndex == showingBottomRectIndex) {
+                                (savingApps[folderGridIndex] as FolderApp).apps[touchUpIndex] = EmptyApp()
+
+                                // 옮긴후 폴더가 빌 경우 Empty처리
+                                if ((savingApps[folderGridIndex] as FolderApp).apps.all { it.isEmpty() }) {
+                                    savingApps[folderGridIndex] = EmptyApp()
+                                }
+                            } else {
+                                getFolderApp(folderBottomIndex, folderGridIndex).apps[touchUpIndex] = EmptyApp()
+
+                                // 옮긴후 폴더가 빌 경우 Empty처리
+                                if (getFolderApp(folderBottomIndex, folderGridIndex).apps.all { it.isEmpty() }) {
+                                    itemSets[folderBottomIndex][folderGridIndex] = EmptyApp()
+                                }
+                            }
+
+                            itemSets[showingBottomRectIndex] = savingApps
+                            centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+                            showingApps = itemSets[showingBottomRectIndex]
+
+                            Handler().postDelayed({
+                                procFolderFinish()
+                                finish()
+                            }, 300L)
+                        }
                     }
 
-                    itemSets[showingBottomRectIndex] = savingApps
-                    centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
-                    showingApps = itemSets[showingBottomRectIndex]
                     refreshBottomRvs()
 
                 }
@@ -549,8 +594,8 @@ class DadigActivity : AppCompatActivity() {
             return
         }
 
-        // 정중앙에 위치했을때 선택되어 폴더 생성 유무 선택할 수 있게 함
-        if (piecesIndex % 3 == 1) {
+        // 정중앙에 위치했을때 선택되어 폴더 생성 유무 선택할 수 있게 함, 폴더일때는 선택안함
+        if (piecesIndex % 3 == 1 && isBasic) {
             val copyApps = copyShowingApps()
 
             val isFolderAndFull = isFullFolderApp(copyApps[nextIndex])
@@ -638,6 +683,10 @@ class DadigActivity : AppCompatActivity() {
 
     }
 
+    fun getFolderApp(bottomIndex: Int, gridAppIndex: Int): FolderApp {
+        return (itemSets[bottomIndex][gridAppIndex] as FolderApp)
+    }
+
     enum class FloatingStatus(val id: Int) {
         NONE(0),
         ING_IN(1),
@@ -648,6 +697,37 @@ class DadigActivity : AppCompatActivity() {
             fun isIng(status_: Int): Boolean {
                 return status_ == ING_IN.id || status_ == ING_OUT.id || status_ == ING_REMOVE.id
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Preferencer.setAllApps(this, itemSets)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (comeFromFolder) {
+            comeFromFolder = false
+            itemSets = Preferencer.getAllApps(this).map {
+                it.take(gridCount * gridCount).toMutableList()
+            }.toMutableList()
+
+            centerRvAdapter.submitList(itemSets[showingBottomRectIndex])
+            refreshBottomRvs()
+        }
+    }
+
+    override fun onBackPressed() {
+        procFolderFinish()
+        super.onBackPressed()
+    }
+
+    private fun procFolderFinish() {
+        if (!isBasic) {
+            // onActivityResult not work when use new task flag
+            comeFromFolder = true
         }
     }
 
