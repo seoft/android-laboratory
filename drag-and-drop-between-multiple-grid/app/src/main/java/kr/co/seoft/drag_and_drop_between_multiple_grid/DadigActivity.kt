@@ -244,6 +244,7 @@ class DadigActivity : AppCompatActivity() {
         //////
         // init bottom recycler views
 
+        "INIT".e()
         rvBottoms.map { it.rv }.forEachIndexed { index, rv ->
             rv.layoutManager = object : GridLayoutManager(baseContext, gridCount) {
                 override fun supportsPredictiveItemAnimations(): Boolean {
@@ -254,13 +255,15 @@ class DadigActivity : AppCompatActivity() {
 
             rvBottoms[index].setOnTouchListener { v, event ->
 
-                if (!isBasic) {
-                    procFolderFinish()
-                    finish()
-                    true
-                }
 
                 if (event.action == MotionEvent.ACTION_DOWN) {
+
+                    if (!isBasic) {
+                        procFolderFinish()
+                        finish()
+                        true
+                    }
+
                     centerRvAdapter.submitList(itemSets[index])
                     showingBottomRectIndex = index
                     touchUpBottomRectIndex = index
@@ -349,15 +352,14 @@ class DadigActivity : AppCompatActivity() {
 
                             if (itemSets[index].none { it.isEmpty() }) {
 
+                                floatingStatus.set(FloatingStatus.ING_OUT.id)
                                 actDadigTvInfo.text = "can't insert, grid is full"
-                                return false
+                            } else {
+                                showingBottomRectIndex = index
+                                centerRvAdapter.submitList(itemSets[index])
+                                showingApps = itemSets[index]
+                                savingApps = itemSets[index]
                             }
-
-                            showingBottomRectIndex = index
-
-                            centerRvAdapter.submitList(itemSets[index])
-                            showingApps = itemSets[index]
-                            savingApps = itemSets[index]
                         }
                     }
 
