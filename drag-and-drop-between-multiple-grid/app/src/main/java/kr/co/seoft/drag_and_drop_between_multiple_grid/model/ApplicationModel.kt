@@ -1,14 +1,15 @@
 package kr.co.seoft.drag_and_drop_between_multiple_grid.model
 
-import android.graphics.Color
 import android.widget.ImageView
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.TypeAdapter
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.FOLDER_PREVIEW_COUNT
+import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity
+import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.GRID_PADDING_RATIO
 import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigGridRvAdapter
 import kr.co.seoft.drag_and_drop_between_multiple_grid.R
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
@@ -178,19 +179,22 @@ data class FolderApp(
     override fun setIcon(info: IconInfo) {
         if (info is FolderInfo) {
             info.rv.apply {
-                setBackgroundColor(Color.parseColor("#123123"))
-            }
-            info.rv.layoutManager = object : GridLayoutManager(info.rv.context, FOLDER_PREVIEW_COUNT) {
-                override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
-                    try {
-                        super.onLayoutChildren(recycler, state)
-                    } catch (e: Exception) {
-                        e.i()
+                layoutManager = object : GridLayoutManager(info.rv.context,
+                    DadigActivity.Companion.GRID_COUNT
+                ) {
+                    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                        try {
+                            super.onLayoutChildren(recycler, state)
+                        } catch (e: Exception) {
+                            e.i()
+                        }
                     }
                 }
-            }
-            info.rv.adapter = DadigGridRvAdapter(info.itemSize).apply {
-                submitList(apps)
+                setPadding((info.itemSize * GRID_PADDING_RATIO).toInt())
+                val itemSize = ((info.itemSize - (info.itemSize * GRID_PADDING_RATIO * 2)) / DadigActivity.Companion.GRID_COUNT).toInt()
+                adapter = DadigGridRvAdapter(itemSize).apply {
+                    submitList(apps)
+                }
             }
         }
     }

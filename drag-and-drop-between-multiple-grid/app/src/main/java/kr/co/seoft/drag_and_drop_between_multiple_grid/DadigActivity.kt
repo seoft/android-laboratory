@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Single
@@ -51,14 +52,19 @@ class DadigActivity : AppCompatActivity() {
 
         private const val EXTRA_BOTTOM_INDEX = "EXTRA_BOTTOM_INDEX"
         private const val EXTRA_GRID_INDEX = "EXTRA_GRID_INDEX"
-        private const val GRID_COUNT = 3
         private const val EXTRA_IS_BASIC = "EXTRA_IS_BASIC"
+
+        const val GRID_COUNT = 3
         private const val CENTER_RV_MARGIN = 60
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
-        const val FOLDER_PREVIEW_COUNT = 3
-        const val ICON_PADDING_RATIO = 0.1 // 그리드뷰 아이탬 패딩 주기 위함
-
         private const val IN_FOLDER_GRID = 4 // 하단 0,1,2,3 이아닌 IN_FOLDER_GRID뷰
+
+        /**
+         * 그리드 자체 사이즈 = grid's width * GRID_PADDING_RATIO 패딩 적용
+         * 그리드 아이템 사이즈 = ((grid's width - (grid's width * GRID_PADDING_RATIO * 2)) / GRID_COUNT ).toInt()
+         */
+        const val GRID_PADDING_RATIO = 0.1
+
     }
 
     private val isBasic by lazy { intent.getBooleanExtra(EXTRA_IS_BASIC, true) }
@@ -107,8 +113,8 @@ class DadigActivity : AppCompatActivity() {
     private lateinit var savingApps: MutableList<ParentApp>
 
     private val centerRvAdapter by lazy {
-        floatingIconSize = ((rvCenter.width / GRID_COUNT) - (rvCenter.width / GRID_COUNT) * ICON_PADDING_RATIO * 2).toInt()
-        DadigGridRvAdapter(rvCenter.width / GRID_COUNT, clickCallback)
+        floatingIconSize = ((rvCenter.width - (rvCenter.width * GRID_PADDING_RATIO * 2)) / GRID_COUNT).toInt()
+        DadigGridRvAdapter(floatingIconSize, clickCallback)
     }
 
     private val clickCallback = object : (DadigGridRvAdapter.ClickCallbackCommand) -> Unit {
@@ -145,13 +151,13 @@ class DadigActivity : AppCompatActivity() {
     }
 
     private val bottomRvAdapters by lazy {
-        val bottomRvSize = actDadigClBottom0.width
+        val bottomRvSize = ((actDadigClBottom0.width - (actDadigClBottom0.width * GRID_PADDING_RATIO * 2)) / GRID_COUNT).toInt()
 
         listOf(
-            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
-            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
-            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
-            DadigGridRvAdapter(bottomRvSize / GRID_COUNT)
+            DadigGridRvAdapter(bottomRvSize),
+            DadigGridRvAdapter(bottomRvSize),
+            DadigGridRvAdapter(bottomRvSize),
+            DadigGridRvAdapter(bottomRvSize)
         )
     }
 
@@ -200,10 +206,13 @@ class DadigActivity : AppCompatActivity() {
 
         val widthAndHeight = DimensionUtil.getDeviceWidthAndHeight(this)
 
+        val centerGridSize = widthAndHeight.first - (CENTER_RV_MARGIN * 2).dpToPx()
+
         rvCenter.layoutParams = (rvCenter.layoutParams as ConstraintLayout.LayoutParams).apply {
-            width = widthAndHeight.first - (CENTER_RV_MARGIN * 2).dpToPx()
-            height = widthAndHeight.first - (CENTER_RV_MARGIN * 2).dpToPx()
+            width = centerGridSize
+            height = centerGridSize
         }
+        rvCenter.setPadding((centerGridSize * GRID_PADDING_RATIO).toInt())
 
         rvBottoms.forEach {
             it.layoutParams = (it.layoutParams as LinearLayout.LayoutParams).apply {
@@ -249,9 +258,9 @@ class DadigActivity : AppCompatActivity() {
                 }
             }
             rv.adapter = bottomRvAdapters[index]
+            rv.setPadding((rv.width * GRID_PADDING_RATIO).toInt())
 
             rvBottoms[index].setOnTouchListener { v, event ->
-
 
                 if (event.action == MotionEvent.ACTION_DOWN) {
 
@@ -288,8 +297,14 @@ class DadigActivity : AppCompatActivity() {
         //////
         // rvCenter
 
-        val rvCenterPosition = DimensionUtil.getViewPosition(rvCenter)
-        val rectSize = rvCenter.width / GRID_COUNT
+        val rvCenterPosition = DimensionUtil.getViewPosition(rvCenter).let {
+            DimensionUtil.LeftAndTop(
+                (it.left + rvCenter.width * GRID_PADDING_RATIO).toInt(),
+                (it.top + rvCenter.height * GRID_PADDING_RATIO).toInt()
+            )
+        }
+
+        val rectSize = floatingIconSize
 
         for (i in 0 until GRID_COUNT) {
             for (j in 0 until GRID_COUNT) {
@@ -304,14 +319,13 @@ class DadigActivity : AppCompatActivity() {
             }
         }
 
-        val piecesRectWidth = rectSize / 3
+        val piecesRectWidth = rectSize / GRID_COUNT
 
         bigRects.forEach {
-            for (i in 0 until 3) {
+            for (i in 0 until GRID_COUNT) {
                 piecesRects.add(Rect(it.left + piecesRectWidth * i, it.top, it.left + piecesRectWidth * (i + 1), it.bottom))
             }
         }
-
 
     }
 
@@ -379,6 +393,8 @@ class DadigActivity : AppCompatActivity() {
                             showingApps = itemSets[showingBottomRectIndex]
                         } else {
                             getFolderApp(folderBottomIndex, folderGridIndex).apps[touchUpIndex] = EmptyApp()
+
+
                             if (getFolderApp(folderBottomIndex, folderGridIndex).apps.all { it.isEmpty() }) {
                                 itemSets[folderBottomIndex][folderGridIndex] = EmptyApp()
 
@@ -508,8 +524,10 @@ class DadigActivity : AppCompatActivity() {
                     layoutParams = ViewGroup.LayoutParams(floatingIconSize, floatingIconSize)
                     visibility = View.GONE
                     id = View.generateViewId()
+                    setBackgroundResource(R.drawable.bg_folder_square)
+                    backgroundTintList = resources.getColorStateList(R.color.folderBackground, null)
                 }
-                app.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / FOLDER_PREVIEW_COUNT))
+                app.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize))
                 DynamicViewUtil.addViewToConstraintLayout(clRoot, floatingView as View)
             }
             else -> {
@@ -564,7 +582,7 @@ class DadigActivity : AppCompatActivity() {
         actDadigTvInfo.text = ""
 
         // 원래 그리드 아이콘의 1/3크기로 나눠 터치범위 계산을했는데, 그 1/3나눈게 실제 그리드에서 어디속하는지 알기 위함
-        val nextIndex = piecesIndex / 3
+        val nextIndex = piecesIndex / GRID_COUNT
 
         // -1 : 리사이클러뷰 범위 밖 일때 >> 선택한자리 empty시키고 로직 진행끝
         if (piecesIndex == -1) {
@@ -619,7 +637,7 @@ class DadigActivity : AppCompatActivity() {
             val tmpFolderApp =
                 if (copyApps[nextIndex].appType != AppType.FOLDER) {
                     FolderApp(mutableListOf(touchUpApp, copyApps[nextIndex].copy()).apply {
-                        repeat(FOLDER_PREVIEW_COUNT * FOLDER_PREVIEW_COUNT - 2) {
+                        repeat(GRID_COUNT * GRID_COUNT - 2) {
                             add(EmptyApp())
                         }
                     })
@@ -630,8 +648,7 @@ class DadigActivity : AppCompatActivity() {
                 }
 
             updateFloatingView(tmpFolderApp)
-            tmpFolderApp.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize / FOLDER_PREVIEW_COUNT))
-
+            tmpFolderApp.setIcon(FolderInfo(floatingView as RecyclerView, floatingIconSize))
 
             updateSavingApps(copyShowingApps().apply {
                 this[touchUpIndex] = getShowingAppBySituation()

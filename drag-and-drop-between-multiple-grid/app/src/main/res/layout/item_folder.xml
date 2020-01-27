@@ -8,6 +8,8 @@
         android:id="@+id/itemFolderClIcon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="@color/folderBackground"
+        android:background="@drawable/bg_folder_square"
         android:overScrollMode="never"
         tools:layout_height="100dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

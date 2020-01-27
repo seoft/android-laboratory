@@ -3,13 +3,11 @@ package kr.co.seoft.drag_and_drop_between_multiple_grid
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.setPadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_application.view.*
 import kotlinx.android.synthetic.main.item_folder.view.*
-import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.FOLDER_PREVIEW_COUNT
 import kr.co.seoft.drag_and_drop_between_multiple_grid.model.*
 
 class DadigGridRvAdapter(
@@ -59,7 +57,6 @@ class DadigGridRvAdapter(
             height = itemSize
             width = itemSize
         }
-        holder.itemView.setPadding((itemSize * DadigActivity.ICON_PADDING_RATIO).toInt())
 
         when (getItem(position).appType) {
             AppType.BASIC -> (holder as BasicAppViewHolder).bind(getItem(position) as BasicApp)
@@ -111,7 +108,7 @@ class DadigGridRvAdapter(
         fun bind(folderApp: FolderApp, itemSize: Int) {
             app = folderApp
 
-            folderApp.setIcon(FolderInfo(rvIcon.rv, itemSize / FOLDER_PREVIEW_COUNT))
+            folderApp.setIcon(FolderInfo(rvIcon.rv, itemSize))
         }
     }
 
