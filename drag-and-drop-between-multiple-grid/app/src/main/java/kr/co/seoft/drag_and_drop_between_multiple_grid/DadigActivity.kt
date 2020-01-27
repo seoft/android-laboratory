@@ -379,9 +379,17 @@ class DadigActivity : AppCompatActivity() {
                             showingApps = itemSets[showingBottomRectIndex]
                         } else {
                             getFolderApp(folderBottomIndex, folderGridIndex).apps[touchUpIndex] = EmptyApp()
-                            centerRvAdapter.submitList(getFolderApp(folderBottomIndex, folderGridIndex).apps)
-                            showingApps = getFolderApp(folderBottomIndex, folderGridIndex).apps
+                            if (getFolderApp(folderBottomIndex, folderGridIndex).apps.all { it.isEmpty() }) {
+                                itemSets[folderBottomIndex][folderGridIndex] = EmptyApp()
 
+                                Handler().postDelayed({
+                                    procFolderFinish()
+                                    finish()
+                                }, 300L)
+                            } else {
+                                centerRvAdapter.submitList(getFolderApp(folderBottomIndex, folderGridIndex).apps)
+                                showingApps = getFolderApp(folderBottomIndex, folderGridIndex).apps
+                            }
                         }
                         refreshBottomRvs()
                         return false
