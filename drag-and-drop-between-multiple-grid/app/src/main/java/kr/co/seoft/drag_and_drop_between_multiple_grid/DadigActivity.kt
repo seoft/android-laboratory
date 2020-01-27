@@ -34,7 +34,6 @@ class DadigActivity : AppCompatActivity() {
         fun startBasicActivity(context: Context, gridCount: Int) {
 
             context.startActivity(Intent(context, DadigActivity::class.java).apply {
-                putExtra(EXTRA_GRID_COUNT, gridCount)
                 putExtra(EXTRA_IS_BASIC, true)
 
             })
@@ -44,7 +43,6 @@ class DadigActivity : AppCompatActivity() {
             activity.startActivity(Intent(activity, DadigActivity::class.java).apply {
                 putExtra(EXTRA_BOTTOM_INDEX, bottomIndex)
                 putExtra(EXTRA_GRID_INDEX, gridIndex)
-                putExtra(EXTRA_GRID_COUNT, 3)
                 putExtra(EXTRA_IS_BASIC, false)
             })
         }
@@ -53,7 +51,7 @@ class DadigActivity : AppCompatActivity() {
 
         private const val EXTRA_BOTTOM_INDEX = "EXTRA_BOTTOM_INDEX"
         private const val EXTRA_GRID_INDEX = "EXTRA_GRID_INDEX"
-        private const val EXTRA_GRID_COUNT = "EXTRA_GRID_COUNT"
+        private const val GRID_COUNT = 3
         private const val EXTRA_IS_BASIC = "EXTRA_IS_BASIC"
         private const val CENTER_RV_MARGIN = 60
         private const val MARGIN_TOP_ON_FINGER = 20 // 손가락에 너무 겹치면 안보여서 더 잘보이게 하기 위함
@@ -63,7 +61,6 @@ class DadigActivity : AppCompatActivity() {
         private const val IN_FOLDER_GRID = 4 // 하단 0,1,2,3 이아닌 IN_FOLDER_GRID뷰
     }
 
-    private val gridCount by lazy { intent.getIntExtra(EXTRA_GRID_COUNT, 0) }
     private val isBasic by lazy { intent.getBooleanExtra(EXTRA_IS_BASIC, true) }
 
     private val folderBottomIndex by lazy { intent.getIntExtra(EXTRA_BOTTOM_INDEX, 0) }
@@ -110,8 +107,8 @@ class DadigActivity : AppCompatActivity() {
     private lateinit var savingApps: MutableList<ParentApp>
 
     private val centerRvAdapter by lazy {
-        floatingIconSize = ((rvCenter.width / gridCount) - (rvCenter.width / gridCount) * ICON_PADDING_RATIO * 2).toInt()
-        DadigGridRvAdapter(rvCenter.width / gridCount, clickCallback)
+        floatingIconSize = ((rvCenter.width / GRID_COUNT) - (rvCenter.width / GRID_COUNT) * ICON_PADDING_RATIO * 2).toInt()
+        DadigGridRvAdapter(rvCenter.width / GRID_COUNT, clickCallback)
     }
 
     private val clickCallback = object : (DadigGridRvAdapter.ClickCallbackCommand) -> Unit {
@@ -151,10 +148,10 @@ class DadigActivity : AppCompatActivity() {
         val bottomRvSize = actDadigClBottom0.width
 
         listOf(
-            DadigGridRvAdapter(bottomRvSize / gridCount),
-            DadigGridRvAdapter(bottomRvSize / gridCount),
-            DadigGridRvAdapter(bottomRvSize / gridCount),
-            DadigGridRvAdapter(bottomRvSize / gridCount)
+            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
+            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
+            DadigGridRvAdapter(bottomRvSize / GRID_COUNT),
+            DadigGridRvAdapter(bottomRvSize / GRID_COUNT)
         )
     }
 
@@ -172,7 +169,7 @@ class DadigActivity : AppCompatActivity() {
         setContentView(R.layout.activity_drag_and_drop_in_grids)
 
         itemSets = Preferencer.getAllApps(this).map {
-            it.take(gridCount * gridCount).toMutableList()
+            it.take(GRID_COUNT * GRID_COUNT).toMutableList()
         }.toMutableList()
 
         clRoot.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -218,7 +215,7 @@ class DadigActivity : AppCompatActivity() {
         //////
         // init center recycler views
 
-        rvCenter.layoutManager = GridLayoutManager(baseContext, gridCount)
+        rvCenter.layoutManager = GridLayoutManager(baseContext, GRID_COUNT)
         rvCenter.adapter = centerRvAdapter
 
         //
@@ -246,7 +243,7 @@ class DadigActivity : AppCompatActivity() {
 
         "INIT".e()
         rvBottoms.map { it.rv }.forEachIndexed { index, rv ->
-            rv.layoutManager = object : GridLayoutManager(baseContext, gridCount) {
+            rv.layoutManager = object : GridLayoutManager(baseContext, GRID_COUNT) {
                 override fun supportsPredictiveItemAnimations(): Boolean {
                     return false
                 }
@@ -292,10 +289,10 @@ class DadigActivity : AppCompatActivity() {
         // rvCenter
 
         val rvCenterPosition = DimensionUtil.getViewPosition(rvCenter)
-        val rectSize = rvCenter.width / gridCount
+        val rectSize = rvCenter.width / GRID_COUNT
 
-        for (i in 0 until gridCount) {
-            for (j in 0 until gridCount) {
+        for (i in 0 until GRID_COUNT) {
+            for (j in 0 until GRID_COUNT) {
                 bigRects.add(
                     Rect(
                         rvCenterPosition.left + rectSize * j,
@@ -713,7 +710,7 @@ class DadigActivity : AppCompatActivity() {
         if (comeFromFolder) {
             comeFromFolder = false
             itemSets = Preferencer.getAllApps(this).map {
-                it.take(gridCount * gridCount).toMutableList()
+                it.take(GRID_COUNT * GRID_COUNT).toMutableList()
             }.toMutableList()
 
             centerRvAdapter.submitList(itemSets[showingBottomRectIndex])

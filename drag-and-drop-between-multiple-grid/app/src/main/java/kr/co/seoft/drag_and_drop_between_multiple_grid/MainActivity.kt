@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         start44.setOnClickListener {
-            DadigActivity.startBasicActivity(this, 4)
+//            DadigActivity.startBasicActivity(this, 4)
         }
 
         resetItems33.setOnClickListener {
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         resetItems44.setOnClickListener {
-            initData(4)
+//            initData(4)
         }
 
 
