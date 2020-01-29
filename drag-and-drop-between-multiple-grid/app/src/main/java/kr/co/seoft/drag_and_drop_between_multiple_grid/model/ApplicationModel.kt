@@ -11,7 +11,6 @@ import com.google.gson.stream.JsonWriter
 import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity
 import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigActivity.Companion.GRID_PADDING_RATIO
 import kr.co.seoft.drag_and_drop_between_multiple_grid.DadigGridRvAdapter
-import kr.co.seoft.drag_and_drop_between_multiple_grid.R
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.AppUtil
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.EMPTY
 import kr.co.seoft.drag_and_drop_between_multiple_grid.util.i
@@ -153,8 +152,7 @@ data class EmptyApp(
 
     override fun setIcon(info: IconInfo) {
         if (info is EmptyInfo) {
-            info.iv.setImageResource(R.drawable.ic_add_black_24dp)
-//            info.iv.setImageDrawable(null) // todo open
+            info.iv.setImageDrawable(null)
         }
     }
 }

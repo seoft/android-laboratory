@@ -14,11 +14,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         start33.setOnClickListener {
-            DadigActivity.startBasicActivity(this, 3)
+            DadigActivity.startBasicActivity(this)
         }
 
         start44.setOnClickListener {
-//            DadigActivity.startBasicActivity(this, 4)
+
         }
 
         resetItems33.setOnClickListener {
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         resetItems44.setOnClickListener {
-//            initData(4)
+
         }
 
 
