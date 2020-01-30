@@ -1,15 +1,15 @@
 # drag-and-drop-between-multiple-grid
 
 
-### 블로그
+## 블로그
 https://seoft.tistory.com/36
 
 
-### 결과
+## 결과
 ![Android Emulator - Pixel_2_-_Nougat_5554 2020-01-30 21-00-53 mp4_20200130_214431](https://user-images.githubusercontent.com/55025826/73450960-d2007200-43a9-11ea-8fbd-a59d5519ca29.gif)
 
 
-### 요구 사항
+## 요구 사항
 #### 기본적인 홈런쳐에 있는 기능과 유사하며, 요구사항은 다음과 같다.
 
 - 9개의 아이템을 가지고 있는 4개의 그리드에 앱배치
@@ -19,7 +19,7 @@ https://seoft.tistory.com/36
 - 폴더 내의 아이템 각 그리드로 이동
 
 
-### 구현 요약 
+## 구현 요약 
 - 센터, 하단 그리드, 휴지통 위치정보 획득, 터치 정보 확보
 - 센터 그리드 한칸당 3등분으로 분배
 - 그리드에서 LongClick시 아이템 정보, 좌표 획득 후 동적으로 create, 현 터치지점 따라다니도록 구현
@@ -41,7 +41,7 @@ https://seoft.tistory.com/36
 - 폴더, Empty, 기본앱 유무를 상위 클래스를 두어 공통으로 관리
 - json list <-> object list로 preference로 관리
 
-### Reference
+## Reference
 - https://seoft.tistory.com/35?category=1066264
 - https://seoft.tistory.com/33?category=1066264
 - https://seoft.tistory.com/32?category=1066264
