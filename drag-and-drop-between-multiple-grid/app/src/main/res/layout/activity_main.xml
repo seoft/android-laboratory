@@ -17,23 +17,10 @@
             android:text="start 3*3" />
 
         <Button
-            android:id="@+id/start44"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="start 4*4" />
-
-        <Button
             android:id="@+id/resetItems33"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="reset items 3*3" />
-
-        <Button
-            android:id="@+id/resetItems44"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="reset items 4*4" />
-
 
     </LinearLayout>
 

@@ -259,6 +259,8 @@ class DadigActivity : AppCompatActivity() {
                 showingApps = it
                 savingApps = it
             }
+
+            actDadigRvCenter.backgroundTintList = resources.getColorStateList(R.color.folderBackground, null)
         }
 
         //////
