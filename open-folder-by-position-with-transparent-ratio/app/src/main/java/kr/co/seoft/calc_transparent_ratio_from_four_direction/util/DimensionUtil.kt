@@ -20,6 +20,13 @@ object DimensionUtil {
         return 0
     }
 
+    fun getBottomNavigationbarHeight(context: Context): Int {
+        val resourceId =
+            context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        return if (resourceId > 0) context.resources.getDimensionPixelSize(resourceId)
+        else 0
+    }
+
     fun getViewPosition(view: View): LeftAndTop {
         val viewPos = IntArray(2)
         view.getLocationOnScreen(viewPos)

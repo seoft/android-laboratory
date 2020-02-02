@@ -19,6 +19,10 @@ fun Int.pxToDp() = (this / Resources.getSystem().displayMetrics.density).toInt()
 
 fun Int.dpToPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
+fun Float.pxToDp() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+fun Float.dpToPx() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
 fun Int.dimen(context: Context) = context.resources.getDimension(this).toInt()
 
 val String.Companion.EMPTY get() = ""
