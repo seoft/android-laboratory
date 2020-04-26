@@ -1,0 +1,2 @@
+rootProject.name='write-post-with-items'
+include ':app'
