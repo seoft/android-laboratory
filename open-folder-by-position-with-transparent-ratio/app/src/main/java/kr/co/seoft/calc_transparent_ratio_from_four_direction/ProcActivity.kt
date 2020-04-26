@@ -51,7 +51,7 @@ class ProcActivity : AppCompatActivity() {
     private val DISTANCE_OF_SHOW_PREVIEW = 30.dpToPx()
 
     private val centerSize by lazy { intent.getIntExtra(EXTRA_CENTER_SIZE, 0).dpToPx() }
-    private val distance by lazy { intent.getIntExtra(EXTRA_DISTANCE, 0).dpToPx() }
+    private val openDistance by lazy { intent.getIntExtra(EXTRA_DISTANCE, 0).dpToPx() }
     private val bottomNavigationbarHeight by lazy { DimensionUtil.getBottomNavigationbarHeight(this) }
     private var startPoint = Point()
     private val openPoints = Array(4) { Point() }
@@ -141,16 +141,16 @@ class ProcActivity : AppCompatActivity() {
                         actProcRvCenter.visibility = View.INVISIBLE
                     }
 
-                    if (x - distance - PREVIEW_SIZE_HALF < 0) {
-                        x = distance + PREVIEW_SIZE_HALF
-                    } else if (x + distance + PREVIEW_SIZE_HALF > rootRect.right) {
-                        x = rootRect.right - distance - PREVIEW_SIZE_HALF
+                    if (x - openDistance - PREVIEW_SIZE_HALF < 0) {
+                        x = openDistance + PREVIEW_SIZE_HALF
+                    } else if (x + openDistance + PREVIEW_SIZE_HALF > rootRect.right) {
+                        x = rootRect.right - openDistance - PREVIEW_SIZE_HALF
                     }
 
-                    if (y - distance - PREVIEW_SIZE_HALF < 0) {
-                        y = distance + PREVIEW_SIZE_HALF
-                    } else if (y + distance > rootRect.bottom - bottomNavigationbarHeight) {
-                        y = rootRect.bottom - distance - bottomNavigationbarHeight
+                    if (y - openDistance - PREVIEW_SIZE_HALF < 0) {
+                        y = openDistance + PREVIEW_SIZE_HALF
+                    } else if (y + openDistance > rootRect.bottom - bottomNavigationbarHeight) {
+                        y = rootRect.bottom - openDistance - bottomNavigationbarHeight
                     }
 
                     startPoint.set(x, y)
@@ -161,10 +161,10 @@ class ProcActivity : AppCompatActivity() {
                     }
                     actProcIvTouch.requestLayout()
 
-                    openPoints[LEFT].set(x - distance, y)
-                    openPoints[TOP].set(x, y - distance)
-                    openPoints[RIGHT].set(x + distance, y)
-                    openPoints[BOTTOM].set(x, y + distance)
+                    openPoints[LEFT].set(x - openDistance, y)
+                    openPoints[TOP].set(x, y - openDistance)
+                    openPoints[RIGHT].set(x + openDistance, y)
+                    openPoints[BOTTOM].set(x, y + openDistance)
 
                     repeat(4) {
                         (rvPreviews[it].layoutParams as ConstraintLayout.LayoutParams).leftMargin =
@@ -192,10 +192,10 @@ class ProcActivity : AppCompatActivity() {
                         repeat(4) {
 
                             var interval = getInterval(openPoints[it], Point(x, y))
-                            if (interval > distance) interval = distance.toFloat()
+                            if (interval > openDistance) interval = openDistance.toFloat()
 
                             rvPreviews[it].alpha =
-                                (((distance - interval)) / distance * (MAX_ALPHA - MIN_ALPHA) + MIN_ALPHA)
+                                (((openDistance - interval)) / openDistance * (MAX_ALPHA - MIN_ALPHA) + MIN_ALPHA)
 
 
                             if (interval < PREVIEW_SIZE_HALF) {
