@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+    <TextView
+        android:id="@+id/dialogSimpleSelectTv7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/common_margin"
+        android:paddingTop="10dp"
+        android:paddingEnd="@dimen/common_margin"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="ㅁㄴㅇㄹ" />
+
+</LinearLayout>

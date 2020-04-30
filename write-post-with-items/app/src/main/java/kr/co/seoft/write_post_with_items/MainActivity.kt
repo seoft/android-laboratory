@@ -3,7 +3,7 @@ package kr.co.seoft.write_post_with_items
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kr.co.seoft.write_post_with_items.wirte.WriteActivity
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteActivity
 
 class MainActivity : AppCompatActivity() {
 
