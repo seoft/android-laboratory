@@ -5,9 +5,11 @@
     android:layout_height="wrap_content">
 
     <EditText
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:id="@+id/itemWriteContentBlankEditText"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#D6B1B1"
         android:paddingStart="@dimen/common_margin"
         android:paddingEnd="@dimen/common_margin"

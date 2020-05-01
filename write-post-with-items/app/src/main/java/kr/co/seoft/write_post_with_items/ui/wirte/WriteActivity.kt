@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_write.*
 import kr.co.seoft.write_post_with_items.R
@@ -28,6 +29,13 @@ class WriteActivity : AppCompatActivity() {
     private val writeViewModel by lazy { ViewModelProvider(this).get(WriteViewModel::class.java) }
     private val adapter by lazy { WriteContentAdapter(writeViewModel) }
     private val layoutManager by lazy { LinearLayoutManager(this) }
+    private val itemTouchHelper by lazy {
+        ItemTouchHelper(ItemMoveCallback(moveCallback = { from, to ->
+            // 첫 index 의 Content.Text 아이템 경우 제외될때 사이드 이펙트 방지로 예외처리
+            if (from.adapterPosition == 0 || to.adapterPosition == 0) return@ItemMoveCallback
+            writeViewModel.swapList(from.adapterPosition, to.adapterPosition)
+        }))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,23 +52,30 @@ class WriteActivity : AppCompatActivity() {
 
     private fun initView() {
         actWriteRvList.adapter = adapter
-        actWriteRvList.itemAnimator = null
         actWriteRvList.layoutManager = layoutManager
+        itemTouchHelper.attachToRecyclerView(actWriteRvList)
     }
 
     private fun initObserver() {
         writeViewModel.contents.observe(this, Observer {
             val list = it.toMutableList()
-            var index = 0
-            while (list.size - 1 > index) {
-                if (list[index] !is WriteData.Content.Text && list[index + 1] !is WriteData.Content.Text) {
-                    list.add(index + 1, WriteData.Content.Blank(list[index]))
+
+            if (list.firstOrNull()?.isShuffle == false) {
+                var index = 0
+                while (list.size - 1 > index) {
+                    if (list[index] !is WriteData.Content.Text && list[index + 1] !is WriteData.Content.Text) {
+                        list.add(index + 1, WriteData.Content.Blank(list[index]))
+                        index++
+                    }
                     index++
                 }
-                index++
+                if (it.last() !is WriteData.Content.Text) list.add(WriteData.Content.Blank(list[index]))
             }
-            if (it.last() !is WriteData.Content.Text) list.add(WriteData.Content.Blank(list[index]))
             adapter.submitList(list)
+        })
+
+        writeViewModel.dragItem.observe(this, Observer {
+            itemTouchHelper.startDrag(it)
         })
     }
 
@@ -74,6 +89,10 @@ class WriteActivity : AppCompatActivity() {
 
     fun onClickTvComplete() {
         "onClickTvComplete".toast(this)
+    }
+
+    fun onClickTvShuffleComplete() {
+        writeViewModel.completeShuffle()
     }
 
     fun onClickIvImageIcon() {

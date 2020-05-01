@@ -4,15 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/itemWriteContentTextEditText"
+    <TextView
+        android:id="@+id/itemWriteShuffleTextView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#A6A9BF"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:paddingStart="@dimen/common_margin"
-        android:paddingEnd="@dimen/common_margin"
+        android:paddingStart="@dimen/shuffle_bar_width_padding"
+        android:paddingTop="3dp"
+        android:paddingEnd="@dimen/shuffle_bar_width_padding"
+        android:paddingBottom="3dp"
+        android:textColor="#222222"
+        android:textSize="9sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -10,6 +10,8 @@
 
         <import type="android.graphics.Color" />
 
+        <import type="android.view.View" />
+
         <variable
             name="act"
             type="kr.co.seoft.write_post_with_items.ui.wirte.WriteActivity" />
@@ -64,7 +66,23 @@
                 android:onClick="@{()->act.onClickTvComplete()}"
                 android:padding="10dp"
                 android:text="완료"
+                android:visibility="@{writeViewModel.isShuffleMode ? View.GONE : View.VISIBLE}"
                 android:textColor="#cccccc"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/actWriteTvShuffleComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:onClick="@{()->act.onClickTvShuffleComplete()}"
+                android:padding="10dp"
+                android:text="배치완료"
+                android:visibility="@{writeViewModel.isShuffleMode ? View.VISIBLE : View.GONE}"
+                android:textColor="#48c285"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +107,7 @@
             android:textColor="#222222"
             android:textColorHint="#cccccc"
             android:textSize="16sp"
+            android:visibility="@{writeViewModel.isShuffleMode ? View.GONE : View.VISIBLE}"
             app:layout_constraintTop_toBottomOf="@id/actWriteClTitleBar"
             tools:text="안녕하세요!!!!!!!" />
 
@@ -110,6 +129,7 @@
             android:id="@+id/actWriteClBottom"
             android:layout_width="match_parent"
             android:layout_height="45dp"
+            android:visibility="@{writeViewModel.isShuffleMode ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <View

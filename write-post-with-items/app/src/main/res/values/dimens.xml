@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="common_margin">14dp</dimen>
+    <dimen name="shuffle_bar_height">30dp</dimen>
+    <dimen name="shuffle_bar_width_padding">40dp</dimen>
+    <dimen name="shuffle_bar_height_padding">4dp</dimen>
 </resources>

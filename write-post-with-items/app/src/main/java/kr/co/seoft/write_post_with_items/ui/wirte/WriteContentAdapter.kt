@@ -11,6 +11,11 @@ import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteCo
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentTodoViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentVoteViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentYoutubeViewHolder
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleImageViewHolder
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleTextViewHolder
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleTodoViewHolder
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleVoteViewHolder
+import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleYoutubeViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
 
 class WriteContentAdapter(private val viewModel: WriteViewModel) :
@@ -31,15 +36,21 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
         const val WRITE_CONTENT_TODO = 3
         const val WRITE_CONTENT_YOUTUBE = 4
         const val WRITE_CONTENT_BLANK = 5
+
+        const val WRITE_SHUFFLE_TEXT = 10
+        const val WRITE_SHUFFLE_IMAGE = 11
+        const val WRITE_SHUFFLE_VOTE = 12
+        const val WRITE_SHUFFLE_TODO = 13
+        const val WRITE_SHUFFLE_YOUTUBE = 14
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Content.Text -> WRITE_CONTENT_TEXT
-            is Content.Image -> WRITE_CONTENT_IMAGE
-            is Content.Vote -> WRITE_CONTENT_VOTE
-            is Content.Todo -> WRITE_CONTENT_TODO
-            is Content.Youtube -> WRITE_CONTENT_YOUTUBE
+            is Content.Text -> if (getItem(position).isShuffle) WRITE_SHUFFLE_TEXT else WRITE_CONTENT_TEXT
+            is Content.Image -> if (getItem(position).isShuffle) WRITE_SHUFFLE_IMAGE else WRITE_CONTENT_IMAGE
+            is Content.Vote -> if (getItem(position).isShuffle) WRITE_SHUFFLE_VOTE else WRITE_CONTENT_VOTE
+            is Content.Todo -> if (getItem(position).isShuffle) WRITE_SHUFFLE_TODO else WRITE_CONTENT_TODO
+            is Content.Youtube -> if (getItem(position).isShuffle) WRITE_SHUFFLE_YOUTUBE else WRITE_CONTENT_YOUTUBE
             is Content.Blank -> WRITE_CONTENT_BLANK
         }
     }
@@ -51,7 +62,12 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
             WRITE_CONTENT_VOTE -> WriteContentVoteViewHolder.getInstance(parent, viewModel)
             WRITE_CONTENT_TODO -> WriteContentTodoViewHolder.getInstance(parent, viewModel)
             WRITE_CONTENT_YOUTUBE -> WriteContentYoutubeViewHolder.getInstance(parent, viewModel)
-            else /*WRITE_CONTENT_BLANK*/ -> WriteContentBlankViewHolder.getInstance(parent, viewModel)
+            WRITE_CONTENT_BLANK -> WriteContentBlankViewHolder.getInstance(parent, viewModel)
+            WRITE_SHUFFLE_TEXT -> WriteShuffleTextViewHolder.getInstance(parent, viewModel)
+            WRITE_SHUFFLE_IMAGE -> WriteShuffleImageViewHolder.getInstance(parent, viewModel)
+            WRITE_SHUFFLE_VOTE -> WriteShuffleVoteViewHolder.getInstance(parent, viewModel)
+            WRITE_SHUFFLE_TODO -> WriteShuffleTodoViewHolder.getInstance(parent, viewModel)
+            else /*WRITE_SHUFFLE_YOUTUBE*/ -> WriteShuffleYoutubeViewHolder.getInstance(parent, viewModel)
         }
     }
 
@@ -73,6 +89,21 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
                 holder.bind(getItem(position))
             }
             is WriteContentBlankViewHolder -> {
+                holder.bind(getItem(position))
+            }
+            is WriteShuffleTextViewHolder -> {
+                holder.bind(getItem(position))
+            }
+            is WriteShuffleImageViewHolder -> {
+                holder.bind(getItem(position))
+            }
+            is WriteShuffleVoteViewHolder -> {
+                holder.bind(getItem(position))
+            }
+            is WriteShuffleTodoViewHolder -> {
+                holder.bind(getItem(position))
+            }
+            is WriteShuffleYoutubeViewHolder -> {
                 holder.bind(getItem(position))
             }
         }
