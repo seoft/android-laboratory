@@ -71,7 +71,9 @@ class WriteActivity : AppCompatActivity() {
                 }
                 if (it.last() !is WriteData.Content.Text) list.add(WriteData.Content.Blank(list[index]))
             }
-            adapter.submitList(list)
+            adapter.submitList(list) {
+                if (writeViewModel.isAddedItemToLast.getAndSet(false)) layoutManager.scrollToPosition(adapter.itemCount - 1)
+            }
         })
 
         writeViewModel.dragItem.observe(this, Observer {
@@ -101,17 +103,17 @@ class WriteActivity : AppCompatActivity() {
 
     fun onClickIvVoteIcon() {
         // 추가과정 생략
-        writeViewModel.addItem(WriteData.Content.Vote(writeViewModel.random.nextLong().toString()))
+        writeViewModel.addItemToLast(WriteData.Content.Vote(writeViewModel.random.nextLong().toString()))
     }
 
     fun onClickIvTodoIcon() {
         // 추가과정 생략
-        writeViewModel.addItem(WriteData.Content.Todo(writeViewModel.random.nextLong().toString()))
+        writeViewModel.addItemToLast(WriteData.Content.Todo(writeViewModel.random.nextLong().toString()))
     }
 
     fun onClickIvYoutubeIcon() {
         // 추가과정 생략
-        writeViewModel.addItem(WriteData.Content.Youtube(writeViewModel.random.nextLong().toString()))
+        writeViewModel.addItemToLast(WriteData.Content.Youtube(writeViewModel.random.nextLong().toString()))
     }
 
     fun onClickIvEmojiImageIcon() {

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
 import kr.co.seoft.write_post_with_items.util.*
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 class WriteViewModel(application: Application) : AndroidViewModel(application) {
@@ -29,6 +30,7 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val dragItem = SafetyLiveData<RecyclerView.ViewHolder>()
+    var isAddedItemToLast = AtomicBoolean(false)
 
     val isShuffleMode = SafetyLiveData<Boolean>().apply {
         set(false)
@@ -65,11 +67,12 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
         contents.set(getContents() + Content.Image(uploadFile))
     }
 
-    fun addItem(content: Content) {
+    fun addItemToLast(content: Content) {
+        isAddedItemToLast.set(true)
         contents.set(getContents() + content)
     }
 
-    fun addItem(previousContent: Content, newContent: Content) {
+    fun addTextItemInsteadBlank(previousContent: Content, newContent: Content) {
         contents.set(getContents().toMutableList().apply { add(getContents().indexOf(previousContent) + 1, newContent) })
     }
 

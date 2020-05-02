@@ -151,8 +151,7 @@ object WriteContentViewHolder {
     }
 
     class WriteContentTodoViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+        RecyclerView.ViewHolder(itemView), ViewDetectable {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
@@ -184,8 +183,7 @@ object WriteContentViewHolder {
     }
 
     class WriteContentYoutubeViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+        RecyclerView.ViewHolder(itemView), ViewDetectable {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
@@ -218,8 +216,7 @@ object WriteContentViewHolder {
     }
 
     class WriteContentBlankViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+        RecyclerView.ViewHolder(itemView), ViewDetectable {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
@@ -240,7 +237,7 @@ object WriteContentViewHolder {
                 if (hasFocus) {
                     editText.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
                 } else if (!hasFocus && !editText.text.isBlank()) {
-                    writeViewModel.addItem(
+                    writeViewModel.addTextItemInsteadBlank(
                         item.previousContent,
                         WriteData.Content.Text(writeViewModel.random.nextInt(), editText.text.toString())
                     )
