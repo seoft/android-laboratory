@@ -1,30 +1,17 @@
 package kr.co.seoft.write_post_with_items.ui.wirte
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.android.synthetic.main.item_write_content_blank.view.*
-import kotlinx.android.synthetic.main.item_write_content_image.view.*
 import kotlinx.android.synthetic.main.item_write_content_text.view.*
-import kotlinx.android.synthetic.main.item_write_content_todo.view.*
-import kotlinx.android.synthetic.main.item_write_content_vote.view.*
-import kotlinx.android.synthetic.main.item_write_content_youtube.view.*
-import kotlinx.android.synthetic.main.item_write_shuffle_image.view.*
-import kotlinx.android.synthetic.main.item_write_shuffle_text.view.*
-import kotlinx.android.synthetic.main.item_write_shuffle_todo.view.*
-import kotlinx.android.synthetic.main.item_write_shuffle_vote.view.*
-import kotlinx.android.synthetic.main.item_write_shuffle_youtube.view.*
 import kr.co.seoft.write_post_with_items.R
 import kr.co.seoft.write_post_with_items.ViewDetectable
+import kr.co.seoft.write_post_with_items.databinding.*
 import kr.co.seoft.write_post_with_items.ui.dialog.SimpleSelectDialog
 import kr.co.seoft.write_post_with_items.util.EMPTY
 import kr.co.seoft.write_post_with_items.util.dpToPx
@@ -38,8 +25,7 @@ object WriteContentViewHolder {
         ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentTextViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_text, parent, false),
                     writeViewModel
@@ -79,37 +65,24 @@ object WriteContentViewHolder {
     }
 
 
-    class WriteContentImageViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+    class WriteContentImageViewHolder(
+        private val binding: ItemWriteContentImageBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentImageViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_image, parent, false), writeViewModel
+                    ItemWriteContentImageBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val imageView = itemView.itemWriteContentImageView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Image) return
-
-            Glide.with(itemView.context)
-                .load(item.file)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .placeholder(ColorDrawable(Color.parseColor("#cccccc")))
-                .into(imageView)
-
-            itemView.setOnClickListener { WriteContentViewHolderHelper.showSelectDialog(itemView.context, writeViewModel, item) }
-
-            itemView.setOnLongClickListener {
-                writeViewModel.editTextsFocusOff.set(true)
-                writeViewModel.startShuffle()
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentImage = item
+            binding.executePendingBindings()
         }
 
         override fun onViewAttachedToWindow() {}
@@ -117,32 +90,24 @@ object WriteContentViewHolder {
         override fun onViewDetachedFromWindow() {}
     }
 
-    class WriteContentVoteViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+    class WriteContentVoteViewHolder(
+        private val binding: ItemWriteContentVoteBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentVoteViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_vote, parent, false), writeViewModel
+                    ItemWriteContentVoteBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val textView = itemView.itemWriteContentVoteTextView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Vote) return
-            textView.text = item.title
-
-            itemView.setOnClickListener { WriteContentViewHolderHelper.showSelectDialog(itemView.context, writeViewModel, item) }
-
-            itemView.setOnLongClickListener {
-                writeViewModel.editTextsFocusOff.set(true)
-                writeViewModel.startShuffle()
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentVote = item
+            binding.executePendingBindings()
         }
 
         override fun onViewAttachedToWindow() {}
@@ -150,31 +115,24 @@ object WriteContentViewHolder {
         override fun onViewDetachedFromWindow() {}
     }
 
-    class WriteContentTodoViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView), ViewDetectable {
+    class WriteContentTodoViewHolder(
+        private val binding: ItemWriteContentTodoBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentTodoViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_todo, parent, false), writeViewModel
+                    ItemWriteContentTodoBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val textView = itemView.itemWriteContentTodoTextView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Todo) return
-            textView.text = item.title
-
-            itemView.setOnClickListener { WriteContentViewHolderHelper.showSelectDialog(itemView.context, writeViewModel, item) }
-
-            itemView.setOnLongClickListener {
-                writeViewModel.editTextsFocusOff.set(true)
-                writeViewModel.startShuffle()
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentTodo = item
+            binding.executePendingBindings()
         }
 
         override fun onViewAttachedToWindow() {}
@@ -182,32 +140,24 @@ object WriteContentViewHolder {
         override fun onViewDetachedFromWindow() {}
     }
 
-    class WriteContentYoutubeViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView), ViewDetectable {
+    class WriteContentYoutubeViewHolder(
+        private val binding: ItemWriteContentYoutubeBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentYoutubeViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_youtube, parent, false),
-                    writeViewModel
+                    ItemWriteContentYoutubeBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
 
-        private val textView = itemView.itemWriteContentYoutubeTextView
-
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Youtube) return
-            textView.text = item.url
-
-            itemView.setOnClickListener { WriteContentViewHolderHelper.showSelectDialog(itemView.context, writeViewModel, item) }
-
-            itemView.setOnLongClickListener {
-                writeViewModel.editTextsFocusOff.set(true)
-                writeViewModel.startShuffle()
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentYoutube = item
+            binding.executePendingBindings()
         }
 
         override fun onViewAttachedToWindow() {}
@@ -262,136 +212,114 @@ object WriteContentViewHolder {
         }
     }
 
-    class WriteShuffleTextViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView) {
-
+    class WriteShuffleTextViewHolder(
+        private val binding: ItemWriteShuffleTextBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteShuffleTextViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_shuffle_text, parent, false),
-                    writeViewModel
+                    ItemWriteShuffleTextBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val textView = itemView.itemWriteShuffleTextView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Text) return
-            textView.text = item.text
-            itemView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) writeViewModel.dragItem.set(this)
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentText = item
+            binding.viewHolder = this
+            binding.executePendingBindings()
         }
     }
 
-    class WriteShuffleImageViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView) {
+    class WriteShuffleImageViewHolder(
+        private val binding: ItemWriteShuffleImageBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteShuffleImageViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_shuffle_image, parent, false),
-                    writeViewModel
+                    ItemWriteShuffleImageBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val imageView = itemView.itemWriteShuffleImageView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Image) return
-
-            Glide.with(itemView.context)
-                .load(item.file)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .placeholder(ColorDrawable(Color.parseColor("#cccccc")))
-                .into(imageView)
-            itemView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) writeViewModel.dragItem.set(this)
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentImage = item
+            binding.viewHolder = this
+            binding.executePendingBindings()
         }
     }
 
-    class WriteShuffleVoteViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView) {
+    class WriteShuffleVoteViewHolder(
+        private val binding: ItemWriteShuffleVoteBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteShuffleVoteViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_shuffle_vote, parent, false),
-                    writeViewModel
+                    ItemWriteShuffleVoteBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val textView = itemView.itemWriteShuffleVoteTextView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Vote) return
-            textView.text = item.title
-            itemView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) writeViewModel.dragItem.set(this)
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentVote = item
+            binding.viewHolder = this
+            binding.executePendingBindings()
         }
     }
 
-    class WriteShuffleTodoViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView) {
+    class WriteShuffleTodoViewHolder(
+        private val binding: ItemWriteShuffleTodoBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteShuffleTodoViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_shuffle_todo, parent, false),
-                    writeViewModel
+                    ItemWriteShuffleTodoBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
-
-        private val textView = itemView.itemWriteShuffleTodoTextView
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Todo) return
-            textView.text = item.title
-            itemView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) writeViewModel.dragItem.set(this)
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentTodo = item
+            binding.viewHolder = this
+            binding.executePendingBindings()
         }
     }
 
-    class WriteShuffleYoutubeViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView) {
+    class WriteShuffleYoutubeViewHolder(
+        private val binding: ItemWriteShuffleYoutubeBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteShuffleYoutubeViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_shuffle_youtube, parent, false),
-                    writeViewModel
+                    ItemWriteShuffleYoutubeBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
 
-        private val textView = itemView.itemWriteShuffleYoutubeTextView
-
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Youtube) return
-            textView.text = item.url
-            itemView.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) writeViewModel.dragItem.set(this)
-                true
-            }
+            binding.viewModel = writeViewModel
+            binding.contentYoutube = item
+            binding.viewHolder = this
+            binding.executePendingBindings()
         }
     }
-
 
     object WriteContentViewHolderHelper {
         fun showSelectDialog(context: Context, writeViewModel: WriteViewModel, content: WriteData.Content) {

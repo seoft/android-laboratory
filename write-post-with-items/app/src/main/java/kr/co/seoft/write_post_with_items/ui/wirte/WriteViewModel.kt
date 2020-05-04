@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 class WriteViewModel(application: Application) : AndroidViewModel(application) {
 
-    companion object{
+    companion object {
         const val TOP_TEXT_ID = 0
     }
 
@@ -30,10 +30,20 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val dragItem = SafetyLiveData<RecyclerView.ViewHolder>()
+
+    val onSetDragItem = fun(vh: RecyclerView.ViewHolder) {
+        dragItem.set(vh)
+    }
+
     var isAddedItemToLast = AtomicBoolean(false)
 
     val isShuffleMode = SafetyLiveData<Boolean>().apply {
         set(false)
+    }
+
+    fun focusEditTextsAndStartShuffle() {
+        editTextsFocusOff.set(true)
+        startShuffle()
     }
 
     fun getContents() = contents.value ?: emptyList()
