@@ -96,7 +96,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/actWriteEtTitle"
             android:layout_width="match_parent"
             android:layout_height="50dp"

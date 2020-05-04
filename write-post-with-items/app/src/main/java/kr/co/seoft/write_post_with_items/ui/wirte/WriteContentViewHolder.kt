@@ -2,33 +2,29 @@ package kr.co.seoft.write_post_with_items.ui.wirte
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_write_content_blank.view.*
 import kotlinx.android.synthetic.main.item_write_content_text.view.*
-import kr.co.seoft.write_post_with_items.R
 import kr.co.seoft.write_post_with_items.ViewDetectable
 import kr.co.seoft.write_post_with_items.databinding.*
 import kr.co.seoft.write_post_with_items.ui.dialog.SimpleSelectDialog
 import kr.co.seoft.write_post_with_items.util.EMPTY
-import kr.co.seoft.write_post_with_items.util.dpToPx
 import kr.co.seoft.write_post_with_items.util.toEditable
 import kr.co.seoft.write_post_with_items.util.toast
 
 object WriteContentViewHolder {
 
-    class WriteContentTextViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView),
-        ViewDetectable {
+    class WriteContentTextViewHolder(
+        private val binding: ItemWriteContentTextBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentTextViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_text, parent, false),
-                    writeViewModel
+                    ItemWriteContentTextBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
@@ -37,17 +33,9 @@ object WriteContentViewHolder {
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Text) return
-            editText.text = item.text.toEditable()
-            editText.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    // 첫 index 의 Content.Text 아이템 경우 제외될때 사이드 이펙트 방지로 예외처리
-                    if (editText.text.toString().isEmpty() && item.id != WriteViewModel.TOP_TEXT_ID) {
-                        writeViewModel.removeItem(item)
-                    } else {
-                        writeViewModel.setTextItem(item.copy(text = editText.text.toString()))
-                    }
-                }
-            }
+            binding.viewModel = writeViewModel
+            binding.contentText = item
+            binding.executePendingBindings()
         }
 
         private val editTextsFocusOffObserver = Observer<Boolean> {
@@ -165,14 +153,15 @@ object WriteContentViewHolder {
         override fun onViewDetachedFromWindow() {}
     }
 
-    class WriteContentBlankViewHolder(itemView: View, private val writeViewModel: WriteViewModel) :
-        RecyclerView.ViewHolder(itemView), ViewDetectable {
+    class WriteContentBlankViewHolder(
+        private val binding: ItemWriteContentBlankBinding,
+        private val writeViewModel: WriteViewModel
+    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
 
         companion object {
-            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel)
-                    : RecyclerView.ViewHolder {
+            fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
                 return WriteContentBlankViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_write_content_blank, parent, false), writeViewModel
+                    ItemWriteContentBlankBinding.inflate(LayoutInflater.from(parent.context), parent, false), writeViewModel
                 )
             }
         }
@@ -181,21 +170,10 @@ object WriteContentViewHolder {
 
         fun bind(item: WriteData.Content) {
             if (item !is WriteData.Content.Blank) return
-            editText.layoutParams.height = 30.dpToPx()
+            binding.viewModel = writeViewModel
+            binding.contentBlank = item
+            binding.executePendingBindings()
             editText.text = String.EMPTY.toEditable()
-            editText.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    editText.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
-                } else if (!hasFocus && !editText.text.isBlank()) {
-                    writeViewModel.addTextItemInsteadBlank(
-                        item.previousContent,
-                        WriteData.Content.Text(writeViewModel.random.nextInt(), editText.text.toString())
-                    )
-                } else {
-                    editText.layoutParams.height = 30.dpToPx()
-                }
-                editText.requestLayout()
-            }
         }
 
         private val editTextsFocusOffObserver = Observer<Boolean> {
