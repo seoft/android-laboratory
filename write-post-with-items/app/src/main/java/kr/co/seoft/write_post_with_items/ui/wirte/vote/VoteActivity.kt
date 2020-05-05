@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_vote.*
 import kr.co.seoft.write_post_with_items.R
 import kr.co.seoft.write_post_with_items.databinding.ActivityVoteBinding
+import kr.co.seoft.write_post_with_items.util.toaste
 
 class VoteActivity : AppCompatActivity() {
 
@@ -60,11 +61,10 @@ class VoteActivity : AppCompatActivity() {
     }
 
     fun onClickIvBack() {
-
+        "onClickIvBack".toaste(this)
     }
 
     fun onClickTvComplete() {
-
+        "onClickTvComplete".toaste(this)
     }
-
 }

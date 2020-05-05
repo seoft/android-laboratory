@@ -1,0 +1,40 @@
+@@@@@@@@@@@@@@@@ 1 @@@@@@@@@@@@@@@@
+
+```
+
+fun combineVoteItems(): List<VoteItem> {
+        val currentTitle = title.value
+        val currentContents = contens.value
+        val currentOptionEdit = optionEdit.value
+        val currentOptionMultiple = optionMultiple.value
+        val currentOptionOverlap = optionOverlap.value
+
+        if (currentTitle == null || currentContents == null || currentOptionEdit == null
+            || currentOptionMultiple == null || currentOptionOverlap == null
+        ) {
+            return emptyList()
+        }
+
+        return listOf<VoteItem>(currentTitle) + currentContents + currentOptionEdit + currentOptionMultiple + currentOptionOverlap
+    }
+
+
+fun combineVoteItems(): List<VoteItem> {
+        val currentTitle = title.value?:return emptyList()
+        val currentContents = contens.value?:return emptyList()
+        val currentOptionEdit = optionEdit.value?:return emptyList()
+        val currentOptionMultiple = optionMultiple.value?:return emptyList()
+        val currentOptionOverlap = optionOverlap.value?:return emptyList()
+
+        return listOf<VoteItem>(currentTitle) + currentContents + currentOptionEdit + currentOptionMultiple + currentOptionOverlap
+    }
+
+```
+
+to
+
+```
+    fun combineVoteItems(): List<VoteItem> {
+        return LiveDataUtil.convertToTypeList(title, contens, optionEdit, optionMultiple, optionOverlap) ?: return emptyList()
+    }
+```
