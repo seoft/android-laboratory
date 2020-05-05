@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="kr.co.seoft.write_post_with_items.ui.wirte.WriteActivity" />
+        <activity android:name=".ui.wirte.vote.VoteActivity"></activity>
+        <activity android:name=".ui.wirte.WriteActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

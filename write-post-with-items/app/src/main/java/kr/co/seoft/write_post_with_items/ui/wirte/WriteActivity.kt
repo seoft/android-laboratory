@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_write.*
 import kr.co.seoft.write_post_with_items.R
 import kr.co.seoft.write_post_with_items.databinding.ActivityWriteBinding
+import kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteActivity
 import kr.co.seoft.write_post_with_items.util.ImageUtil
 import kr.co.seoft.write_post_with_items.util.SC
 import kr.co.seoft.write_post_with_items.util.toast
@@ -103,7 +104,8 @@ class WriteActivity : AppCompatActivity() {
 
     fun onClickIvVoteIcon() {
         // 추가과정 생략
-        writeViewModel.addItemToLast(WriteData.Content.Vote(writeViewModel.random.nextLong().toString()))
+//        writeViewModel.addItemToLast(WriteData.Content.Vote(writeViewModel.random.nextLong().toString()))
+        VoteActivity.startActivity(this)
     }
 
     fun onClickIvTodoIcon() {

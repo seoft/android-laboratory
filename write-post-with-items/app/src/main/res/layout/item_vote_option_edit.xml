@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteViewModel" />
+
+        <variable
+            name="edit"
+            type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteData.VoteItem.OptionEdit" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+
+        <View
+            android:id="@+id/itemVoteOptionEditTopLine"
+            android:layout_width="match_parent"
+            android:layout_height="14dp"
+            android:background="#f1f2f4"
+            app:layout_constraintBottom_toTopOf="@id/itemVoteOptionEditLlAdd"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <LinearLayout
+            android:id="@+id/itemVoteOptionEditLlAdd"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemVoteOptionEditTopLine">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_plus_main" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="추가"
+                android:textColor="#222222"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemVoteOptionEditLlImage"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
+            app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlDate"
+            app:layout_constraintStart_toEndOf="@id/itemVoteOptionEditLlAdd"
+            app:layout_constraintTop_toTopOf="@id/itemVoteOptionEditLlAdd">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="20dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_image" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="사진"
+                android:textColor="#222222"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/itemVoteOptionEditLlDate"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
+            app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlRemove"
+            app:layout_constraintStart_toEndOf="@id/itemVoteOptionEditLlImage"
+            app:layout_constraintTop_toTopOf="@id/itemVoteOptionEditLlAdd">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_calerander" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="날짜"
+                android:textColor="#222222"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/itemVoteOptionEditLlRemove"
+            android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/itemVoteOptionEditLlDate"
+            app:layout_constraintTop_toTopOf="@id/itemVoteOptionEditLlAdd">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="17dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_remove" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="제거"
+                android:textColor="#222222"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
