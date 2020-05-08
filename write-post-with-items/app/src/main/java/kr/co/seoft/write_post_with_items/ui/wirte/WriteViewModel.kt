@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.os.SystemClock
 import android.view.View
+import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
@@ -116,6 +118,30 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         return curContents
+    }
+
+    fun updateContentTextItem(view: View, hasFocus: Boolean, contentText: Content.Text) {
+        if (view !is EditText) return
+        if (!hasFocus) {
+            // 첫 index 의 Content.Text 아이템 경우 제외될때 사이드 이펙트 방지로 예외처리
+            if (view.text.toString().isEmpty() && contentText.id != TOP_TEXT_ID) removeItem(contentText)
+            else setTextItem(contentText.copy(text = view.text.toString()))
+        }
+    }
+
+    fun updateContentBlankToContentText(view: View, hasFocus: Boolean, contentBlank: Content.Blank) {
+        if (view !is EditText) return
+        if (hasFocus) {
+            view.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
+        } else if (!hasFocus && !view.text.toString().isBlank()) {
+            addTextItemInsteadBlank(
+                contentBlank.previousContent,
+                Content.Text(random.nextInt(), view.text.toString())
+            )
+        } else {
+            view.layoutParams.height = 30.dpToPx()
+        }
+        view.requestLayout()
     }
 
 }
