@@ -17,6 +17,7 @@ import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteSh
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleVoteViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleYoutubeViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
+import kr.co.seoft.write_post_with_items.util.e
 
 class WriteContentAdapter(private val viewModel: WriteViewModel) :
     ListAdapter<Content, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Content>() {
@@ -30,6 +31,8 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
     }) {
 
     companion object {
+        const val ALL_EDIT_TEXT_FOCUS_OFF = "ALL_EDIT_TEXT_FOCUS_OFF"
+
         const val WRITE_CONTENT_TEXT = 0
         const val WRITE_CONTENT_IMAGE = 1
         const val WRITE_CONTENT_VOTE = 2
@@ -105,6 +108,24 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
             }
             is WriteShuffleYoutubeViewHolder -> {
                 holder.bind(getItem(position))
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+            return
+        }
+
+        if(payloads.first() == ALL_EDIT_TEXT_FOCUS_OFF){
+            when (holder) {
+                is WriteContentTextViewHolder -> {
+                    holder.clearFocus()
+                }
+                is WriteContentBlankViewHolder -> {
+                    holder.clearFocus()
+                }
             }
         }
     }

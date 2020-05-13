@@ -38,17 +38,14 @@ object WriteContentViewHolder {
             binding.executePendingBindings()
         }
 
-        private val editTextsFocusOffObserver = Observer<Boolean> {
-            editText.isEnabled = false
-            editText.isEnabled = true
+        fun clearFocus() {
+            editText.clearFocus()
         }
 
         override fun onViewAttachedToWindow() {
-            writeViewModel.editTextsFocusOff.observeForever(editTextsFocusOffObserver)
         }
 
         override fun onViewDetachedFromWindow() {
-            writeViewModel.editTextsFocusOff.removeObserver(editTextsFocusOffObserver)
         }
     }
 
@@ -176,18 +173,13 @@ object WriteContentViewHolder {
             editText.text = String.EMPTY.toEditable()
         }
 
-        private val editTextsFocusOffObserver = Observer<Boolean> {
-            editText.isEnabled = false
-            editText.isEnabled = true
+        fun clearFocus() {
+            editText.clearFocus()
         }
 
-        override fun onViewAttachedToWindow() {
-            writeViewModel.editTextsFocusOff.observeForever(editTextsFocusOffObserver)
-        }
+        override fun onViewAttachedToWindow() {}
 
-        override fun onViewDetachedFromWindow() {
-            writeViewModel.editTextsFocusOff.removeObserver(editTextsFocusOffObserver)
-        }
+        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteShuffleTextViewHolder(

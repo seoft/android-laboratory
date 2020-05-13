@@ -7,6 +7,9 @@ import android.view.View
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
 import kr.co.seoft.write_post_with_items.util.*
@@ -25,10 +28,34 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val editTextsFocusOff = SafetyLiveData<Boolean>()
+    val editTextsFocusOffAndStartShuffle = SafetyLiveData<Boolean>()
+
+    fun setEditTextsFocusOffAndStartShuffle() {
+        editTextsFocusOffAndStartShuffle.set(true)
+    }
+
     val random by lazy { Random(SystemClock.currentThreadTimeMillis()) }
 
-    val contents = SafetyLiveData<List<Content>>().apply {
-        set(listOf(Content.Text(TOP_TEXT_ID, String.EMPTY)))
+    private val contents = SafetyLiveData<List<Content>>().apply {
+        set(listOf(Content.Text(TOP_TEXT_ID, String.EMPTY))) // default : empty text 아이템
+    }
+
+    val resultList: LiveData<List<Content>> = Transformations.map(contents) {
+
+        // item 중간중간에 조건에 따라 blank 배치
+        val list = it.toMutableList()
+        if (list.firstOrNull()?.isShuffle == false) {
+            var index = 0
+            while (list.size - 1 > index) {
+                if (list[index] !is Content.Text && list[index + 1] !is Content.Text) {
+                    list.add(index + 1, Content.Blank(list[index]))
+                    index++
+                }
+                index++
+            }
+            if (it.last() !is Content.Text) list.add(Content.Blank(list[index]))
+        }
+        list
     }
 
     val dragItem = SafetyLiveData<RecyclerView.ViewHolder>()
@@ -43,11 +70,6 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
         set(false)
     }
 
-    fun focusEditTextsAndStartShuffle() {
-        editTextsFocusOff.set(true)
-        startShuffle()
-    }
-
     fun getContents() = contents.value ?: emptyList()
 
     fun togglePublic(view: View) {
@@ -60,14 +82,14 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun startShuffle() {
+    fun setShuffleMode() {
         contents.set(getContents().map {
             it.setShuffle(true)
         })
         isShuffleMode.set(true)
     }
 
-    fun completeShuffle() {
+    fun unsetShuffleMode() {
         contents.set(mergeTextIfExist(getContents().map {
             it.setShuffle(false)
         }))
@@ -90,7 +112,7 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setTextItem(item: Content.Text) {
         contents.set((contents.value ?: emptyList()).map {
-            if (it is Content.Text && it.id == item.id) item
+            if (it is Content.Text && it.id == item.id) item.copy(isShuffle = it.isShuffle)
             else it
         })
     }

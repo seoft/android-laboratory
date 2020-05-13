@@ -27,7 +27,7 @@
 
         android:paddingStart="@dimen/common_margin"
         android:paddingEnd="@dimen/common_margin"
-        bind:onLongClick="@{(view)->viewModel.focusEditTextsAndStartShuffle()}">
+        bind:onLongClick="@{()->viewModel.setEditTextsFocusOffAndStartShuffle()}">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/itemWriteContentYoutubeCardView"

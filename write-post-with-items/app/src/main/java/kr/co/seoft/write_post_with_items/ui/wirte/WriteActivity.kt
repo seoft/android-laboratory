@@ -3,6 +3,7 @@ package kr.co.seoft.write_post_with_items.ui.wirte
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -24,6 +25,8 @@ class WriteActivity : AppCompatActivity() {
         fun startActivity(context: Context) {
             context.startActivity(Intent(context, WriteActivity::class.java))
         }
+
+        const val DELAY_OF_BLANK_CONVERT_TO_TEXT = 50L
     }
 
     private lateinit var binding: ActivityWriteBinding
@@ -58,21 +61,8 @@ class WriteActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        writeViewModel.contents.observe(this, Observer {
-            val list = it.toMutableList()
-
-            if (list.firstOrNull()?.isShuffle == false) {
-                var index = 0
-                while (list.size - 1 > index) {
-                    if (list[index] !is WriteData.Content.Text && list[index + 1] !is WriteData.Content.Text) {
-                        list.add(index + 1, WriteData.Content.Blank(list[index]))
-                        index++
-                    }
-                    index++
-                }
-                if (it.last() !is WriteData.Content.Text) list.add(WriteData.Content.Blank(list[index]))
-            }
-            adapter.submitList(list) {
+        writeViewModel.resultList.observe(this, Observer {
+            adapter.submitList(it) {
                 if (writeViewModel.isAddedItemToLast.getAndSet(false)) layoutManager.scrollToPosition(adapter.itemCount - 1)
             }
         })
@@ -80,6 +70,16 @@ class WriteActivity : AppCompatActivity() {
         writeViewModel.dragItem.observe(this, Observer {
             itemTouchHelper.startDrag(it)
         })
+
+        writeViewModel.editTextsFocusOff.observe(this, Observer {
+            adapter.notifyItemRangeChanged(0, adapter.itemCount, WriteContentAdapter.ALL_EDIT_TEXT_FOCUS_OFF)
+        })
+
+        writeViewModel.editTextsFocusOffAndStartShuffle.observe(this, Observer {
+            adapter.notifyItemRangeChanged(0, adapter.itemCount, WriteContentAdapter.ALL_EDIT_TEXT_FOCUS_OFF)
+            Handler().postDelayed({ writeViewModel.setShuffleMode() }, DELAY_OF_BLANK_CONVERT_TO_TEXT)
+        })
+
     }
 
     private fun initListener() {
@@ -95,7 +95,7 @@ class WriteActivity : AppCompatActivity() {
     }
 
     fun onClickTvShuffleComplete() {
-        writeViewModel.completeShuffle()
+        writeViewModel.unsetShuffleMode()
     }
 
     fun onClickIvImageIcon() {

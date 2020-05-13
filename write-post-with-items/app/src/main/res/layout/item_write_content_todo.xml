@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -25,8 +24,7 @@
         android:layout_height="wrap_content"
         android:onClick="@{()->WriteContentViewHolderHelper.INSTANCE.showSelectDialog(context, viewModel, contentTodo)}"
         android:paddingStart="@dimen/common_margin"
-        android:paddingEnd="@dimen/common_margin"
-        bind:onLongClick="@{(view)->viewModel.focusEditTextsAndStartShuffle()}">
+        android:paddingEnd="@dimen/common_margin" >
 
         <androidx.cardview.widget.CardView
             android:id="@+id/itemWriteContentTodoCardView"
