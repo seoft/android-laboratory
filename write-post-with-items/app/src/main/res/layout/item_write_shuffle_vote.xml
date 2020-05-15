@@ -16,7 +16,7 @@
 
         <variable
             name="contentVote"
-            type="kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content.Vote" />
+            type="kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content.VoteContent" />
 
     </data>
 
@@ -70,7 +70,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="@{contentVote.title}"
+                    android:text="@{contentVote.vote.title}"
                     android:textColor="#ffffff"
                     android:textSize="9sp"
                     app:layout_constraintBottom_toBottomOf="parent"

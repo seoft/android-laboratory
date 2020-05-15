@@ -26,7 +26,9 @@
         android:layout_height="wrap_content"
         android:onClick="@{()->WriteContentViewHolderHelper.INSTANCE.showSelectDialog(context, viewModel, contentImage)}"
         android:paddingStart="@dimen/common_margin"
-        android:paddingEnd="@dimen/common_margin" >
+        android:paddingEnd="@dimen/common_margin"
+        bind:onLongClick="@{()->viewModel.setEditTextsFocusOffAndStartShuffle()}">
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/itemWriteContentImageCardView"

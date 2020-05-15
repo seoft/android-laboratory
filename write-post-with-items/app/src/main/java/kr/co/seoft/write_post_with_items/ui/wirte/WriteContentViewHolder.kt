@@ -3,7 +3,6 @@ package kr.co.seoft.write_post_with_items.ui.wirte
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_write_content_blank.view.*
 import kotlinx.android.synthetic.main.item_write_content_text.view.*
@@ -12,7 +11,6 @@ import kr.co.seoft.write_post_with_items.databinding.*
 import kr.co.seoft.write_post_with_items.ui.dialog.SimpleSelectDialog
 import kr.co.seoft.write_post_with_items.util.EMPTY
 import kr.co.seoft.write_post_with_items.util.toEditable
-import kr.co.seoft.write_post_with_items.util.toast
 
 object WriteContentViewHolder {
 
@@ -89,7 +87,7 @@ object WriteContentViewHolder {
         }
 
         fun bind(item: WriteData.Content) {
-            if (item !is WriteData.Content.Vote) return
+            if (item !is WriteData.Content.VoteContent) return
             binding.viewModel = writeViewModel
             binding.contentVote = item
             binding.executePendingBindings()
@@ -239,7 +237,7 @@ object WriteContentViewHolder {
         }
 
         fun bind(item: WriteData.Content) {
-            if (item !is WriteData.Content.Vote) return
+            if (item !is WriteData.Content.VoteContent) return
             binding.viewModel = writeViewModel
             binding.contentVote = item
             binding.viewHolder = this
@@ -297,7 +295,7 @@ object WriteContentViewHolder {
             SimpleSelectDialog(
                 context, listOf(
                     SimpleSelectDialog.SimpleSelectItem("수정") {
-                        "수정".toast(context)
+                        writeViewModel.editContent.set(content)
                     },
                     SimpleSelectDialog.SimpleSelectItem("삭제") {
                         writeViewModel.removeItem(content)

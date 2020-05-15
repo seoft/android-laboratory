@@ -13,6 +13,8 @@
             name="title"
             type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteData.VoteItem.Title" />
 
+        <import type="android.widget.EditText" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,13 +23,15 @@
         android:background="#fff"
         android:minHeight="50dp">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/common_margin"
             android:layout_marginEnd="@dimen/common_margin"
             android:background="@null"
             android:hint="투표제목"
+            android:onTextChanged="@{(text, _,__,___)-> viewModel.setTitle(text)}"
+            android:text="@{viewModel.title}"
             android:textColor="#222222"
             android:textColorHint="#cccccc"
             android:textSize="16sp"

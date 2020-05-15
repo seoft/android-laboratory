@@ -9,6 +9,8 @@ object SC {
     const val EXIT_UUID_LENGTH = 20
     const val MAX_UPLOAD_IMAGE_SIZE = 1024
 
+    const val EMPTY_INT = -789456
+
     var removedDocIdsInFragHome: MutableList<Long>? = null
     var removedDocIdInSearch: Long? = null
 

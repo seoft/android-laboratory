@@ -1,5 +1,6 @@
 package kr.co.seoft.write_post_with_items.ui.wirte
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +19,7 @@ import kr.co.seoft.write_post_with_items.util.ImageUtil
 import kr.co.seoft.write_post_with_items.util.SC
 import kr.co.seoft.write_post_with_items.util.toast
 import kr.co.seoft.write_post_with_items.util.toaste
+import org.parceler.Parcels
 
 class WriteActivity : AppCompatActivity() {
 
@@ -80,6 +82,20 @@ class WriteActivity : AppCompatActivity() {
             Handler().postDelayed({ writeViewModel.setShuffleMode() }, DELAY_OF_BLANK_CONVERT_TO_TEXT)
         })
 
+        writeViewModel.editContent.observe(this, Observer {
+            when (it) {
+                is WriteData.Content.VoteContent -> {
+                    VoteActivity.startActivity(this, it.id, it.vote)
+                }
+                is WriteData.Content.Image -> {
+                }
+                is WriteData.Content.Todo -> {
+                }
+                is WriteData.Content.Youtube -> {
+                }
+            }
+        })
+
     }
 
     private fun initListener() {
@@ -103,19 +119,21 @@ class WriteActivity : AppCompatActivity() {
     }
 
     fun onClickIvVoteIcon() {
-        // 추가과정 생략
-//        writeViewModel.addItemToLast(WriteData.Content.Vote(writeViewModel.random.nextLong().toString()))
         VoteActivity.startActivity(this)
     }
 
     fun onClickIvTodoIcon() {
         // 추가과정 생략
-        writeViewModel.addItemToLast(WriteData.Content.Todo(writeViewModel.random.nextLong().toString()))
+        writeViewModel.addItemToLast(
+            WriteData.Content.Todo(writeViewModel.random.nextInt(), writeViewModel.random.nextLong().toString())
+        )
     }
 
     fun onClickIvYoutubeIcon() {
         // 추가과정 생략
-        writeViewModel.addItemToLast(WriteData.Content.Youtube(writeViewModel.random.nextLong().toString()))
+        writeViewModel.addItemToLast(
+            WriteData.Content.Youtube(writeViewModel.random.nextInt(), writeViewModel.random.nextLong().toString())
+        )
     }
 
     fun onClickIvEmojiImageIcon() {
@@ -132,15 +150,18 @@ class WriteActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-//        if (requestCode == WriteVoteActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-//            data.getParcelableExtra<CreateVote>(WriteVoteActivity.EXTRA_RESULT_VOTE)?.let {
-//                viewModel.createVote.set(it)
-//            }
-//        } else if (requestCode == SearchActivity.TAG_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-//            val resultKeyword = data.getStringExtra(SearchActivity.EXTRA_RESULT_KEYWORD)
-//            viewModel.tags.set((viewModel.tags.value ?: emptyList()) + resultKeyword)
-//        }
+        if (requestCode == VoteActivity.REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data ?: return
+            val vote = Parcels.unwrap<WriteData.Vote>(
+                data.getParcelableExtra(VoteActivity.EXTRA_RESULT_VOTE_ITEM) ?: return
+            )
+            val id = data.getIntExtra(VoteActivity.EXTRA_ID, SC.EMPTY_INT)
+            if (id == SC.EMPTY_INT) {
+                writeViewModel.addItemToLast(WriteData.Content.VoteContent(writeViewModel.random.nextInt(), vote))
+            } else {
+                writeViewModel.updateItem(WriteData.Content.VoteContent(id, vote))
+            }
+        }
 
         ImageUtil.getContentUri(this, SC.ActivityResult(requestCode, resultCode, data))?.let {
             writeViewModel.addImageAfterResize(it)

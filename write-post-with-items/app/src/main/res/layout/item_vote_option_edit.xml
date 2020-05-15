@@ -8,25 +8,12 @@
             name="viewModel"
             type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteViewModel" />
 
-        <variable
-            name="edit"
-            type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteData.VoteItem.OptionEdit" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff">
-
-        <View
-            android:id="@+id/itemVoteOptionEditTopLine"
-            android:layout_width="match_parent"
-            android:layout_height="14dp"
-            android:background="#f1f2f4"
-            app:layout_constraintBottom_toTopOf="@id/itemVoteOptionEditLlAdd"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <LinearLayout
             android:id="@+id/itemVoteOptionEditLlAdd"
@@ -39,7 +26,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlImage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemVoteOptionEditTopLine">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="20dp"
@@ -81,13 +68,13 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/itemVoteOptionEditLlDate"
             android:layout_width="0dp"
             android:layout_height="49dp"
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
+            android:onClick="@{()->viewModel.requestInsertDate()}"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
             app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlRemove"
@@ -108,14 +95,13 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/itemVoteOptionEditLlRemove"
             android:layout_width="0dp"
             android:layout_height="49dp"
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
-            android:onClick="@{()->viewModel.removeContent(viewModel.currentContentId)}"
+            android:onClick="@{()->viewModel.removeContent()}"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
             app:layout_constraintEnd_toEndOf="parent"

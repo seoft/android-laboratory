@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -15,7 +16,7 @@
 
         <variable
             name="contentVote"
-            type="kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content.Vote" />
+            type="kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content.VoteContent" />
 
     </data>
 
@@ -24,7 +25,9 @@
         android:layout_height="wrap_content"
         android:onClick="@{()->WriteContentViewHolderHelper.INSTANCE.showSelectDialog(context, viewModel, contentVote)}"
         android:paddingStart="@dimen/common_margin"
-        android:paddingEnd="@dimen/common_margin" >
+        android:paddingEnd="@dimen/common_margin"
+        bind:onLongClick="@{()->viewModel.setEditTextsFocusOffAndStartShuffle()}">
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/itemWriteContentVoteCardView"
@@ -66,7 +69,7 @@
                     android:lines="1"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="@{contentVote.title}"
+                    android:text="@{contentVote.vote.title}"
                     android:textColor="#ffffff"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"

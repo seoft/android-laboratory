@@ -23,8 +23,16 @@ object VoteItemViewHolder {
         fun bind(item: VoteData.VoteItem) {
             if (item !is VoteData.VoteItem.Title) return
             binding.viewModel = voteViewModel
-            binding.title = item
             binding.executePendingBindings()
+        }
+    }
+
+    class DividerViewHolder(binding: ItemVoteDividerBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun getInstance(parent: ViewGroup): RecyclerView.ViewHolder {
+                return DividerViewHolder(ItemVoteDividerBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            }
         }
     }
 
@@ -45,6 +53,7 @@ object VoteItemViewHolder {
             if (item !is VoteData.VoteItem.Content) return
             binding.viewModel = voteViewModel
             binding.content = item
+            binding.viewHolder = this
             binding.executePendingBindings()
         }
     }
@@ -65,7 +74,6 @@ object VoteItemViewHolder {
         fun bind(item: VoteData.VoteItem) {
             if (item !is VoteData.VoteItem.OptionEdit) return
             binding.viewModel = voteViewModel
-            binding.edit = item
             binding.executePendingBindings()
         }
     }

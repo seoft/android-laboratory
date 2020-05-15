@@ -8,7 +8,6 @@ import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
@@ -29,6 +28,7 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
 
     val editTextsFocusOff = SafetyLiveData<Boolean>()
     val editTextsFocusOffAndStartShuffle = SafetyLiveData<Boolean>()
+    val editContent = SafetyLiveData<Content>()
 
     fun setEditTextsFocusOffAndStartShuffle() {
         editTextsFocusOffAndStartShuffle.set(true)
@@ -48,12 +48,12 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
             var index = 0
             while (list.size - 1 > index) {
                 if (list[index] !is Content.Text && list[index + 1] !is Content.Text) {
-                    list.add(index + 1, Content.Blank(list[index]))
+                    list.add(index + 1, Content.Blank(random.nextInt(), list[index]))
                     index++
                 }
                 index++
             }
-            if (it.last() !is Content.Text) list.add(Content.Blank(list[index]))
+            if (it.last() !is Content.Text) list.add(Content.Blank(random.nextInt(), list[index]))
         }
         list
     }
@@ -98,12 +98,22 @@ class WriteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addImageAfterResize(file: File) {
         val uploadFile = ImageUtil.resizeImageToCacheDir(getApplication() as Context, file, SC.MAX_UPLOAD_IMAGE_SIZE)
-        contents.set(getContents() + Content.Image(uploadFile))
+        contents.set(getContents() + Content.Image(random.nextInt(), uploadFile))
     }
 
     fun addItemToLast(content: Content) {
         isAddedItemToLast.set(true)
         contents.set(getContents() + content)
+    }
+
+    fun updateItem(content: Content) {
+        contents.set(getContents().map {
+            if (it.id == content.id) {
+                content
+            } else {
+                it
+            }
+        })
     }
 
     fun addTextItemInsteadBlank(previousContent: Content, newContent: Content) {

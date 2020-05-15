@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
             type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteViewModel" />
+
+        <variable
+            name="viewHolder"
+            type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteItemViewHolder.ContentViewHolder" />
 
         <variable
             name="content"
@@ -36,13 +41,16 @@
             android:layout_marginEnd="@dimen/common_margin"
             android:background="@null"
             android:hint="항목 입력"
+            android:onTextChanged="@{(text,_,__,___) -> viewModel.updateContentWithoutViewRefresh(content.id,text)}"
+            android:text="@{content.text}"
             android:textColor="#222222"
             android:textColorHint="#cccccc"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/itemVoteContentIvUpDown"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:onFocusChangeListener="@{(view, hasFocus)-> viewModel.setFocusingContentId(hasFocus, content.id)}" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/itemVoteContentIvUpDown"
@@ -54,7 +62,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/itemVoteContentEditText"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            bind:onTouchDownWithViewHolder="@{viewModel.onSetDragItem}"
+            bind:viewHolder="@{viewHolder}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

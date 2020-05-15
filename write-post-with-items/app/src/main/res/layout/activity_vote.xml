@@ -2,6 +2,7 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -64,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:enabled="@{viewModel.canComplete}"
                 android:onClick="@{()->act.onClickTvComplete()}"
                 android:padding="10dp"
@@ -87,10 +89,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:overScrollMode="never"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/actVoteIncItemVoteOptionEdit"
             app:layout_constraintTop_toBottomOf="@id/actVoteClTitleBar"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            bind:onScrollListener="@{viewModel.onScrollListener}" />
 
+        <include
+            android:id="@+id/actVoteIncItemVoteOptionEdit"
+            layout="@layout/item_vote_option_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.showBottomOptionEdit ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/actVoteRecyclerView"
+            app:viewModel="@{viewModel}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

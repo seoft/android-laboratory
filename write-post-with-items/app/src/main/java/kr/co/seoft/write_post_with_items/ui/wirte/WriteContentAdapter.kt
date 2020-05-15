@@ -17,7 +17,6 @@ import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteSh
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleVoteViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteShuffleYoutubeViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData.Content
-import kr.co.seoft.write_post_with_items.util.e
 
 class WriteContentAdapter(private val viewModel: WriteViewModel) :
     ListAdapter<Content, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Content>() {
@@ -51,7 +50,7 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
         return when (getItem(position)) {
             is Content.Text -> if (getItem(position).isShuffle) WRITE_SHUFFLE_TEXT else WRITE_CONTENT_TEXT
             is Content.Image -> if (getItem(position).isShuffle) WRITE_SHUFFLE_IMAGE else WRITE_CONTENT_IMAGE
-            is Content.Vote -> if (getItem(position).isShuffle) WRITE_SHUFFLE_VOTE else WRITE_CONTENT_VOTE
+            is Content.VoteContent -> if (getItem(position).isShuffle) WRITE_SHUFFLE_VOTE else WRITE_CONTENT_VOTE
             is Content.Todo -> if (getItem(position).isShuffle) WRITE_SHUFFLE_TODO else WRITE_CONTENT_TODO
             is Content.Youtube -> if (getItem(position).isShuffle) WRITE_SHUFFLE_YOUTUBE else WRITE_CONTENT_YOUTUBE
             is Content.Blank -> WRITE_CONTENT_BLANK
