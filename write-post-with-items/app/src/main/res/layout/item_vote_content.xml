@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -16,6 +17,8 @@
         <variable
             name="content"
             type="kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteData.VoteItem.Content" />
+
+        <import type="android.view.View" />
 
     </data>
 
@@ -33,6 +36,29 @@
             android:background="#cccccc"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/itemVoteContentCvImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_margin"
+            android:visibility="@{content.image == null ? View.GONE : View.VISIBLE}"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/itemVoteContentEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/itemVoteContentImageView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                bind:image="@{content.image}"
+                tools:src="@drawable/ic_smile"
+                tools:visibility="visible" />
+        </androidx.cardview.widget.CardView>
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/itemVoteContentEditText"
             android:layout_width="0dp"
@@ -48,7 +74,7 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/itemVoteContentIvUpDown"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/itemVoteContentCvImage"
             app:layout_constraintTop_toTopOf="parent"
             app:onFocusChangeListener="@{(view, hasFocus)-> viewModel.setFocusingContentId(hasFocus, content.id)}" />
 

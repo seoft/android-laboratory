@@ -48,6 +48,7 @@
             android:layout_height="49dp"
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
+            android:onClick="@{()->viewModel.showGallery()}"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/itemVoteOptionEditLlAdd"
             app:layout_constraintEnd_toStartOf="@id/itemVoteOptionEditLlDate"

@@ -1,15 +1,14 @@
 package kr.co.seoft.write_post_with_items.ui.wirte.vote
 
 import android.app.Application
+import android.content.Context
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData
 import kr.co.seoft.write_post_with_items.ui.wirte.vote.VoteData.VoteItem
-import kr.co.seoft.write_post_with_items.util.EMPTY
-import kr.co.seoft.write_post_with_items.util.SafetyLiveData
-import kr.co.seoft.write_post_with_items.util.SafetyMediatorLiveData
-import kr.co.seoft.write_post_with_items.util.swap
+import kr.co.seoft.write_post_with_items.util.*
+import java.io.File
 import kotlin.random.Random
 
 class VoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -46,7 +45,8 @@ class VoteViewModel(application: Application) : AndroidViewModel(application) {
     val scrollChanged = SafetyLiveData<Boolean>()
     val showBottomOptionEdit = SafetyLiveData<Boolean>()
     val showDatePickerWithId = SafetyLiveData<Int>()
-
+    val showGallery = SafetyLiveData<Boolean>()
+    val showCheckFirstToast = SafetyLiveData<Boolean>()
 
     val dragItem = SafetyLiveData<RecyclerView.ViewHolder>()
     var dragging = false
@@ -64,7 +64,7 @@ class VoteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun initVotesIfNeed(vote: WriteData.Vote) {
         title = vote.title
-        contents = vote.voteItems.map { VoteItem.Content(random.nextInt(), it.content) }
+        contents = vote.voteItems.map { VoteItem.Content(random.nextInt(), it.content, it.image) }
         isMultiple.set(vote.isMultiple)
         isOverlap.set(vote.isOverlap)
         contentItems.set(contents)
@@ -85,20 +85,25 @@ class VoteViewModel(application: Application) : AndroidViewModel(application) {
         contents = contents.map {
             if (it.id == id) it.copy(text = text)
             else it
-
         }
         contentItems.set(contents)
     }
 
     fun removeContent() {
+        if (isSelectingEditText()) return
         contents = contents.filterNot { it.id == currentContentId }
         if (contents.isEmpty()) contents = listOf(VoteItem.Content(random.nextInt(), String.EMPTY))
         contentItems.set(contents)
     }
 
     fun requestInsertDate() {
-        if (currentContentId == NO_FOCUSING_TO_CONTENT) return
+        if (isSelectingEditText()) return
         showDatePickerWithId.set(currentContentId)
+    }
+
+    private fun isSelectingEditText(): Boolean {
+        if (currentContentId == NO_FOCUSING_TO_CONTENT) showCheckFirstToast.set(true)
+        return currentContentId == NO_FOCUSING_TO_CONTENT
     }
 
     fun setTitle(text: CharSequence) {
@@ -115,7 +120,7 @@ class VoteViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun refreshCanComplete() {
-        canComplete.set(title.isNotEmpty() && contents.any { it.text.isNotEmpty() })
+        canComplete.set(title.isNotEmpty() && contents.any { it.text.isNotEmpty() || it.image != null })
     }
 
     fun setFocusingContentId(hasFocus: Boolean, contentId: Int) {
@@ -131,6 +136,22 @@ class VoteViewModel(application: Application) : AndroidViewModel(application) {
             swap(from - 1, to - 1) // -1 하는 이유는 타이틀이 1을 차지하기 때문
         }
         contentItems.set(contents)
+    }
+
+    fun showGallery() {
+        if (isSelectingEditText()) return
+        showGallery.set(true)
+    }
+
+    fun addImageAfterResize(file: File) {
+        if (currentContentId == NO_FOCUSING_TO_CONTENT) return
+        val uploadFile = ImageUtil.resizeImageToCacheDir(getApplication() as Context, file, SC.MAX_UPLOAD_IMAGE_SIZE)
+        contents = contents.map {
+            if (it.id == currentContentId) it.copy(image = uploadFile)
+            else it
+        }
+        contentItems.set(contents)
+        refreshCanComplete()
     }
 
     val onSetDragItem = { vh: RecyclerView.ViewHolder ->

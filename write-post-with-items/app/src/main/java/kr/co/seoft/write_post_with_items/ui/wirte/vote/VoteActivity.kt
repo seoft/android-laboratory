@@ -15,9 +15,7 @@ import kr.co.seoft.write_post_with_items.R
 import kr.co.seoft.write_post_with_items.databinding.ActivityVoteBinding
 import kr.co.seoft.write_post_with_items.ui.wirte.ItemMoveCallback
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteData
-import kr.co.seoft.write_post_with_items.util.DateUtil
-import kr.co.seoft.write_post_with_items.util.SC
-import kr.co.seoft.write_post_with_items.util.toaste
+import kr.co.seoft.write_post_with_items.util.*
 import org.parceler.Parcels
 
 class VoteActivity : AppCompatActivity() {
@@ -97,6 +95,14 @@ class VoteActivity : AppCompatActivity() {
                 )
             }, date.year, date.month, date.day).show()
         })
+
+        voteViewModel.showGallery.observe(this, Observer {
+            ImageUtil.requestPermissionGrant(this)
+        })
+
+        voteViewModel.showCheckFirstToast.observe(this, Observer {
+            "먼저 적용한 칸을 선택해주세요".toast(this)
+        })
     }
 
     private fun initListener() {
@@ -110,8 +116,8 @@ class VoteActivity : AppCompatActivity() {
     fun onClickTvComplete() {
         val resultVoteItem = WriteData.Vote(
             voteViewModel.title,
-            voteViewModel.contents.filterNot { it.text.isEmpty() }.map {
-                WriteData.VoteItem(it.text)
+            voteViewModel.contents.filterNot { it.text.isEmpty() && it.image == null }.map {
+                WriteData.VoteItem(it.text, it.image)
             }, voteViewModel.isMultiple.value ?: false,
             voteViewModel.isOverlap.value ?: false
         )
@@ -121,4 +127,19 @@ class VoteActivity : AppCompatActivity() {
         })
         finish()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        ImageUtil.runIfPermissionGranted(SC.PermissionsResult(requestCode, permissions, grantResults)) {
+            ImageUtil.selectMediaFile(this)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        ImageUtil.getContentUri(this, SC.ActivityResult(requestCode, resultCode, data))?.let {
+            voteViewModel.addImageAfterResize(it)
+        }
+    }
+
 }
