@@ -22,7 +22,7 @@
             android:id="@+id/itemWriteContentTextEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#A6A9BF"
+            android:background="@null"
             android:paddingStart="@dimen/common_margin"
             android:paddingTop="6dp"
             android:paddingEnd="@dimen/common_margin"

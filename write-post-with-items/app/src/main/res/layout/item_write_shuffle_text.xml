@@ -22,7 +22,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#123123"
         bind:onTouchDownWithViewHolder="@{viewModel.onSetDragItem}"
         bind:viewHolder="@{viewHolder}">
 
@@ -30,7 +29,6 @@
             android:id="@+id/itemWriteShuffleTextView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="#A6A9BF"
             android:paddingStart="@dimen/shuffle_bar_width_padding"
             android:paddingTop="3dp"
             android:paddingEnd="@dimen/shuffle_bar_width_padding"
