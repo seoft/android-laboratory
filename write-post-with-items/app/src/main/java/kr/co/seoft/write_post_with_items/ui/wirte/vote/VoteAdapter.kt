@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.seoft.write_post_with_items.ViewDetectable
+import kr.co.seoft.write_post_with_items.util.ViewDetectable
 
 class VoteAdapter(private val viewModel: VoteViewModel) :
     ListAdapter<VoteData.VoteItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<VoteData.VoteItem>() {

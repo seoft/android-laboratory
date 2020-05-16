@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_write_content_blank.view.*
 import kotlinx.android.synthetic.main.item_write_content_text.view.*
-import kr.co.seoft.write_post_with_items.ViewDetectable
 import kr.co.seoft.write_post_with_items.databinding.*
 import kr.co.seoft.write_post_with_items.ui.dialog.SimpleSelectDialog
 import kr.co.seoft.write_post_with_items.util.EMPTY
@@ -17,7 +16,7 @@ object WriteContentViewHolder {
     class WriteContentTextViewHolder(
         private val binding: ItemWriteContentTextBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -39,19 +38,13 @@ object WriteContentViewHolder {
         fun clearFocus() {
             editText.clearFocus()
         }
-
-        override fun onViewAttachedToWindow() {
-        }
-
-        override fun onViewDetachedFromWindow() {
-        }
     }
 
 
     class WriteContentImageViewHolder(
         private val binding: ItemWriteContentImageBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -67,16 +60,12 @@ object WriteContentViewHolder {
             binding.contentImage = item
             binding.executePendingBindings()
         }
-
-        override fun onViewAttachedToWindow() {}
-
-        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteContentVoteViewHolder(
         private val binding: ItemWriteContentVoteBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -92,16 +81,12 @@ object WriteContentViewHolder {
             binding.contentVote = item
             binding.executePendingBindings()
         }
-
-        override fun onViewAttachedToWindow() {}
-
-        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteContentTodoViewHolder(
         private val binding: ItemWriteContentTodoBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -117,16 +102,12 @@ object WriteContentViewHolder {
             binding.contentTodo = item
             binding.executePendingBindings()
         }
-
-        override fun onViewAttachedToWindow() {}
-
-        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteContentYoutubeViewHolder(
         private val binding: ItemWriteContentYoutubeBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -142,16 +123,12 @@ object WriteContentViewHolder {
             binding.contentYoutube = item
             binding.executePendingBindings()
         }
-
-        override fun onViewAttachedToWindow() {}
-
-        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteContentBlankViewHolder(
         private val binding: ItemWriteContentBlankBinding,
         private val writeViewModel: WriteViewModel
-    ) : RecyclerView.ViewHolder(binding.root), ViewDetectable {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun getInstance(parent: ViewGroup, writeViewModel: WriteViewModel): RecyclerView.ViewHolder {
@@ -174,10 +151,6 @@ object WriteContentViewHolder {
         fun clearFocus() {
             editText.clearFocus()
         }
-
-        override fun onViewAttachedToWindow() {}
-
-        override fun onViewDetachedFromWindow() {}
     }
 
     class WriteShuffleTextViewHolder(

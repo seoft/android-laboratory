@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kr.co.seoft.write_post_with_items.ViewDetectable
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentBlankViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentImageViewHolder
 import kr.co.seoft.write_post_with_items.ui.wirte.WriteContentViewHolder.WriteContentTextViewHolder
@@ -128,15 +127,4 @@ class WriteContentAdapter(private val viewModel: WriteViewModel) :
             }
         }
     }
-
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is ViewDetectable) holder.onViewAttachedToWindow()
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is ViewDetectable) holder.onViewDetachedFromWindow()
-    }
-
 }
