@@ -2,7 +2,9 @@
 
 ## write-post-with-items
 #### https://github.com/seoft/seoft-android-libraries/tree/dev/write-post-with-items
-![Android Emulator - Pixel_2_-_Nougat_5554 2020-01-30 21-00-53 mp4_20200130_214431](https://user-images.githubusercontent.com/55025826/73450960-d2007200-43a9-11ea-8fbd-a59d5519ca29.gif)
+![Android Emulator - Pixel_2_P_5554 2020-05-16 20-08-16 mp4_20200516_200927](https://user-images.githubusercontent.com/55025826/82119038-31965800-97b6-11ea-864b-2df61ffcde53.gif)   ![Android Emulator - Pixel_2_P_5554 2020-05-16 20-13-59 mp4_20200516_201501](https://user-images.githubusercontent.com/55025826/82119039-32c78500-97b6-11ea-9ecf-3ad22c1b397e.gif)
+
+
 
 ## drag-and-drop-between-multiple-grid
 #### https://github.com/seoft/seoft-android-libraries/tree/dev/drag-and-drop-between-multiple-grid
