@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DotsOnLineView">
+        <attr name="dotColor" format="color|reference" />
+        <attr name="lineColor" format="color|reference" />
+        <attr name="boundary" format="integer|reference" />
+        <attr name="spotsStringSeparatedComma" format="string|reference" />
+    </declare-styleable>
+</resources>

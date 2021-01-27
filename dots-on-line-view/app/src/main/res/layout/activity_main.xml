@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:boundary="100"
+            app:dotColor="#456456"
+            app:lineColor="#123123"
+            app:spotsStringSeparatedComma="0,30,60,100" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:boundary="500"
+            app:dotColor="#FF8A65"
+            app:lineColor="#FF8A65"
+            app:spotsStringSeparatedComma="0,10,200,450,500" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            app:boundary="100"
+            app:dotColor="#FF0000"
+            app:lineColor="#FF0000"
+            app:spotsStringSeparatedComma="0,30,60,100" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boundary="100"
+            app:dotColor="#456456"
+            app:lineColor="#123123"
+            app:spotsStringSeparatedComma="0,30,60,100" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            app:boundary="5"
+            app:dotColor="#5F09FF"
+            app:lineColor="#5F09FF"
+            app:spotsStringSeparatedComma="0,1,2,3,4,5" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:boundary="100"
+            app:dotColor="#E57373"
+            app:lineColor="#E57373"
+            app:spotsStringSeparatedComma="0,30,60,100" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boundary="3"
+            app:dotColor="#E57373"
+            app:lineColor="#E57373"
+            app:spotsStringSeparatedComma="0,1,2,3" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:boundary="15000"
+            app:dotColor="#E57373"
+            app:lineColor="#E57373"
+            app:spotsStringSeparatedComma="0,1000,2000,13000,14000,15000" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#E1E1E1" />
+
+        <kr.co.seoft.dots_on_line_view.DotsOnLineView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:boundary="1500"
+            app:dotColor="@color/teal_700"
+            app:lineColor="@color/teal_200"
+            app:spotsStringSeparatedComma="0,100,200,300,400,500,600,700,1500" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
