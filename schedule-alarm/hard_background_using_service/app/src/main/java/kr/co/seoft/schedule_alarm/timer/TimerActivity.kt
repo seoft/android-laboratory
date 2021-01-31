@@ -95,9 +95,8 @@ class TimerActivity : AppCompatActivity() {
         super.onStop()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             startForegroundService(Intent(this, TimerService::class.java))
-        } else {
-            startService(Intent(this, TimerService::class.java))
         }
+        startService(Intent(this, TimerService::class.java))
         connection?.let { unbindService(it) }
         isBind = false
     }
