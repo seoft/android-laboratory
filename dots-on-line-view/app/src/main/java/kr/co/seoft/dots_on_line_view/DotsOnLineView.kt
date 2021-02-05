@@ -126,7 +126,7 @@ class DotsOnLineView @JvmOverloads constructor(
 
         canvas?.drawLine(0f, height / 2, width, height / 2, paint)
 
-        spots.forEach {
+        spots.filterNot { it.isNaN() }.forEach {
             drawable?.setBounds(
                 dotPaddingWidth + it.roundToInt() - halfIconSize,
                 iconTop,
