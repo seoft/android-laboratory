@@ -1,0 +1,32 @@
+{
+	"animals": [
+		{
+			"name": "Dog",
+			"content": "The domestic dog (Canis familiaris when considered a separate species, or Canis lupus familiaris when considered a subspecies of the wolf)[5] is a wolf-like canid[6] that can be found distributed around the world."
+		},
+		{
+			"name": "Cat",
+			"content": "The cat (Felis catus) is a domestic species of small carnivorous mammal.[1][2] It is the only domesticated species in the family Felidae and is often referred to as the domestic cat to distinguish it from the wild members of the family."
+		},
+		{
+			"name": "Bird",
+			"content": "Birds are a group of warm-blooded vertebrates constituting the class Aves /ˈeɪviːz/, characterised by feathers, toothless beaked jaws, the laying of hard-shelled eggs, a high metabolic rate, a four-chambered heart, and a strong yet lightweight skeleton."
+		},
+		{
+			"name": "Pig",
+			"content": "A pig is any of the animals in the genus Sus, within the even-toed ungulate family Suidae. Pigs include domestic pigs and their ancestor, the common Eurasian wild boar (Sus scrofa), along with other species."
+		},
+		{
+			"name": "Monkey",
+			"content": "Monkey is a common name that may refer to groups or species of mammals, in part, the simians of infraorder Simiiformes. The term is applied descriptively to groups of primates, such as families of New World monkeys and Old World monkeys."
+		},
+		{
+			"name": "Mouse",
+			"content": "A mouse, plural mice, is a small rodent. Characteristically, mice are known to have a pointed snout, small rounded ears, a body-length scaly tail, and a high breeding rate. The best known mouse species is the common house mouse (Mus musculus)."
+		},
+		{
+			"name": "Fish",
+			"content": "Fish are gill-bearing aquatic craniate animals that lack limbs with digits. They form a sister group to the tunicates, together forming the olfactores. Included in this definition are the living hagfish, lampreys, and cartilaginous and bony fish as well as various extinct related groups."
+		}
+	]
+}
