@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView40"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            app:backgroundLineColor="#007E5B"
+            app:count="40"
+            app:defaultLineColor="#F06292"
+            app:textSize="8dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView70"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp"
+            app:backgroundLineColor="#787878"
+            app:count="70"
+            app:defaultLineColor="#7986CB"
+            app:textSize="9dp"
+            />
+
+        <kr.co.seoft.count_with_gauge.GaugeCountView
+            android:id="@+id/gaugeCountView90"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="10dp"
+            app:backgroundLineColor="#535353"
+            app:count="90"
+            app:defaultLineColor="#81C784"
+            app:textSize="10dp"
+            />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

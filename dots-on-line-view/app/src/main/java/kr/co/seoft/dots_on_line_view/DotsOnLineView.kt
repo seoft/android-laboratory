@@ -41,11 +41,15 @@ class DotsOnLineView @JvmOverloads constructor(
 
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.DotsOnLineView, 0, 0).apply {
-            lineColor = getColor(R.styleable.DotsOnLineView_lineColor, Color.BLACK)
-            dotColor = getColor(R.styleable.DotsOnLineView_dotColor, Color.BLACK)
-            boundary = getInteger(R.styleable.DotsOnLineView_boundary, 100)
-            spotsStringSeparatedComma =
-                getString(R.styleable.DotsOnLineView_spotsStringSeparatedComma) ?: ""
+            try {
+                lineColor = getColor(R.styleable.DotsOnLineView_lineColor, Color.BLACK)
+                dotColor = getColor(R.styleable.DotsOnLineView_dotColor, Color.BLACK)
+                boundary = getInteger(R.styleable.DotsOnLineView_boundary, 100)
+                spotsStringSeparatedComma =
+                    getString(R.styleable.DotsOnLineView_spotsStringSeparatedComma) ?: ""
+            } finally {
+                recycle()
+            }
         }
     }
 

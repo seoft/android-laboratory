@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GaugeCountView">
+        <attr name="count" format="integer|reference" />
+        <attr name="textSize" format="dimension|reference" />
+        <attr name="backgroundLineColor" format="color|reference" />
+        <attr name="defaultLineColor" format="color|reference" />
+        <attr name="defaultTextColor" format="color|reference" />
+        <attr name="useAnimation" format="boolean|reference" />
+        <attr name="max" format="integer|reference" />
+        <attr name="warningBoundary" format="integer|reference" />
+        <attr name="warningLineColor" format="color|reference" />
+        <attr name="warningTextColor" format="color|reference" />
+    </declare-styleable>
+</resources>
