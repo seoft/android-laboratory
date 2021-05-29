@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             it.warningTextColor = getRandomColor()
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({ test() }, 5000L)
+        Handler(Looper.getMainLooper()).postDelayed({ test() }, 2000L)
     }
 
 

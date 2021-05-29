@@ -29,6 +29,8 @@ class GaugeCountView @JvmOverloads constructor(
         private const val WARNING_COLOR = Color.RED
     }
 
+    var isInitComplete = false
+
     var textView: TextView
     var progressBar: ProgressBar
     var progressBackgroundDrawable: GradientDrawable? = null
@@ -36,19 +38,19 @@ class GaugeCountView @JvmOverloads constructor(
 
     var count = 0
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var textSize = toPx(DEFAULT_TEXT_SIZE_DP)
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             textView.textSize = value
         }
     var backgroundLineColor = Color.parseColor(DEFAULT_BACKGROUND_LINE_COLOR_CODE)
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             progressBackgroundDrawable?.setColor(value)
             progressBar.background = progressBackgroundDrawable
@@ -56,44 +58,44 @@ class GaugeCountView @JvmOverloads constructor(
 
     var defaultLineColor = Color.parseColor(DEFAULT_LINE_COLOR_CODE)
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var defaultTextColor = DEFAULT_TEXT_COLOR
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var max = 100
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             progressBar.max = value
             refresh()
         }
     var warningBoundary = NOT_USED
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var warningLineColor = WARNING_COLOR
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var warningTextColor = WARNING_COLOR
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
     var useAnimation = true
         set(value) {
-            if (field == value) return
+            if (isInitComplete && field == value) return
             field = value
             refresh()
         }
@@ -158,6 +160,7 @@ class GaugeCountView @JvmOverloads constructor(
                 recycle()
             }
         }
+        isInitComplete = true
     }
 
     private fun toPx(dp: Float): Float {
