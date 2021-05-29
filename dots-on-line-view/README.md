@@ -1,6 +1,5 @@
 # dots-on-line-view
 
-##
 ```
 	<kr.co.seoft.dots_on_line_view.DotsOnLineView
 		android:layout_width="50dp"
