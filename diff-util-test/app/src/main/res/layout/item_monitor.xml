@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="item"
+            type="kr.co.seoft.diff_util_test.ui.test1.DeviceUiModel.Monitor"
+            />
+
+        <variable
+            name="onDeviceListener"
+            type="kr.co.seoft.diff_util_test.ui.test1.OnDeviceListener"
+            />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:onClick="@{()->onDeviceListener.onMonitor(item)}"
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_tv"
+            android:tint="#E57373"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{`price : ` + item.price}"
+            android:textColor="#E57373"
+            app:layout_constraintBottom_toTopOf="@id/tvInch"
+            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="30000"
+            />
+
+        <TextView
+            android:id="@+id/tvInch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{`inch : ` + item.inch}"
+            android:textColor="#E57373"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintTop_toBottomOf="@id/tvPrice"
+            tools:text="24inch"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
