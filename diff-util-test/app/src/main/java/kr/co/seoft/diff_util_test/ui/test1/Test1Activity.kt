@@ -24,6 +24,7 @@ class Test1Activity : AppCompatActivity() {
         setContentView(binding.root)
         binding.lifecycleOwner = this
         binding.activity = this
+        binding.viewModel = viewModel
 
         binding.recyclerView.adapter = adapter
 
@@ -35,7 +36,11 @@ class Test1Activity : AppCompatActivity() {
             binding.tvStatus.text = "status : start"
             startTime = Date().time
             adapter.submitList(it) {
-                binding.tvStatus.text = "status : done (${Date().time - startTime}ms)"
+                val intervalTime = Date().time - startTime
+                if (it.isNotEmpty()) {
+                    viewModel.result.add(ResultUiModel(viewModel.latelyType, it.size, intervalTime))
+                }
+                binding.tvStatus.text = "status : done ($intervalTime)"
             }
         }
     }
@@ -58,6 +63,14 @@ class Test1Activity : AppCompatActivity() {
 
     fun onChange() {
         viewModel.changeUiModels(count)
+    }
+
+    fun onResult() {
+        ResultDialog(this, viewModel.result).show()
+    }
+
+    fun onClear() {
+        viewModel.result.clear()
     }
 
     private val onDeviceListener = object : OnDeviceListener {

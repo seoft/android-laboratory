@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="@{`size` + viewModel.size}"
+                android:text="@{`size : ` + viewModel.size}"
                 />
 
             <TextView
@@ -102,6 +102,22 @@
                 android:layout_marginEnd="5dp"
                 android:onClick="@{()->activity.onChange()}"
                 android:text="changed"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:onClick="@{()->activity.onResult()}"
+                android:text="result"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:onClick="@{()->activity.onClear()}"
+                android:text="clear"
                 />
 
         </com.google.android.flexbox.FlexboxLayout>

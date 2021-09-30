@@ -79,3 +79,5 @@ fun DeviceUiModel.updateUIModel(): DeviceUiModel {
         }
     }
 }
+
+data class ResultUiModel(val type: String, val size: Int, var time: Long)

@@ -9,15 +9,20 @@ import java.util.*
 
 class Test1ViewModel : ViewModel() {
 
+    var result = mutableListOf<ResultUiModel>()
+    var latelyType = ""
+
     private val _throwable = MutableLiveData<Throwable>()
     val throwable = _throwable.toSingleEvent()
 
     private val _uiModels = MutableLiveData<List<DeviceUiModel>>(emptyList())
     val uiModels: LiveData<List<DeviceUiModel>> = _uiModels
-    val size = Transformations.map(uiModels) { it?.size?.toString() ?: "0" }
+    val size: LiveData<String> = Transformations.map(_uiModels) { (it?.size ?: 0).toString() }
+
     private val getUiModels get() = uiModels.value ?: emptyList()
 
     fun addSequenceUiModels(count: Int) {
+        latelyType = "add sequence"
         _uiModels.value = (getUiModels + Test1Helper.createUiModels(count)).toMutableList()
     }
 
@@ -44,10 +49,12 @@ class Test1ViewModel : ViewModel() {
             }
         }
 
+        latelyType = "add random"
         _uiModels.value = resultUiModel
     }
 
     fun shuffleUiModels() {
+        latelyType = "shuffle"
         _uiModels.value = (getUiModels).toMutableList().shuffled()
     }
 
@@ -58,6 +65,7 @@ class Test1ViewModel : ViewModel() {
             return
         }
         var remainCount = count
+        latelyType = "change"
         _uiModels.value = resultUiModel.map {
             if (remainCount > 0) {
                 remainCount--
@@ -84,6 +92,7 @@ class Test1ViewModel : ViewModel() {
                 isRemain
             }
         }
+        latelyType = "delete"
         _uiModels.value = resultUiModel
     }
 
@@ -92,17 +101,20 @@ class Test1ViewModel : ViewModel() {
             val result = getUiModels.toMutableList().apply {
                 add(it + 1, Test1Helper.createUiModels(1).first())
             }
+            latelyType = "add only one"
             _uiModels.value = result
         }
     }
 
     fun deleteOnlyOne(uiModel: DeviceUiModel) {
+        latelyType = "delete only one"
         _uiModels.value = getUiModels.filter {
             it.id != uiModel.id
         }
     }
 
     fun changeOnlyOne(uiModel: DeviceUiModel) {
+        latelyType = "change only one"
         _uiModels.value = getUiModels.map {
             if (it.id == uiModel.id) it.updateUIModel()
             else it
