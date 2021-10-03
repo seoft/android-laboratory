@@ -1,9 +1,16 @@
 package kr.co.seoft.diff_util_test.ui.test1
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.seoft.diff_util_test.databinding.ActivityTest1Binding
+import kr.co.seoft.diff_util_test.ui.test1.auto.AddRandomAutoProcessor
+import kr.co.seoft.diff_util_test.ui.test1.auto.AddSequenceAutoProcessor
+import kr.co.seoft.diff_util_test.ui.test1.auto.BaseAutoProcessor
+import kr.co.seoft.diff_util_test.ui.test1.auto.DeletePartAutoProcessor
+import kr.co.seoft.diff_util_test.util.toEditable
 import kr.co.seoft.diff_util_test.util.toaste
 import kr.co.seoft.diff_util_test.util.viewModel
 import java.util.*
@@ -18,6 +25,13 @@ class Test1Activity : AppCompatActivity() {
     var startTime: Long = 0L
 
     private val count get() = binding.etCount.text.toString().toIntOrNull() ?: 0
+
+    private val addSequenceAutoProcessor by lazy { AddSequenceAutoProcessor(this) }
+    private val addRandomAutoProcessor by lazy { AddRandomAutoProcessor(this) }
+    private val deletePartAutoProcessor by lazy { DeletePartAutoProcessor(this) }
+
+    // insert to test processor
+    private val processor by lazy<BaseAutoProcessor> { addSequenceAutoProcessor }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +55,15 @@ class Test1Activity : AppCompatActivity() {
                     viewModel.result.add(ResultUiModel(viewModel.latelyType, it.size, intervalTime))
                 }
                 binding.tvStatus.text = "status : done ($intervalTime)"
+                if (processor.autoPlaying) {
+                    Handler(Looper.getMainLooper()).postDelayed({ processor.play() }, 300L)
+                }
             }
         }
+    }
+
+    fun setCount(count: Int) {
+        binding.etCount.text = count.toString().toEditable()
     }
 
     fun onAddSequence() {
@@ -69,8 +90,19 @@ class Test1Activity : AppCompatActivity() {
         ResultDialog(this, viewModel.result).show()
     }
 
-    fun onClear() {
+    fun onClearResult() {
         viewModel.result.clear()
+    }
+
+    fun onAutoProcess() {
+        processor.initPreviousPlay(10)
+        Handler(Looper.getMainLooper()).postDelayed({
+            processor.play()
+        }, 300L)
+    }
+
+    fun onClearList() {
+        viewModel.clearList()
     }
 
     private val onDeviceListener = object : OnDeviceListener {
@@ -90,7 +122,12 @@ class Test1Activity : AppCompatActivity() {
     }
 
     private fun showItemDialog(model: DeviceUiModel) {
-        val animals = arrayOf("add only one item", "delete only one item", "change only one item")
+        val animals = arrayOf(
+            "add only one item",
+            "delete only one item",
+            "change only one item",
+            "shuffle only one item"
+        )
         AlertDialog.Builder(this).apply {
             title = "select action"
             setItems(animals) { _, which ->
@@ -98,6 +135,7 @@ class Test1Activity : AppCompatActivity() {
                     0 -> viewModel.addOnlyOne(model)
                     1 -> viewModel.deleteOnlyOne(model)
                     2 -> viewModel.changeOnlyOne(model)
+                    3 -> viewModel.shuffleOnlyOne(model)
                 }
             }
             show()

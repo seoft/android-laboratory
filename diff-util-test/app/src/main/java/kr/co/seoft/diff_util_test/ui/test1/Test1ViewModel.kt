@@ -21,6 +21,10 @@ class Test1ViewModel : ViewModel() {
 
     private val getUiModels get() = uiModels.value ?: emptyList()
 
+    fun clearList() {
+        _uiModels.value = emptyList()
+    }
+
     fun addSequenceUiModels(count: Int) {
         latelyType = "add sequence"
         _uiModels.value = (getUiModels + Test1Helper.createUiModels(count)).toMutableList()
@@ -118,6 +122,16 @@ class Test1ViewModel : ViewModel() {
         _uiModels.value = getUiModels.map {
             if (it.id == uiModel.id) it.updateUIModel()
             else it
+        }
+    }
+
+    fun shuffleOnlyOne(uiModel: DeviceUiModel) {
+        latelyType = "shuffle only one"
+
+        _uiModels.value = getUiModels.filterNot {
+            it.id == uiModel.id
+        }.toMutableList().apply {
+            add(Random().nextInt(_uiModels.value?.size ?: 1 - 1), uiModel)
         }
     }
 

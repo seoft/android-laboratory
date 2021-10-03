@@ -116,8 +116,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:onClick="@{()->activity.onClear()}"
+                android:onClick="@{()->activity.onClearResult()}"
                 android:text="clear"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:onClick="@{()->activity.onAutoProcess()}"
+                android:text="auto from code"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:onClick="@{()->activity.onClearList()}"
+                android:text="reset list"
                 />
 
         </com.google.android.flexbox.FlexboxLayout>
