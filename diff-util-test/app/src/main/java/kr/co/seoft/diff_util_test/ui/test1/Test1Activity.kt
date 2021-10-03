@@ -17,6 +17,10 @@ import java.util.*
 
 class Test1Activity : AppCompatActivity() {
 
+    companion object {
+        private const val USING_ANIMATION = false
+    }
+
     private val binding by lazy { ActivityTest1Binding.inflate(layoutInflater) }
 
     private val viewModel by viewModel { Test1ViewModel() }
@@ -31,7 +35,7 @@ class Test1Activity : AppCompatActivity() {
     private val deletePartAutoProcessor by lazy { DeletePartAutoProcessor(this) }
 
     // insert to test processor
-    private val processor by lazy<BaseAutoProcessor> { addSequenceAutoProcessor }
+    private val processor by lazy<BaseAutoProcessor> { deletePartAutoProcessor }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +45,7 @@ class Test1Activity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         binding.recyclerView.adapter = adapter
+        if (!USING_ANIMATION) binding.recyclerView.itemAnimator = null
 
         viewModel.throwable.observe(this) {
             it.message?.toaste(this)
@@ -103,6 +108,11 @@ class Test1Activity : AppCompatActivity() {
 
     fun onClearList() {
         viewModel.clearList()
+    }
+
+    fun onScrollToBottom() {
+        val size = (viewModel.uiModels.value ?: emptyList()).size
+        binding.recyclerView.scrollToPosition(size - 1)
     }
 
     private val onDeviceListener = object : OnDeviceListener {

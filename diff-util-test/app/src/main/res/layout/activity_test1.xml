@@ -49,7 +49,7 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etCount"
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:text="1000"
@@ -64,76 +64,114 @@
             app:flexWrap="wrap"
             >
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onAddSequence()}"
+                android:padding="4dp"
                 android:text="add sequence"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onAddRandom()}"
+                android:padding="4dp"
                 android:text="add random"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onDelete()}"
+                android:padding="4dp"
                 android:text="delete"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onShuffle()}"
+                android:padding="4dp"
                 android:text="shuffled"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onChange()}"
+                android:padding="4dp"
                 android:text="changed"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onResult()}"
+                android:padding="4dp"
                 android:text="result"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onClearResult()}"
+                android:padding="4dp"
                 android:text="clear"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onAutoProcess()}"
-                android:text="auto from code"
+                android:padding="4dp"
+                android:text="auto mode"
                 />
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
+                android:background="#1A000000"
                 android:onClick="@{()->activity.onClearList()}"
+                android:padding="4dp"
                 android:text="reset list"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="5dp"
+                android:background="#1A000000"
+                android:onClick="@{()->activity.onScrollToBottom()}"
+                android:padding="4dp"
+                android:text="scroll to bottom"
                 />
 
         </com.google.android.flexbox.FlexboxLayout>
