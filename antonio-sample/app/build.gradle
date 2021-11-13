@@ -53,4 +53,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    // https://github.com/naverz/Antonio
+    implementation "io.github.naverz:antonio-databinding:1.0.3-alpha"
+    implementation "io.github.naverz:antonio-annotation:0.0.1-alpha"
+    kapt "io.github.naverz:antonio-annotation:0.0.1-alpha"
 }

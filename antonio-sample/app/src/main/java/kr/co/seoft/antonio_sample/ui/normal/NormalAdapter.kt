@@ -13,13 +13,11 @@ class NormalAdapter(
     private val onNormalListener: OnNormalListener
 ) : ListAdapter<NormalUiModel, BindViewHolder<NormalUiModel>>(
     object : DiffUtil.ItemCallback<NormalUiModel>() {
-        override fun areItemsTheSame(oldItem: NormalUiModel, newItem: NormalUiModel): Boolean {
-            return oldItem.id == newItem.id
-        }
+        override fun areItemsTheSame(oldItem: NormalUiModel, newItem: NormalUiModel) =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: NormalUiModel, newItem: NormalUiModel): Boolean {
-            return oldItem == newItem
-        }
+        override fun areContentsTheSame(oldItem: NormalUiModel, newItem: NormalUiModel) =
+            oldItem == newItem
     }
 ) {
 

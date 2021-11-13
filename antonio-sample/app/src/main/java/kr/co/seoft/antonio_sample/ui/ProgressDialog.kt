@@ -1,4 +1,4 @@
-package kr.co.seoft.antonio_sample.ui.dialog
+package kr.co.seoft.antonio_sample.ui
 
 import android.app.Dialog
 import android.content.Context
