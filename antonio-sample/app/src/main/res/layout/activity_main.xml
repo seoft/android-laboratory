@@ -18,6 +18,13 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="btBindingRecyclerView"
+        android:text="binding recycler view"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:onClick="btAntonioRecyclerView"
         android:text="antonio recycler view"
         />

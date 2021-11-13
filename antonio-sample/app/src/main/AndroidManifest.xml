@@ -13,6 +13,10 @@
         android:theme="@style/Theme.Antoniosample"
         >
         <activity
+            android:name=".ui.binding.BindingActivity"
+            android:exported="true"
+            />
+        <activity
             android:name=".ui.antonio.AntonioActivity"
             android:exported="true"
             />
