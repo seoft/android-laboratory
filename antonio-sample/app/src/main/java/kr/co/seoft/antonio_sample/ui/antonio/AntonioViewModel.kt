@@ -29,7 +29,7 @@ class AntonioViewModel(private val api: MockApi = MockService()) : ViewModel() {
         if (requestLock.getAndSet(true)) return
         isShowProgress.value = true
         api.loadMore()
-            .map { AntonioUiModel.from(it) }
+            .map { AntonioModelMapper.from(it) }
             .doFinally {
                 requestLock.set(false)
                 isShowProgress.postValue(false)

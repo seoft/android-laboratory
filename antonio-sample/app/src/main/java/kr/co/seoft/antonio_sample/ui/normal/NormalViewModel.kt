@@ -29,7 +29,7 @@ class NormalViewModel(private val api: MockApi = MockService()) : ViewModel() {
         if (requestLock.getAndSet(true)) return
         isShowProgress.value = true
         api.loadMore()
-            .map { NormalUiModel.from(it) }
+            .map { NormalModelMapper.from(it) }
             .doFinally {
                 requestLock.set(false)
                 isShowProgress.postValue(false)
