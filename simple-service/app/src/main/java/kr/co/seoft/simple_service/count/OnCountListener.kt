@@ -6,5 +6,5 @@ interface OnCountListener {
 }
 
 enum class CountStatus {
-    RUNNING, STOP, PAUSE;
+    RUNNING, PAUSE, EXIT;
 }

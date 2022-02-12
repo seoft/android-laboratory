@@ -3,7 +3,9 @@ package kr.co.seoft.simple_service.count
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
+import android.os.IBinder
 import kotlinx.coroutines.*
+import kr.co.seoft.simple_service.util.e
 import kotlin.random.Random
 
 class CountService : Service() {
@@ -12,17 +14,37 @@ class CountService : Service() {
 
     var onCountListener: OnCountListener? = null
 
-    var job: Job? = null
+    private var job: Job? = null
 
     private val randomNumber: Int
-        get() = Random.nextInt(2, 10)
+        get() = Random.nextInt(10, 20)
 
-    private var currentCount = 0
-        set(value) {
+    var currentCount = 0
+        private set(value) {
             onCountListener?.onSecond(value)
             field = value
         }
 
+    private val notificationController by lazy { CountNotificationController(this) }
+
+    override fun onCreate() {
+        super.onCreate()
+        start()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        "CountService::onStartCommand".e()
+        showBackgroundView()
+        return START_STICKY
+    }
+
+    private fun showBackgroundView() {
+        notificationController.show()
+    }
+
+    private fun hideBackgroundView() {
+        notificationController.hide()
+    }
 
     fun start() {
         if (currentCount == 0) currentCount = randomNumber
@@ -36,17 +58,20 @@ class CountService : Service() {
         onCountListener?.onStatus(CountStatus.PAUSE)
     }
 
-    fun stop() {
+    fun stopService() {
         clearJob()
-        currentCount = 0
-        onCountListener?.onStatus(CountStatus.STOP)
+        hideBackgroundView()
+        stopSelf()
     }
 
     private fun createCountJobWithRun() {
         job = scope.launch {
             while (true) {
                 delay(1_000)
-                if (currentCount == 0) break
+                if (currentCount == 0) {
+                    onCountListener?.onStatus(CountStatus.EXIT)
+                    break
+                }
                 currentCount -= 1
             }
         }
@@ -59,11 +84,25 @@ class CountService : Service() {
 
     private val binder = CountServiceBinder()
 
-    override fun onBind(intent: Intent?) = binder
+    override fun onBind(intent: Intent?): IBinder {
+        "CountService::onBind".e()
+        return binder
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        "CountService::onUnbind".e()
+        return super.onUnbind(intent)
+    }
 
     inner class CountServiceBinder : Binder() {
         val service: CountService
             get() = this@CountService
+    }
+
+    override fun onDestroy() {
+        "CountService::onDestroy".e()
+        super.onDestroy()
+        scope.cancel()
     }
 
 }

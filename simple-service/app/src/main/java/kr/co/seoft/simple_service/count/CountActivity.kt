@@ -4,8 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.seoft.simple_service.databinding.ActivityCountBinding
 import kr.co.seoft.simple_service.util.e
@@ -33,19 +35,35 @@ class CountActivity : AppCompatActivity() {
         }
 
         binding.btStop.setOnClickListener {
-            countService?.stop()
+            finishWithStopService()
         }
 
+        startCountService()
     }
 
     override fun onStart() {
         super.onStart()
-        "onStart".e()
+        "CountActivity::onStart".e()
         bindCountService()
+        screenAlwaysOn(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        "CountActivity::onStop".e()
+        unbindCountService()
+        screenAlwaysOn(false)
+    }
+
+    private fun startCountService() {
+        "CountActivity::startCountService".e()
+        val intent = Intent(this, CountService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
+        else startService(intent)
     }
 
     private fun bindCountService() {
-        "bindCountService".e()
+        "CountActivity::bindCountService".e()
         fun setOnContListener() {
             countService?.onCountListener = object : OnCountListener {
                 override fun onSecond(second: Int) {
@@ -53,6 +71,10 @@ class CountActivity : AppCompatActivity() {
                 }
 
                 override fun onStatus(status: CountStatus) {
+                    if (status == CountStatus.EXIT) {
+                        finishWithStopService()
+                        return
+                    }
                     binding.tvStatus.text = "status : ${status.name}"
                 }
             }
@@ -60,7 +82,7 @@ class CountActivity : AppCompatActivity() {
 
         connection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-                "onServiceConnected".e()
+                "CountActivity::onServiceConnected".e()
                 val binder = service as CountService.CountServiceBinder
                 countService = binder.service
                 setOnContListener()
@@ -68,7 +90,7 @@ class CountActivity : AppCompatActivity() {
             }
 
             override fun onServiceDisconnected(componentName: ComponentName?) {
-                "onServiceDisconnected".e()
+                "CountActivity::onServiceDisconnected".e()
                 unbindCountService()
             }
         }
@@ -77,16 +99,21 @@ class CountActivity : AppCompatActivity() {
         }
     }
 
+    private fun finishWithStopService() {
+        countService?.stopService()
+        finish()
+    }
+
     private fun unbindCountService() {
-        "unbindCountService".e()
+        "CountActivity::unbindCountService".e()
         countService?.onCountListener = null
         connection?.let { unbindService(it) }
+        connection = null
+        countService = null
     }
 
-    override fun onStop() {
-        super.onStop()
-        "onStop".e()
-        unbindCountService()
+    private fun screenAlwaysOn(remain: Boolean) {
+        if (remain) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
-
 }
