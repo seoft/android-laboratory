@@ -16,17 +16,31 @@
         />
 
     <Button
-        android:id="@+id/btShow"
+        android:id="@+id/btShowSimple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="show"
+        android:text="ShowSimple"
         />
 
     <Button
-        android:id="@+id/btHide"
+        android:id="@+id/btHideSimple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="hide"
+        android:text="HideSimple"
+        />
+
+    <Button
+        android:id="@+id/btShowComplex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ShowComplex"
+        />
+
+    <Button
+        android:id="@+id/btHideComplex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="HideComplex"
         />
 
 </LinearLayout>
