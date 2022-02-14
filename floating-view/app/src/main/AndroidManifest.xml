@@ -25,7 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".SimpleFloatingService" />
+        <service android:name=".ComplexFloatingService" />
     </application>
 
 </manifest>

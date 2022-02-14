@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="160dp"
+    android:layout_height="100dp"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+        app:cardBackgroundColor="#000000"
+        app:cardCornerRadius="20dp"
+        >
+
+        <TextView
+            android:id="@+id/tvRandomNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            />
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:padding="10dp"
+            android:src="@drawable/ic_round_close"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

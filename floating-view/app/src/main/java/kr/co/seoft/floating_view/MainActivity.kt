@@ -34,11 +34,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btShowComplex.setOnClickListener {
-
+            startService(Intent(this, ComplexFloatingService::class.java).apply {
+                putExtra(ACTION_SHOW, true)
+            })
         }
 
         binding.btHideComplex.setOnClickListener {
-
+            startService(Intent(this, ComplexFloatingService::class.java).apply {
+                putExtra(ACTION_HIDE, true)
+            })
         }
 
     }
