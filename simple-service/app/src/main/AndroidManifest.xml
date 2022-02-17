@@ -27,11 +27,11 @@
         </activity>
 
         <activity
-            android:name=".count.CountActivity"
+            android:name=".count.noti.CountNotiActivity"
             android:exported="false"
             />
 
-        <service android:name=".count.CountService" />
+        <service android:name=".count.noti.CountNotiService" />
 
     </application>
 

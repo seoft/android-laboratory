@@ -9,10 +9,17 @@
     >
 
     <Button
-        android:id="@+id/btStartCountActivity"
+        android:id="@+id/btStartCountNotiActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="start count activity"
+        android:text="start count noti activity"
+        />
+
+    <Button
+        android:id="@+id/btStartCountFloatingActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start count floating activity"
         />
 
 </LinearLayout>

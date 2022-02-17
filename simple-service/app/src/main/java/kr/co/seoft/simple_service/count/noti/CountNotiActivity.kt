@@ -1,4 +1,4 @@
-package kr.co.seoft.simple_service.count
+package kr.co.seoft.simple_service.count.noti
 
 import android.content.ComponentName
 import android.content.Context
@@ -9,29 +9,30 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import kr.co.seoft.simple_service.count.CountStatus
+import kr.co.seoft.simple_service.count.OnCountListener
 import kr.co.seoft.simple_service.databinding.ActivityCountBinding
 import kr.co.seoft.simple_service.util.e
 
-class CountActivity : AppCompatActivity() {
+class CountNotiActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityCountBinding.inflate(layoutInflater) }
 
-    private var countService: CountService? = null
+    private var countNotiService: CountNotiService? = null
     private var connection: ServiceConnection? = null
 
     private var isBinding: Boolean = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         binding.btStart.setOnClickListener {
-            countService?.start()
+            countNotiService?.start()
         }
 
         binding.btPause.setOnClickListener {
-            countService?.pause()
+            countNotiService?.pause()
         }
 
         binding.btStop.setOnClickListener {
@@ -57,7 +58,7 @@ class CountActivity : AppCompatActivity() {
 
     private fun startCountService() {
         "CountActivity::startCountService".e()
-        val intent = Intent(this, CountService::class.java)
+        val intent = Intent(this, CountNotiService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
         else startService(intent)
     }
@@ -65,7 +66,7 @@ class CountActivity : AppCompatActivity() {
     private fun bindCountService() {
         "CountActivity::bindCountService".e()
         fun setOnContListener() {
-            countService?.onCountListener = object : OnCountListener {
+            countNotiService?.onCountListener = object : OnCountListener {
                 override fun onSecond(second: Int) {
                     binding.tvCount.text = "remain : $second"
                 }
@@ -83,8 +84,8 @@ class CountActivity : AppCompatActivity() {
         connection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
                 "CountActivity::onServiceConnected".e()
-                val binder = service as CountService.CountServiceBinder
-                countService = binder.service
+                val binder = service as CountNotiService.CountServiceBinder
+                countNotiService = binder.service
                 setOnContListener()
                 isBinding = true
             }
@@ -95,21 +96,21 @@ class CountActivity : AppCompatActivity() {
             }
         }
         connection?.let {
-            bindService(Intent(this, CountService::class.java), it, Context.BIND_AUTO_CREATE)
+            bindService(Intent(this, CountNotiService::class.java), it, Context.BIND_AUTO_CREATE)
         }
     }
 
     private fun finishWithStopService() {
-        countService?.stopService()
+        countNotiService?.stopService()
         finish()
     }
 
     private fun unbindCountService() {
         "CountActivity::unbindCountService".e()
-        countService?.onCountListener = null
+        countNotiService?.onCountListener = null
         connection?.let { unbindService(it) }
         connection = null
-        countService = null
+        countNotiService = null
     }
 
     private fun screenAlwaysOn(remain: Boolean) {

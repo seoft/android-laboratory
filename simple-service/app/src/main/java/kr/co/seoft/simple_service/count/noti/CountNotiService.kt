@@ -1,14 +1,16 @@
-package kr.co.seoft.simple_service.count
+package kr.co.seoft.simple_service.count.noti
 
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import kotlinx.coroutines.*
+import kr.co.seoft.simple_service.count.CountStatus
+import kr.co.seoft.simple_service.count.OnCountListener
 import kr.co.seoft.simple_service.util.e
 import kotlin.random.Random
 
-class CountService : Service() {
+class CountNotiService : Service() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -33,17 +35,9 @@ class CountService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        "CountService::onStartCommand".e()
-        showBackgroundView()
-        return START_STICKY
-    }
-
-    private fun showBackgroundView() {
+        "CountNotiService::onStartCommand".e()
         notificationController.show()
-    }
-
-    private fun hideBackgroundView() {
-        notificationController.hide()
+        return START_STICKY
     }
 
     fun start() {
@@ -60,7 +54,7 @@ class CountService : Service() {
 
     fun stopService() {
         clearJob()
-        hideBackgroundView()
+        notificationController.hide()
         stopSelf()
     }
 
@@ -85,22 +79,22 @@ class CountService : Service() {
     private val binder = CountServiceBinder()
 
     override fun onBind(intent: Intent?): IBinder {
-        "CountService::onBind".e()
+        "CountNotiService::onBind".e()
         return binder
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        "CountService::onUnbind".e()
+        "CountNotiService::onUnbind".e()
         return super.onUnbind(intent)
     }
 
     inner class CountServiceBinder : Binder() {
-        val service: CountService
-            get() = this@CountService
+        val service: CountNotiService
+            get() = this@CountNotiService
     }
 
     override fun onDestroy() {
-        "CountService::onDestroy".e()
+        "CountNotiService::onDestroy".e()
         super.onDestroy()
         scope.cancel()
     }

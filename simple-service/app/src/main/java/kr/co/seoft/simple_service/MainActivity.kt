@@ -3,7 +3,7 @@ package kr.co.seoft.simple_service
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kr.co.seoft.simple_service.count.CountActivity
+import kr.co.seoft.simple_service.count.noti.CountNotiActivity
 import kr.co.seoft.simple_service.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -14,9 +14,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.btStartCountActivity.setOnClickListener {
-            startActivity(Intent(this, CountActivity::class.java))
+        binding.btStartCountNotiActivity.setOnClickListener {
+            startActivity(Intent(this, CountNotiActivity::class.java))
         }
+
+        binding.btStartCountFloatingActivity.setOnClickListener {
+
+        }
+
     }
 
 }
