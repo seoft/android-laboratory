@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import kr.co.seoft.simple_service.MainActivity
 import kr.co.seoft.simple_service.R
 import kr.co.seoft.simple_service.count.noti.CountNotiService.Companion.STOP_SERVICE
@@ -24,10 +25,12 @@ class CountNotificationController(private val service: CountNotiService) {
         val notificationTvCount = R.id.notificationTvCount
         val notificationIvClose = R.id.notificationIvClose
 
-        val pendingIntent = PendingIntent.getActivity(
-            service, NOTIFY_ID, Intent(service, MainActivity::class.java).apply {
-            }, PendingIntent.FLAG_IMMUTABLE
-        )
+        val pendingIntent = TaskStackBuilder.create(service)
+            .addNextIntent(Intent(service, MainActivity::class.java))
+            .addNextIntent(Intent(service, CountNotiActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            })
+            .getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
 
         val stopServicePendingIntent = PendingIntent.getService(
             service, NOTIFY_ID, Intent(service, CountNotiService::class.java).apply {
@@ -46,6 +49,7 @@ class CountNotificationController(private val service: CountNotiService) {
                 .setOngoing(true)
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(notificationView)
+                .setContentIntent(pendingIntent)
                 .setSound(null)
                 .setPriority(priority)
                 .build()

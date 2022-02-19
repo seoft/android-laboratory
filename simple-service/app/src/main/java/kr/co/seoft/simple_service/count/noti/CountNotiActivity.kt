@@ -11,12 +11,12 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.seoft.simple_service.count.CountStatus
 import kr.co.seoft.simple_service.count.OnCountListener
-import kr.co.seoft.simple_service.databinding.ActivityCountBinding
+import kr.co.seoft.simple_service.databinding.ActivityCountNotiBinding
 import kr.co.seoft.simple_service.util.e
 
 class CountNotiActivity : AppCompatActivity() {
 
-    private val binding by lazy { ActivityCountBinding.inflate(layoutInflater) }
+    private val binding by lazy { ActivityCountNotiBinding.inflate(layoutInflater) }
 
     private var countNotiService: CountNotiService? = null
     private var connection: ServiceConnection? = null
@@ -45,19 +45,19 @@ class CountNotiActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        "CountActivity::onStart".e()
+        "CountNotiActivity::onStart".e()
         screenAlwaysOn(true)
     }
 
     override fun onStop() {
         super.onStop()
-        "CountActivity::onStop".e()
+        "CountNotiActivity::onStop".e()
         unbindCountService()
         screenAlwaysOn(false)
     }
 
     private fun startCountService() {
-        "CountActivity::startCountService".e()
+        "CountNotiActivity::startCountService".e()
         val intent = Intent(this, CountNotiService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
         else startService(intent)
@@ -72,7 +72,7 @@ class CountNotiActivity : AppCompatActivity() {
      * @param checkAliveService 엑티비티 온스탑 상태에서 백그라운드 서비스가 종료되고 온스타트되는 경우 엑티비티 종료하기 위함
      */
     private fun bindCountService(checkAliveService: Boolean) {
-        "CountActivity::bindCountService".e()
+        "CountNotiActivity::bindCountService".e()
         if (checkAliveService && !CountNotiService.isAliveBackgroundService) finish()
 
         fun setOnContListener() {
@@ -93,7 +93,7 @@ class CountNotiActivity : AppCompatActivity() {
 
         connection = object : ServiceConnection {
             override fun onServiceConnected(componentName: ComponentName?, service: IBinder?) {
-                "CountActivity::onServiceConnected".e()
+                "CountNotiActivity::onServiceConnected".e()
                 val binder = service as CountNotiService.CountServiceBinder
                 countNotiService = binder.service
                 setOnContListener()
@@ -101,7 +101,7 @@ class CountNotiActivity : AppCompatActivity() {
             }
 
             override fun onServiceDisconnected(componentName: ComponentName?) {
-                "CountActivity::onServiceDisconnected".e()
+                "CountNotiActivity::onServiceDisconnected".e()
                 unbindCountService()
             }
         }
@@ -111,7 +111,7 @@ class CountNotiActivity : AppCompatActivity() {
     }
 
     private fun unbindCountService() {
-        "CountActivity::unbindCountService".e()
+        "CountNotiActivity::unbindCountService".e()
         countNotiService?.onCountListener = null
         connection?.let { unbindService(it) }
         connection = null
@@ -121,5 +121,10 @@ class CountNotiActivity : AppCompatActivity() {
     private fun screenAlwaysOn(remain: Boolean) {
         if (remain) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        "CountNotiActivity::onNewIntent".e()
     }
 }

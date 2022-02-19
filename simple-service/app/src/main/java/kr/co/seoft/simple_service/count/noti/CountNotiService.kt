@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import kotlinx.coroutines.*
+import kr.co.seoft.simple_service.count.CompleteNotificationController
 import kr.co.seoft.simple_service.count.CountStatus
 import kr.co.seoft.simple_service.count.OnCountListener
 import kr.co.seoft.simple_service.util.e
@@ -35,6 +36,7 @@ class CountNotiService : Service() {
         }
 
     private val notificationController by lazy { CountNotificationController(this) }
+    private val completeNotificationController by lazy { CompleteNotificationController(this) }
 
     override fun onCreate() {
         super.onCreate()
@@ -78,6 +80,7 @@ class CountNotiService : Service() {
                 delay(1_000)
                 if (currentCount == 0) {
                     stopServiceWithActivityIfNeed()
+                    completeNotificationController.show()
                     break
                 }
                 currentCount -= 1

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.seoft.simple_service.count.noti.CountNotiActivity
 import kr.co.seoft.simple_service.databinding.ActivityMainBinding
+import kr.co.seoft.simple_service.util.e
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +23,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        "MainActivity::onNewIntent".e()
     }
 
 }
