@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_round_close.xml" value="0.2395" />
         <entry key="app/src/main/res/layout/activity_count.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/notification_count.xml" value="0.33967391304347827" />
       </map>
     </option>
   </component>

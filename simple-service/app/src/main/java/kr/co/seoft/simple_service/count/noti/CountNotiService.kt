@@ -12,6 +12,11 @@ import kotlin.random.Random
 
 class CountNotiService : Service() {
 
+    companion object {
+        const val STOP_SERVICE = "STOP_SERVICE"
+        var isAliveBackgroundService = false
+    }
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     var onCountListener: OnCountListener? = null
@@ -21,9 +26,11 @@ class CountNotiService : Service() {
     private val randomNumber: Int
         get() = Random.nextInt(10, 20)
 
-    var currentCount = 0
+    private var currentCount = 0
         private set(value) {
+            "currentCount $value".e()
             onCountListener?.onSecond(value)
+            if (isAliveBackgroundService) notificationController.showWithUpdate(value)
             field = value
         }
 
@@ -36,7 +43,12 @@ class CountNotiService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         "CountNotiService::onStartCommand".e()
-        notificationController.show()
+        if (intent?.getBooleanExtra(STOP_SERVICE, false) == true) {
+            "STOP_SERVICE".e()
+            stopServiceWithActivityIfNeed()
+            return START_STICKY
+        }
+        isAliveBackgroundService = true
         return START_STICKY
     }
 
@@ -52,8 +64,10 @@ class CountNotiService : Service() {
         onCountListener?.onStatus(CountStatus.PAUSE)
     }
 
-    fun stopService() {
+    fun stopServiceWithActivityIfNeed() {
+        onCountListener?.onFinish()
         clearJob()
+        isAliveBackgroundService = false
         notificationController.hide()
         stopSelf()
     }
@@ -63,7 +77,7 @@ class CountNotiService : Service() {
             while (true) {
                 delay(1_000)
                 if (currentCount == 0) {
-                    onCountListener?.onStatus(CountStatus.EXIT)
+                    stopServiceWithActivityIfNeed()
                     break
                 }
                 currentCount -= 1

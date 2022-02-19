@@ -36,16 +36,16 @@ class CountNotiActivity : AppCompatActivity() {
         }
 
         binding.btStop.setOnClickListener {
-            finishWithStopService()
+            countNotiService?.stopServiceWithActivityIfNeed()
         }
 
         startCountService()
+        bindCountService(false)
     }
 
     override fun onStart() {
         super.onStart()
         "CountActivity::onStart".e()
-        bindCountService()
         screenAlwaysOn(true)
     }
 
@@ -63,8 +63,18 @@ class CountNotiActivity : AppCompatActivity() {
         else startService(intent)
     }
 
-    private fun bindCountService() {
+    override fun onRestart() {
+        super.onRestart()
+        bindCountService(true)
+    }
+
+    /**
+     * @param checkAliveService 엑티비티 온스탑 상태에서 백그라운드 서비스가 종료되고 온스타트되는 경우 엑티비티 종료하기 위함
+     */
+    private fun bindCountService(checkAliveService: Boolean) {
         "CountActivity::bindCountService".e()
+        if (checkAliveService && !CountNotiService.isAliveBackgroundService) finish()
+
         fun setOnContListener() {
             countNotiService?.onCountListener = object : OnCountListener {
                 override fun onSecond(second: Int) {
@@ -72,11 +82,11 @@ class CountNotiActivity : AppCompatActivity() {
                 }
 
                 override fun onStatus(status: CountStatus) {
-                    if (status == CountStatus.EXIT) {
-                        finishWithStopService()
-                        return
-                    }
                     binding.tvStatus.text = "status : ${status.name}"
+                }
+
+                override fun onFinish() {
+                    finish()
                 }
             }
         }
@@ -98,11 +108,6 @@ class CountNotiActivity : AppCompatActivity() {
         connection?.let {
             bindService(Intent(this, CountNotiService::class.java), it, Context.BIND_AUTO_CREATE)
         }
-    }
-
-    private fun finishWithStopService() {
-        countNotiService?.stopService()
-        finish()
     }
 
     private fun unbindCountService() {
