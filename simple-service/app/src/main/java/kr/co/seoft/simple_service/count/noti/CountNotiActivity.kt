@@ -13,6 +13,7 @@ import kr.co.seoft.simple_service.count.CountStatus
 import kr.co.seoft.simple_service.count.OnCountListener
 import kr.co.seoft.simple_service.databinding.ActivityCountNotiBinding
 import kr.co.seoft.simple_service.util.e
+import kotlin.random.Random
 
 class CountNotiActivity : AppCompatActivity() {
 
@@ -22,6 +23,8 @@ class CountNotiActivity : AppCompatActivity() {
     private var connection: ServiceConnection? = null
 
     private var isBinding: Boolean = false
+
+    private val initCount = Random.nextInt(10, 20)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +99,7 @@ class CountNotiActivity : AppCompatActivity() {
                 "CountNotiActivity::onServiceConnected".e()
                 val binder = service as CountNotiService.CountServiceBinder
                 countNotiService = binder.service
+                countNotiService?.initWithStart(initCount)
                 setOnContListener()
                 isBinding = true
             }

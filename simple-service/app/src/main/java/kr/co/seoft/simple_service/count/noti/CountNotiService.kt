@@ -9,7 +9,6 @@ import kr.co.seoft.simple_service.count.CompleteNotificationController
 import kr.co.seoft.simple_service.count.CountStatus
 import kr.co.seoft.simple_service.count.OnCountListener
 import kr.co.seoft.simple_service.util.e
-import kotlin.random.Random
 
 class CountNotiService : Service() {
 
@@ -24,9 +23,6 @@ class CountNotiService : Service() {
 
     private var job: Job? = null
 
-    private val randomNumber: Int
-        get() = Random.nextInt(10, 20)
-
     private var currentCount = 0
         private set(value) {
             "currentCount $value".e()
@@ -37,11 +33,6 @@ class CountNotiService : Service() {
 
     private val notificationController by lazy { CountNotificationController(this) }
     private val completeNotificationController by lazy { CompleteNotificationController(this) }
-
-    override fun onCreate() {
-        super.onCreate()
-        start()
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         "CountNotiService::onStartCommand".e()
@@ -54,8 +45,13 @@ class CountNotiService : Service() {
         return START_STICKY
     }
 
+    fun initWithStart(startCount: Int) {
+        if (currentCount != 0) return
+        currentCount = startCount
+        start()
+    }
+
     fun start() {
-        if (currentCount == 0) currentCount = randomNumber
         if (job == null) createCountJobWithRun()
         onCountListener?.onStatus(CountStatus.RUNNING)
     }
