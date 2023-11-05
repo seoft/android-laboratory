@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebView request & response test</title>
+    </head>
+    <body>
+
+    <h2 id="sample-title">WebView request & response test</h2>
+    <h4 id="init-state">init-state</h4>
+        <h4 id="print"></h4>
+        <input type="button" value="showToast" onClick="showToast('this is test')" />
+        <input type="button" value="pageChanged" onClick="pageChanged('VOTE_RESULT')" />
+
+        <script type="text/javascript">
+
+            <!-- 앱 -> 웹 : 초기화시 전달할 값(json) -->
+            function initState(json) {
+                document.getElementById("init-state").innerText = json;
+            };
+
+            <!-- 앱 -> 웹 : 뒤로가기 액션 -->
+            function onBackFromApp() {
+                document.getElementById("print").innerText = 'called onBackFromApp()';
+            };
+
+            <!-- 웹 -> 앱 : 토스트 출력 액션 (테스트용) -->
+            function showToast(toastMessage) {
+                AppBridge.onShowToast(toastMessage);
+            };
+
+            <!-- 웹 -> 앱 : 페이지 변경시 다음 값 전달 (VOTING, VOTE_RESULT, ALL_VOTER, PART_VOTER) -->
+            function pageChanged(page) {
+                AppBridge.onPageChanged(page);
+            };
+
+        </script>
+    </body>
+</html>
